@@ -23,13 +23,13 @@
                 <el-table-column prop="creator" label="创建者" width="80px"></el-table-column>
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
-                    <template #default="{ row }">
+                    <template #default="{ row }" >
                         <el-button type="primary" @click="edit(row)">编辑</el-button>
                         <el-button slot="reference" type="primary" @click="show(row.questionid)">查看</el-button>
                         <el-popconfirm v-if="row.creator === user.name.toString()" title="确定删除吗？"
                             @confirm="del(row.id, row.questionid)">
                             <template #reference>
-                                <el-button type="danger" style="margin-top: 10px;margin-left: 10px">删除</el-button>
+                                <el-button type="danger" style="margin-top: 10px;margin-left: 35px">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>

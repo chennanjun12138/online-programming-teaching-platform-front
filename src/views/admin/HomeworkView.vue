@@ -6,7 +6,7 @@
                 placeholder="请输入作业教师"></el-input>
             <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
             <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findBySearch()">返回</el-button>
-            <span v-if="tableVisible2" style="margin-left: 20px">题目说明：{{  notice }}</span>
+            <span v-if="tableVisible2" style="margin-left: 20px">题目说明：{{ notice }}</span>
 
             <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
             <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
@@ -20,18 +20,17 @@
         <div>
             <el-table :data="tableData" v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column ref="table" type="selection" width="55" 
-                    :reserve-selection="true"></el-table-column>
-                <el-table-column width="70px" prop="homeworkid" label="作业号" ></el-table-column>
+                <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
+                <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
                 <el-table-column prop="name" label="作业名"></el-table-column>
-                <el-table-column prop="teacher" label="作业教师"  ></el-table-column>
+                <el-table-column prop="teacher" label="作业教师"></el-table-column>
                 <el-table-column prop="starttime" label="开始时间" width="120px"></el-table-column>
                 <el-table-column prop="endtime" label="结束时间" width="120px"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
                         <el-button type="primary" @click="edit(row)">编辑</el-button>
                         <el-button type="primary"
-                            @click="searchbyhomework($index, row.content, row.illustrate)">查看</el-button>
+                            @click="searchbyhomework(tableData.indexOf(row), row.content, row.illustrate, row.homeworkid)">查看</el-button>
                         <el-popconfirm title="确定删除吗？" @confirm="del(row.id)">
                             <template #reference>
                                 <el-button type="danger" style="margin-left: 5px">删除</el-button>
@@ -53,10 +52,11 @@
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-popconfirm title="确定删除吗？" @confirm="delcontent(row.questionid)">
+                        <el-popconfirm title="确定删除吗？" @confirm="delcontent(questiondata.indexOf(row),row.questionid)">
                             <template #reference>
                                 <el-button type="danger" style="margin-left: 5px">删除</el-button>
-                            </template> </el-popconfirm>
+                            </template>
+                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -107,7 +107,7 @@
     
 <script setup >
 import { ref } from 'vue';
-import { changehomework, delBatchhomework, deletehomework, findbyhomework, findhomeworks, updatehomework } from "@/api/index.js";
+import { changehomework, delBatchhomework, deletehomework, findbyhomework, findhomeworks, updatehomework, updatequestionbank } from "@/api/index.js";
 let params = ref({
     name: '',
     phone: '',
@@ -124,44 +124,68 @@ let tableVisible2 = ref(false);
 let multipleSelection = ref([]);
 let dialogFormVisible = ref(false);
 let form = ref({})
-let workid = ref('');
-let notice = ref('')
-function delcontent(id) {
-    let str = tableData[workid.value].value.content;
+let workid = ref(0);
+let notice = ref('');
+let zuoyeid = ref('')
+function delcontent(listid,questionid) {
+    // console.log(tableData.value)
+    // console.log(workid.value)
+    // console.log(tableData.value[workid.value])
+    let str = tableData.value[workid.value].content;
     let arr = JSON.parse(str);
-    arr.splice(id - 1, 1);
+    console.log(listid)
+    console.log(arr)
+    arr.splice(listid, 1);
     let newStr = JSON.stringify(arr);
     console.log(newStr); // 输出 '[1,3]'
-   tableData[workid.value].value.content = newStr;
-     form.value = tableData[workid.value].value;
-
-    updatehomework(form.value ).then(res => {
+    tableData.value[workid.value].content = newStr;
+    form.value = tableData.value[workid.value];
+    updatehomework(form.value).then(res => {
         if (res.code === '0') {
-             window.$message({
+            window.$message({
                 message: '操作成功',
                 type: 'success'
             });
-             dialogFormVisible.value = false;
-             findBySearch();
+            dialogFormVisible.value = false;
+            findBySearch();
         } else {
-             window.$message({
+            window.$message({
                 message: res.msg,
                 type: 'success'
             });
         }
     })
+    form.value = {}
+    form.value.questionid = questionid;
+    form.value.homeworkid = zuoyeid.value;
+    updatequestionbank(form.value).then(
+        res => {
+            if (res.code === '0') {
+                this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                });
+
+            } else {
+                this.$message({
+                    message: res.msg,
+                    type: 'success'
+                });
+            }
+        }
+    )
 }
 function findBySearch() {
-    findhomeworks( params.value).then(res => {
+    findhomeworks(params.value).then(res => {
         if (res.code === '0') {
 
-             tableData.value = res.data.list;
-             total.value = res.data.total;
+            tableData.value = res.data.list;
+            total.value = res.data.total;
 
-             tableVisible.value = true;
-             tableVisible2.value = false;
+            tableVisible.value = true;
+            tableVisible2.value = false;
         } else {
-             window.$message({
+            window.$message({
                 message: res.msg,
                 type: 'error'
             });
@@ -170,7 +194,7 @@ function findBySearch() {
 }
 findBySearch();
 function reset() {
-     params.value = {
+    params.value = {
         pageNum: 1,
         pageSize: 5,
         name: '',
@@ -179,28 +203,32 @@ function reset() {
     findBySearch();
 }
 function handleSizeChange(pageSize) {
-     params.value.pageSize = pageSize;
+    params.value.pageSize = pageSize;
     findBySearch();
 }
 function handleCurrentChange(pageNum) {
-     params.value.pageNum = pageNum;
+    params.value.pageNum = pageNum;
     findBySearch();
 }
-function searchbyhomework(id, content, illustrate) {
-     workid.value = id;
-     notice.value = illustrate;
+function searchbyhomework(id, content, illustrate, homeworkid) {
     console.log(id);
 
-     params.value.content = content.substring(1, content.length - 1);
-    findbyhomework( params.value).then(res => {
+    workid.value = id;
+    console.log(workid.value);
+    notice.value = illustrate;
+    zuoyeid.value = homeworkid;
+
+
+    params.value.content = content.substring(1, content.length - 1);
+    findbyhomework(params.value).then(res => {
         if (res.code === '0') {
             questiondata.value = res.data.list;
-             total.value = res.data.total;
+            total.value = res.data.total;
 
-             tableVisible.value = false;
-             tableVisible2.value = true;
+            tableVisible.value = false;
+            tableVisible2.value = true;
         } else {
-             window.$message({
+            window.$message({
                 message: res.msg,
                 type: 'error'
             });
@@ -208,24 +236,24 @@ function searchbyhomework(id, content, illustrate) {
     })
 }
 function add() {
-     form.value = { content: '[]' };
-     dialogFormVisible.value = true;
+    form.value = { content: '[]' };
+    dialogFormVisible.value = true;
 }
 function edit(obj) {
-     form.value = obj;
-     dialogFormVisible.value = true;
+    form.value = obj;
+    dialogFormVisible.value = true;
 }
 function submit() {
-    changehomework( form.value).then(res => {
+    changehomework(form.value).then(res => {
         if (res.code === '0') {
-             window.$message({
+            window.$message({
                 message: '操作成功',
                 type: 'success'
             });
-             dialogFormVisible.value = false;
+            dialogFormVisible.value = false;
             findBySearch();
         } else {
-             window.$message({
+            window.$message({
                 message: res.msg,
                 type: 'success'
             });
@@ -235,13 +263,13 @@ function submit() {
 function del(id) {
     deletehomework(id).then(res => {
         if (res.code === '0') {
-             window.$message({
+            window.$message({
                 message: '删除成功',
                 type: 'success'
             });
             findBySearch();
         } else {
-             window.$message({
+            window.$message({
                 message: res.msg,
                 type: 'success'
             });
@@ -253,20 +281,20 @@ function handleSelectionChange(val) {
 }
 function delBatch() {
     if (multipleSelection.value.length === 0) {
-         window.$message.warning("请勾选您要删除的项")
+        window.$message.warning("请勾选您要删除的项")
         return
     }
     delBatchhomework(multipleSelection.value).then(res => {
         if (res.code === '0') {
-             window.$message.success("批量删除成功")
-                findBySearch()
+            window.$message.success("批量删除成功")
+            findBySearch()
         } else {
-             window.$message.error(res.msg)
+            window.$message.error(res.msg)
         }
     })
-} 
+}
 function getRowKeys(row) {
-  return row.id;
+    return row.id;
 }
 </script>
     

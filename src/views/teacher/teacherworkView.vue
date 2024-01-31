@@ -29,7 +29,7 @@
                     <template #default="{ row }">
                         <el-button type="primary" @click="edit(row)">编辑</el-button>
                         <el-button type="primary"
-                            @click="searchbyhomework($index, row.content, row.illustrate)">查看</el-button>
+                            @click="searchbyhomework(tableData.indexOf(row), row.content, row.illustrate, row.homeworkid)">查看</el-button>
                         <el-popconfirm title="确定删除吗？" @confirm="del(row.id)">
                             <template #reference>
                                 <el-button type="danger" style="margin-left: 5px">删除</el-button>
@@ -51,7 +51,7 @@
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-popconfirm title="确定删除吗？" @confirm="delcontent(row.questionid)">
+                        <el-popconfirm title="确定删除吗？" @confirm="delcontent(questiondata.indexOf(row),row.questionid)">
                             <template #reference>
                                 <el-button type="danger" style="margin-left: 5px">删除</el-button>
                             </template>
@@ -110,7 +110,7 @@
     
 <script setup >
 import { ref } from 'vue';
-import { changehomework, delBatchhomework, deletehomework, findbyhomework, findhomeworks, updatehomework } from "@/api/index.js";
+import { changehomework, delBatchhomework, deletehomework, findbyhomework, findhomeworks, updatehomework,updatequestionbank } from "@/api/index.js";
 let params = ref({
     name: '',
     phone: '',
@@ -128,19 +128,23 @@ let multipleSelection = ref([]);
 let dialogFormVisible = ref(false);
 let form = ref({})
 let workid = ref(0);
+let zuoyeid=ref('')
 let notice = ref('')
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 
-function delcontent(id) {
+function delcontent(listid,questionid) {
     console.log(tableData.value)
+    console.log(workid.value)
+    console.log(tableData.value[workid.value])
     let str = tableData.value[workid.value].content;
     let arr = JSON.parse(str);
-    arr.splice(id - 1, 1);
+    console.log(listid)
+    console.log(arr)
+    arr.splice(listid, 1);
     let newStr = JSON.stringify(arr);
     console.log(newStr); // 输出 '[1,3]'
     tableData.value[workid.value].content = newStr;
     form.value = tableData.value[workid.value];
-    console.log(form.value.id)
     updatehomework(form.value).then(res => {
         if (res.code === '0') {
             window.$message({
@@ -156,6 +160,27 @@ function delcontent(id) {
             });
         }
     })
+
+    
+    form.value = {}
+    form.value.questionid = questionid;
+    form.value.homeworkid = zuoyeid.value;
+    updatequestionbank(form.value).then(
+        res => {
+            if (res.code === '0') {
+                this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                });
+
+            } else {
+                this.$message({
+                    message: res.msg,
+                    type: 'success'
+                });
+            }
+        }
+    )
 }
 function findBySearch() {
 
@@ -194,9 +219,10 @@ function handleCurrentChange(pageNum) {
     params.value.pageNum = pageNum;
     findBySearch();
 }
-function searchbyhomework(id, content, illustrate) {
+function searchbyhomework(id, content, illustrate,homeworkid) {
     workid.value = id;
     notice.value = illustrate;
+    zuoyeid.value=homeworkid;
     console.log(id);
     params.value.content = content.substring(1, content.length - 1);
     findbyhomework(params.value
