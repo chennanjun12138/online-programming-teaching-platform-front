@@ -1,25 +1,36 @@
 <template>
     <div>
-
         <div>
             <el-input v-if="tableVisible" v-model="params.name" style="width: 200px" placeholder="请输入作业名"></el-input>
+            <el-input v-if="tableVisible&&props.msg!='B'" v-model="params.teacher" style="width: 200px; margin-left: 5px"
+                placeholder="请输入作业教师"></el-input>
             <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
             <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findBySearch()">返回</el-button>
-            <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
+            <span v-if="tableVisible2" style="margin-left: 20px">题目说明：{{ notice }}</span>
 
+            <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
+            <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
+            <el-popconfirm v-if="tableVisible" title="确定删除这些数据吗？" @confirm="delBatch()">
+                <template #reference>
+                    <el-button type="danger" style="margin-left: 5px">批量删除</el-button>
+                </template>
+            </el-popconfirm>
 
         </div>
         <div>
             <el-table :data="tableData" v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
                 <el-table-column prop="name" label="作业名"></el-table-column>
-                <el-table-column prop="teacher" label="作业教师" width="80px"></el-table-column>
-                <el-table-column prop="starttime" label="开始时间"></el-table-column>
-                <el-table-column prop="endtime" label="结束时间"></el-table-column>
+                <el-table-column prop="teacher" label="作业教师"></el-table-column>
+                <el-table-column prop="starttime" label="开始时间" width="120px"></el-table-column>
+                <el-table-column prop="endtime" label="结束时间" width="120px"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="searchsubmit(row.homeworkid)">查看提交</el-button>
+                        <el-button type="primary" @click="edit(row)">编辑</el-button>
+                        <el-button type="primary"
+                            @click="searchbyhomework(tableData.indexOf(row), row.content, row.illustrate, row.homeworkid)">查看</el-button>
                         <el-popconfirm title="确定删除吗？" @confirm="del(row.homeworkid)">
                             <template #reference>
                                 <el-button type="danger" style="margin-left: 5px">删除</el-button>
@@ -28,16 +39,24 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible2" :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column width="80px" prop="id" label="提交序号"></el-table-column>
+                <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
+                <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
-                <el-table-column prop="studentname" label="提交人"></el-table-column>
-                <el-table-column prop="submittime" label="提交时间"></el-table-column>
-                <el-table-column prop="content" label="提交内容"></el-table-column>
+                <el-table-column prop="name" label="题目名称"></el-table-column>
+                <el-table-column prop="type" label="题目类型"></el-table-column>
+
+                <el-table-column prop="description" label="题目描述"></el-table-column>
+                <el-table-column prop="creator" label="创建者" width="80px"></el-table-column>
+                <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="add($index, row.id)">批改</el-button>
+                        <el-popconfirm title="确定删除吗？" @confirm="delcontent(questiondata.indexOf(row), row.questionid)">
+                            <template #reference>
+                                <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                            </template>
+                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -53,12 +72,29 @@
         <div>
             <el-dialog title="请填写信息" v-model="dialogFormVisible" width="30%">
                 <el-form :model="form">
-                    <el-form-item label="评分" label-width="25%">
-                        <el-input v-model="form.score" style="width: 90%"></el-input>
+
+                    <el-form-item label="作业名" label-width="25%">
+                        <el-input v-model="form.name" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
-                    <el-form-item label="教师评价" label-width="25%">
-                        <el-input v-model="form.teacherevaluate" style="width: 90%" type="textarea"></el-input>
+                    <el-form-item label="作业教师" label-width="25%">
+                        <el-input v-model="form.teacher" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
+                    <el-form-item label="开始时间" label-width="25%">
+                        <el-date-picker v-model="form.starttime" type="date" placeholder="选择日期">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="结束时间" label-width="25%">
+                        <el-date-picker v-model="form.endtime" type="date" placeholder="选择日期">
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="作业说明" label-width="25%">
+                        <el-input type="textarea" v-model="form.illustrate" autocomplete="off"
+                            style="width: 90%"></el-input>
+                    </el-form-item>
+                    <el-form-item label="作业内容" label-width="25%">
+                        <el-input v-model="form.content" autocomplete="off" style="width: 90%"></el-input>
+                    </el-form-item>
+                    <span class="centered-text">请输入题号，形式如[1,2]</span>
                 </el-form>
                 <div class="container">
                     <el-button type="info" @click="dialogFormVisible = false">取 消</el-button>
@@ -69,46 +105,43 @@
     </div>
 </template>
     
-<script setup  >
+<script setup >
 import { ref } from 'vue';
-import {
-    changesubmit,
-    delBatchhomework,
-    deletehomework,
-    findsubmit,
-    findhomeworks,
-    updatehomework,
-} from "@/api/index.js";
+const props = defineProps({
+    msg: String,
+})
+import { changehomework, delBatchhomework, deletehomework, findbyhomework, findhomeworks, updatehomework, updatequestionbank } from "@/api/index.js";
 let params = ref({
     name: '',
     phone: '',
-    teacher: '',
+    author: '',
     pageNum: 1,
     pageSize: 5,
     content: '',
-    homeworkid: 0,
 })
 let total = ref(0);
 let tableData = ref([]);
-let submitdata = ref([]);
+let questiondata = ref([]);
 let tableVisible = ref(true);
 let tableVisible2 = ref(false);
 let multipleSelection = ref([]);
 let dialogFormVisible = ref(false);
 let form = ref({})
 let workid = ref(0);
-let notice = ref('')
+let notice = ref('');
+let zuoyeid = ref('')
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
-function delcontent(id) {
-    console.log(tableData.value)
+
+function delcontent(listid, questionid) {
     let str = tableData.value[workid.value].content;
     let arr = JSON.parse(str);
-    arr.splice(id - 1, 1);
+    //  console.log(listid)
+    //   console.log(arr)
+    arr.splice(listid, 1);
     let newStr = JSON.stringify(arr);
     console.log(newStr); // 输出 '[1,3]'
     tableData.value[workid.value].content = newStr;
     form.value = tableData.value[workid.value];
-    console.log(form.value.id)
     updatehomework(form.value).then(res => {
         if (res.code === '0') {
             window.$message({
@@ -124,10 +157,30 @@ function delcontent(id) {
             });
         }
     })
+    form.value = {}
+    form.value.questionid = questionid;
+    form.value.homeworkid = zuoyeid.value;
+    updatequestionbank(form.value).then(
+        res => {
+            if (res.code === '0') {
+                this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                });
+
+            } else {
+                this.$message({
+                    message: res.msg,
+                    type: 'success'
+                });
+            }
+        }
+    )
 }
 function findBySearch() {
-
-    params.value.teacher = user.value.name;
+    if (props.msg === 'B') {
+        params.value.teacher = user.value.name;
+    }
     findhomeworks(params.value).then(res => {
         if (res.code === '0') {
 
@@ -162,13 +215,21 @@ function handleCurrentChange(pageNum) {
     params.value.pageNum = pageNum;
     findBySearch();
 }
-function searchsubmit(id) {
+function searchbyhomework(id, content, illustrate, homeworkid) {
+    console.log(id);
 
-    params.value.homeworkid = id;
-    findsubmit(params.value).then(res => {
+    workid.value = id;
+    console.log(workid.value);
+    notice.value = illustrate;
+    zuoyeid.value = homeworkid;
+
+
+    params.value.content = content.substring(1, content.length - 1);
+    findbyhomework(params.value).then(res => {
         if (res.code === '0') {
-            submitdata.value = res.data.list;
+            questiondata.value = res.data.list;
             total.value = res.data.total;
+
             tableVisible.value = false;
             tableVisible2.value = true;
         } else {
@@ -179,14 +240,8 @@ function searchsubmit(id) {
         }
     })
 }
-function add(id, submitid) {
-    form.value = {};
-    form.value.id = submitid;
-    if (submitdata.value[id].score != null) {
-        form.value.score = submitdata.value[id].score;
-        form.value.teacherevaluate = submitdata.value[id].teacherevaluate;
-    }
-
+function add() {
+    form.value = { content: '[]' };
     dialogFormVisible.value = true;
 }
 function edit(obj) {
@@ -194,13 +249,14 @@ function edit(obj) {
     dialogFormVisible.value = true;
 }
 function submit() {
-    changesubmit(form.value).then(res => {
+    changehomework(form.value).then(res => {
         if (res.code === '0') {
             window.$message({
                 message: '操作成功',
                 type: 'success'
             });
             dialogFormVisible.value = false;
+            findBySearch();
         } else {
             window.$message({
                 message: res.msg,
@@ -228,7 +284,6 @@ function del(id) {
 function handleSelectionChange(val) {
     multipleSelection.value = val;
 }
-
 function delBatch() {
     if (multipleSelection.value.length === 0) {
         window.$message.warning("请勾选您要删除的项")
@@ -243,16 +298,19 @@ function delBatch() {
         }
     })
 }
-function successUpload(res) {
-    form.value.img = res.data;
-
-}
 function getRowKeys(row) {
     return row.id;
 }
 </script>
     
 <style>
+.centered-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .container {
     display: flex;
     margin-top: 10px;

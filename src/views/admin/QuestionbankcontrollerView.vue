@@ -272,13 +272,6 @@ function del(id, questionid) {
     }
   })
 }
-function successUpload(res) {
-  form.value.img = res.data;
-
-}
-function down(flag) {
-  location.href = 'http://localhost:8080/api/files/' + flag
-}
 function handleSelectionChange(val) {
   multipleSelection.value = val;
   selectedquestionid.value = [];

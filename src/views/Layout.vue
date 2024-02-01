@@ -5,7 +5,7 @@
       <el-aside :style="{ width: aSidewidth }" class="elside">
         <div class="sidehead">
           <img src="@/assets/logo.svg" class="sideimage">
-          <span style="margin-left: 5px;font-size: 24px" v-show="!isCollapse">在线编程教学平台</span>
+          <span style="margin-left: 5px;font-size: 20px" v-show="!isCollapse">在线编程教学平台</span>
         </div>
         <el-menu :default-active="$route.path" router background-color="#001529" text-color="#fff"
           active-text-color="#ffd04b" :collapse="isCollapse" style="border: none">
@@ -51,17 +51,18 @@
             </el-icon>
             <span slot="title">课程管理</span>
           </el-menu-item>
-          <el-menu-item index="/bankteacher" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Setting />
-            </el-icon>
-            <span slot="title">题库管理</span>
-          </el-menu-item>
+        
           <el-menu-item index="/teacherwork" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
               <Setting />
             </el-icon>
             <span slot="title">作业管理</span>
+          </el-menu-item>
+          <el-menu-item index="/bankteacher" v-if="user.role === 'ROLE_TEACHER'">
+            <el-icon>
+              <Setting />
+            </el-icon>
+            <span slot="title">题库管理</span>
           </el-menu-item>
           <el-menu-item index="/homeworkteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
@@ -75,17 +76,25 @@
           </el-menu-item>
 
           <el-menu-item index="/classlearn" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon><Reading /></el-icon><span slot="title">课程学习</span>
+            <el-icon>
+              <Reading />
+            </el-icon><span slot="title">课程学习</span>
           </el-menu-item>
           <el-menu-item index="/question" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon><Collection /></el-icon><span slot="title">编程题库</span>
+            <el-icon>
+              <Collection />
+            </el-icon><span slot="title">编程题库</span>
           </el-menu-item>
           <el-menu-item index="/gradework" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon><Folder /></el-icon>
+            <el-icon>
+              <Folder />
+            </el-icon>
             <span slot="title">作业测试</span>
           </el-menu-item>
           <el-menu-item index="/code" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon><Document /></el-icon><span slot="title">代码情况</span>
+            <el-icon>
+              <Document />
+            </el-icon><span slot="title">代码情况</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -94,11 +103,11 @@
         <!-- 头部区域   -->
         <el-header>
           <el-icon style="width: 26px;" @click="handleCollapse">
-            <Menu />
+            <Menu></Menu>
           </el-icon>
           <el-breadcrumb :separator-icon="ArrowRight" style="margin-left: 20px">
             <el-breadcrumb-item :to="{ path: '/home' }">系统首页</el-breadcrumb-item>
-            <el-breadcrumb-item>{{ display($route.path) }}</el-breadcrumb-item>
+            <el-breadcrumb-item>{{ display }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="headcotent">
             <el-icon style="font-size: 26px" @click="handlefull">
@@ -132,52 +141,27 @@
 
 <script setup>
 import { ref, reactive, computed } from "vue"
-import { Setting, User, ArrowRight, Menu, FullScreen, House,Folder,Collection,Document,Reading,Search,Medal } from "@element-plus/icons-vue"
-import { useRouter, RouterLink } from "vue-router";
+import { Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Document, Reading, Search, Medal } from "@element-plus/icons-vue"
+import { useRouter, RouterLink, useRoute } from "vue-router";
 
 const router = useRouter()
+const route = useRoute()
+console.log(router.getRoutes(), route);
+
 let aSidewidth = ref("200px");
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let isCollapse = ref(false);
-function display(res) {
-  if (res == '/codeteacher') {
-    return '代码查看和评价';
-  }
-  if (res == '/homeworkteacher') {
-    return '作业批改';
-  }
-  if (res === '/home') {
-    return '';
-  }
-  if (res === '/person') {
-    return '个人中心';
-  }
-  if (res === '/class' || res == '/classteacher') {
-    return '课程管理';
-  }
-  if (res === '/user') {
-    return '用户管理';
-  }
-  if (res === '/program' || res === '/bankteacher') {
-    return '题库管理';
-  }
-  if (res === '/classlearn') {
-    return '课程学习';
-  }
-  if (res === '/code') {
-    return '代码情况';
-  }
-  if (res == '/homework' || res == '/teacherwork') {
-    return '作业管理';
-  }
-  if (res == '/question') {
-    return '编程题库';
-  }
-  if (res == '/gradework') {
-    return '作业测试';
-  }
+const display = computed(
+  () => {
+    const current = router.getRoutes().find(r => {
+      return r.path === route.path
+    })
 
-}
+    if(current){
+      return current.meta.name;
+    }
+  }
+)
 function handleCollapse() {
   isCollapse.value = !isCollapse.value
   aSidewidth.value = isCollapse.value ? '64px' : '200px'
@@ -209,8 +193,8 @@ function logout() {
 }
 
 .sideimage {
-  width: 40px;
-  height: 40px
+  width: 35px;
+  height: 35px
 }
 
 .el-menu--inline .el-menu-item {
@@ -286,5 +270,4 @@ function logout() {
   display: flex;
   align-items: center;
   justify-content: flex-end
-}
-</style>
+}</style>

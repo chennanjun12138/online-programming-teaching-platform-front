@@ -56,7 +56,7 @@
                         <el-input v-model="form.type" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
                     <el-form-item label="题目创建者" label-width="25%">
-                        <el-input v-model="form.creator" readonly autocomplete="off" style="width: 90%"></el-input>
+                        <el-input v-model="form.creator"  readonly autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
                     <el-form-item label="题目描述" label-width="25%">
                         <el-input v-model="form.description" autocomplete="off" style="width: 90%"></el-input>
@@ -330,6 +330,7 @@ function getRowKeys(row) {
 <style>
 .container {
     display: flex;
+    margin-top: 10px;
     align-content: center;
     justify-content: center;
 

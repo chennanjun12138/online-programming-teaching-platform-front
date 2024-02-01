@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <el-card class="elcard" shadow="hover">
 
             <el-form label-width="80px" size="default">

@@ -3,15 +3,19 @@
     <div>
       <el-input v-model="params.name" style="width: 200px" placeholder="请输入课程名"></el-input>
       <el-input v-model="params.author" style="width: 200px; margin-left: 5px" placeholder="请输入课程教师"></el-input>
+      <el-select v-model="params.sort" clearable placeholder="请选择课程类型" style="width: 200px;margin-left: 5px">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
       <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
       <el-button type="warning" @click="reset()">清空</el-button>
     </div>
 
     <div>
-      <el-table :data="tableData" style="width: 100%; margin: 15px 0px" :row-key="getRowKeys">
+      <el-table :data="tableData" style="width: 100%; margin: 15px 0px" :row-key="(row)=>row.id ">
         <el-table-column prop="img" label="课程封面">
           <template #default="{ row }">
-            <el-image style="width: 75px; height: 75px;border-radius: 50% "
+            <el-image preview-teleported="true"  style="width: 75px; height: 75px;border-radius: 50% "
               :src="'http://localhost:8080/api/files/' + row.img"
               :preview-src-list="['http://localhost:8080/api/files/' + row.img]">
             </el-image>
@@ -99,6 +103,46 @@ let link = ref({})
 let url = ref('')
 let textarea = ref("")
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+const options = ref([{
+  value: '前端开发',
+  label: '前端开发'
+}, {
+  value: 'Web开发',
+  label: 'Web开发'
+},
+{
+  value: '编程语言',
+  label: '编程语言'
+},
+{
+  value: '后端开发',
+  label: '后端开发'
+},
+{
+  value: '移动应用开发',
+  label: '移动应用开发'
+},
+{
+  value: '人工智能',
+  label: '人工智能'
+},
+{
+  value: '网络安全',
+  label: '网络安全'
+},
+{
+  value: '编程基础',
+  label: '编程基础'
+},
+{
+  value: '云计算和大数据',
+  label: '云计算和大数据'
+},
+{
+  value: '自动化和物联网',
+  label: '自动化和物联网'
+},
+],);
 function searchcourse(id) {
   console.log("clasid:" + id);
   params.value.classid = id;
@@ -202,13 +246,7 @@ function joinlearn(id, author, fileId) {
     query: { classId: id },
   });
 }
-function excelTextChanged(text) {
-  console.log("text", text)
-  textarea.value = text
-}
-function getRowKeys(row) {
-  return row.id;
-}
+  
 </script>
     
 <style>

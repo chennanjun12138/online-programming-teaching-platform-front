@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-login">
+    <div :xl="6" :lg="7" class="bg-register">
         <div class="login-card">
             <div class="title">
                 欢迎注册
@@ -36,7 +36,7 @@ import { Setting, User, Lock, View } from "@element-plus/icons-vue"
 import { ref, reactive, computed } from "vue"
 import { login, register } from "@/api/index.js";
 import { useRouter, RouterLink } from "vue-router";
-import { validate} from '@/utils/validate'
+import { validate } from '@/utils/validate'
 
 const rules = ref({
     name: [{ required: true, message: '请输入用户名', trigger: 'blur' },],
@@ -49,23 +49,23 @@ const router = useRouter()
 const user = ref({});
 
 function Onregister() {
-    validate(formRef.value,()=>{
+    validate(formRef.value, () => {
         register(user.value).then(res => {
-                if (res.code == '0') {
-                    window.$message({
-                        message: '注册成功',
-                        type: 'success'
-                    });
-                    router.push("/login");
-                } else {
-                    window.$message({
-                        message: res.msg,
-                        type: 'error'
-                    });
-                }
-            })
+            if (res.code == '0') {
+                window.$message({
+                    message: '注册成功',
+                    type: 'success'
+                });
+                router.push("/login");
+            } else {
+                window.$message({
+                    message: res.msg,
+                    type: 'error'
+                });
+            }
+        })
     })
-    
+
 
 }
 function navlogin() {
@@ -74,7 +74,7 @@ function navlogin() {
 </script>
 
 <style scoped>
-.bg-login {
+.bg-register {
     width: 100%;
     height: 100%;
     background-image: url("src/assets/image/bg.jpg");
@@ -120,7 +120,7 @@ function navlogin() {
     font-size: 30px;
     font-weight: 500;
     line-height: 100px;
-    color: #574ad0;
+    color: #4a5ed0;
     flex-direction: row;
 }
 

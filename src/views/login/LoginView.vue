@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-login">
+  <div :xl="6" :lg="7" class="bg-login">
     <div class="login-card">
       <div class="title">
         <img src="@/assets/logo.svg" class="image">
@@ -30,13 +30,13 @@ import { Setting, User, Lock, View } from "@element-plus/icons-vue"
 import { ref, reactive, computed } from "vue"
 import { login } from "@/api/index.js";
 import { useRouter, RouterLink } from "vue-router";
-import { validate} from '@/utils/validate'
+import { validate } from '@/utils/validate'
 
 const router = useRouter()
 
 const user = ref({
-     name:'',
-     password:'',
+  name: '',
+  password: '',
 });
 const rules = ref({
   name: [{ required: true, message: '请输入用户名', trigger: 'blur' },],
@@ -44,26 +44,26 @@ const rules = ref({
 })
 const formRef = ref();
 function onLogin() {
-  validate(formRef.value,()=>{
+  validate(formRef.value, () => {
     console.log("进入")
     login(user.value).then(res => {
-        if (res.code == '0') {
-          window.$message({
-            message: '登录成功',
-            type: 'success'
-          });
-          localStorage.setItem("user", JSON.stringify(res.data));
-          router.push("/");
-        } else {
+      if (res.code == '0') {
+        window.$message({
+          message: '登录成功',
+          type: 'success'
+        });
+        localStorage.setItem("user", JSON.stringify(res.data));
+        router.push("/");
+      } else {
 
-          window.$message({
-            type: 'error',
-            message: res.msg,
-          })
-        }
+        window.$message({
+          type: 'error',
+          message: res.msg,
+        })
       }
+    }
     )
-  }) 
+  })
 
 }
 </script>
@@ -122,7 +122,8 @@ function onLogin() {
 .image {
   width: 40px;
   height: 40px;
-
+  align-items: center;
+  justify-content: center;
 }
 
 .form {

@@ -27,7 +27,7 @@
                 <el-table-column prop="phone" label="电话"></el-table-column>
                 <el-table-column prop="role" label="角色">
                     <template #default="{ row }">
-                        {{ display(row.role) }}
+                        {{ maprol[row.role] }}
                     </template>
                 </el-table-column>
                 <el-table-column label="操作">
@@ -103,7 +103,10 @@ const options = ref([{
     value: 'ROLE_TEACHER',
     label: '教师'
 }]);
-
+const maprol={
+     ROLE_STUDENT:'学生',
+     ROLE_TEACHER:'教师'
+}
 function findBySearch() {
     findusers(params.value).then(res => {
         if (res.code === '0') {
@@ -116,14 +119,7 @@ function findBySearch() {
     })
 }
 findBySearch();
-function display(res) {
-    if (res === 'ROLE_STUDENT') {
-        return "学生";
-    }
-    else if (res === 'ROLE_TEACHER') {
-        return "教师";
-    }
-}
+ 
 function reset() {
     params.value = {
         pageNum: 1,
