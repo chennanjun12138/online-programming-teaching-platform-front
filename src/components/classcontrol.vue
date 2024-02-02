@@ -70,8 +70,9 @@
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="insertcontract(row.questionid)">添加</el-button>
-                    </template>
+                          <el-button v-if="isNumberInArray(row.questionid)===1" type="primary" @click="insertcontract(row.questionid)">添加</el-button>
+                          <el-button v-else type="primary" disabled>已添加</el-button>
+                        </template>
                 </el-table-column>
             </el-table>
 
@@ -147,7 +148,7 @@ const props = defineProps({
 
 import {
     changeclass, delBatchclass, deleteclass, findclasss,
-    findcourse, findquestionbanks, submitcourse, addcontract, findquestion, addBatchcontract
+    findcourse, findquestionbanks, submitcourse, addcontract, findquestion, addBatchcontract,judgecontract
 } from "@/api/index.js";
 let params = ref({
     name: '',
@@ -165,6 +166,7 @@ let tableVisible2 = ref(false);
 let classid = ref(0);
 let multipleSelection = ref([]);
 let multiContracts = ref([]);
+let status=ref([]);
 let conteact = ref({
     classid: 0,
     questionid: 0,
@@ -257,6 +259,7 @@ function insertcontract(id) {
                     message: '早已添加',
                     type: 'success'
                 });
+
             }
         } else {
             window.$message({
@@ -264,7 +267,7 @@ function insertcontract(id) {
                 type: 'error'
             });
         }
-    })
+    }) 
 }
 function searchcourse(id) {
     params.value.classid = id;
@@ -286,13 +289,41 @@ function searchcourse(id) {
         }
     })
 }
-
+function isNumberInArray(number) {
+ 
+    if(status.value.includes(number))
+    {
+       
+        return 1;//未添加
+    }
+    else 
+    {   
+         return 0;//已添加
+    }
+ 
+}
 function findquestions(id) {
     classid.value = id;
     findquestionbanks(params.value).then(res => {
         if (res.code === '0') {
             questiondata.value = res.data.list;
             total.value = res.data.total;
+            status.value=[];
+             
+            for(let i=0;i<res.data.total;i++)
+            {
+                form.value = {}
+                form.value.classid = id;
+                form.value.questionid = questiondata.value[i].questionid;
+                judgecontract(form.value).then(res=>
+                { 
+                      if(res.data!==0) 
+                      {  
+                           status.value.push(res.data.toString());
+                      }
+                 }
+                )
+            }
             tableVisible2.value = true;
             tableVisible.value = false;
         } else {

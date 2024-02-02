@@ -31,6 +31,13 @@ export const addcontract = (data)=> {
         data:data
     })
 }
+export const judgecontract = (data)=> {
+    return request({
+        url: '/class/judge',
+        method: 'post',
+        data:data
+    })
+}
 export const addBatchcontract = (data) => {
     return request({
         url: '/class/addBatch',
