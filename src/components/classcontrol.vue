@@ -96,7 +96,11 @@
                     </el-form-item>
 
                     <el-form-item label="课程分类" label-width="25%">
-                        <el-input v-model="form.sort" autocomplete="off" style="width: 90%"></el-input>
+                        <el-select v-model="form.sort" autocomplete="off" style="width: 90%" placeholder="请选择课程类型">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <!-- <el-input v-model="form.sort" autocomplete="off" style="width: 90%"></el-input> -->
                     </el-form-item>
                     <el-form-item label="课程教师" label-width="25%">
                         <el-input v-model="form.author" autocomplete="off" style="width: 90%"></el-input>

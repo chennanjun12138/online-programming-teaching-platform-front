@@ -193,8 +193,8 @@ function logout() {
 }
 
 .sideimage {
-  width: 35px;
-  height: 35px
+  width: 30px;
+  height: 30px
 }
 
 .el-menu--inline .el-menu-item {

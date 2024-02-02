@@ -2,8 +2,8 @@
   <div :xl="6" :lg="7" class="bg-login">
     <div class="login-card">
       <div class="title">
-        <img src="@/assets/logo.svg" class="image">
-        在线编程教学平台
+        <img src="@/assets/logo2.png" class="image">
+         <span>在线编程教学平台</span>
       </div>
       <div class="form">
         <el-form :model="user" ref="formRef" size="default" :rules="rules">
@@ -111,6 +111,8 @@ function onLogin() {
 }
 
 .title {
+  display: flex;
+  align-items: center; /* 垂直居中对齐 */
   margin-bottom: 20px;
   font-size: 30px;
   font-weight: 500;
@@ -120,8 +122,9 @@ function onLogin() {
 }
 
 .image {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
+ 
   align-items: center;
   justify-content: center;
 }

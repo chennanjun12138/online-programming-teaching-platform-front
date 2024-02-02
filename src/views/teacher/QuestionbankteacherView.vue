@@ -64,7 +64,7 @@
                     <el-form-item label="所属作业" label-width="25%">
                         <el-input v-model="form.belongid" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
-                    <span class="centered-text">请输入作业号，形式如[1,2],若无所属作业输入0</span>
+                    <span class="centered-text">请输入作业号，形式如[1,2],若无所属作业输入[]</span>
                 </el-form>
                 <div class="container">
                     <el-button type="info" @click="dialogFormVisible = false">取 消</el-button>

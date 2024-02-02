@@ -7,7 +7,8 @@
                     <el-upload class="avatar-uploader" action="http://localhost:8080/api/files/upload"
                         :show-file-list="false" :on-success="successUpload">
                         <img v-if="user.photo" :src="'http://localhost:8080/api/files/' + user.photo" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                       <!--   <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
+                        <i v-else  class="avatar" style="color: rgb(116, 118, 118);" ><CirclePlus /></i>
                     </el-upload>
                 </div>
                 <el-form-item label="用户名" style="margin-top: 10px; margin-left: 200px; ">
@@ -43,6 +44,7 @@
 <script setup >
 import { ref } from 'vue';
 import { changeuser, delBatchuser, findusers } from "@/api/index.js";
+import { CirclePlus  } from "@element-plus/icons-vue"
 
 let params = ref({
     name: '',
