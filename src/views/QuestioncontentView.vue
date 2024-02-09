@@ -37,7 +37,7 @@
 </template>
     
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,toRaw } from 'vue';
 import { findbyid, findquestion } from "@/api/index.js";
 import * as monaco from "monaco-editor";
 import { useRouter, RouterLink } from "vue-router";

@@ -9,7 +9,7 @@
             <div style="display: flex; align-items: center;">
                 <ul>
                     <li v-for="link in linklist">
-                        <a :href="link">{{ link }}</a>
+                        <a :href="link">{{link }}</a>
                     </li>
                 </ul>
                 <div style="margin-left: auto;">
@@ -26,11 +26,12 @@
                     </el-option>
                 </el-select>
                 <el-button style="margin-left: 5px" type="warning" @click="runCode">运行</el-button>
-
+                
             </el-row>
 
             <div class='monaco-editor'>
             </div>
+            <!-- <MdEditor :value="mdValue" :handle-change="onMdChange" /> -->
 
         </div>
 
@@ -41,9 +42,15 @@
 import { ref, onMounted } from 'vue';
 import { downloadPDF, findcontract } from "@/api/index.js";
 import * as monaco from "monaco-editor";
+import MdEditor from "@/components/MdEditor.vue";
 import { useRouter, RouterLink } from "vue-router";
 const router = useRouter()
-
+const currentUrl = window.location.href;
+const mdValue = ref();
+const onMdChange = (v) => {
+    mdValue.value = v;
+  };
+  
 let url = ref("")
 let form = ref({})
 let linklist = ref([]);
@@ -111,19 +118,23 @@ function showquestion(pagenumber) {
     const iframe = document.getElementById('pdf-iframe');
     if (iframe.contentWindow && iframe.contentWindow.PDFViewerApplication) {
         const pdfViewer = iframe.contentWindow.PDFViewerApplication;
+         
         pdfViewer.pdfDocument.getPage(pagenumber).then(page => {
             page.getTextContent().then(content => {
+                console.log(pagenumber);
                 const textItems = content.items.map(item => item.str);
                 const pageText = textItems.join(' ');
-
-                // 使用正则表达式查找包含 "http://localhost:7000/questioncontent/{数字}" 的字符串
-                const regex = /http:\/\/localhost:7000\/questioncontent\/\d+/g;
+              
+                // 使用正则表达式查找包含 "http://localhost:7100/questioncontent/{数字}" 的字符串
+                const regex = /questioncontent\/\d+/g;
                 const matches = pageText.match(regex);
 
                 // 如果找到匹配的子串
                 if (matches) {
                     console.log(matches);
-                    linklist.value = matches;
+                    const baseUrl = currentUrl.split('/').slice(0, 3).join('/');
+                 
+                   linklist.value=matches.map(match => `${baseUrl}/${match}`);
                 }
             });
         });
