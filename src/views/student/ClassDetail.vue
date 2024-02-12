@@ -5,11 +5,11 @@
             <div style="margin-left: 10px;">
                 <el-button type="warning" @click="goback()">返回</el-button>
             </div>
-             <iframe ref="pdfIframe" @load="handleIframeLoad" id="pdf-iframe" class="ppt" :src="url"></iframe>
+            <iframe ref="pdfIframe" @load="handleIframeLoad" id="pdf-iframe" class="ppt" :src="url"></iframe>
             <div style="display: flex; align-items: center;">
                 <ul>
                     <li v-for="link in linklist">
-                        <a :href="link">{{link }}</a>
+                        <a :href="link">{{ link }}</a>
                     </li>
                 </ul>
                 <div style="margin-left: auto;">
@@ -26,12 +26,11 @@
                     </el-option>
                 </el-select>
                 <el-button style="margin-left: 5px" type="warning" @click="runCode">运行</el-button>
-                
+
             </el-row>
 
             <div class='monaco-editor'>
             </div>
-            <!-- <MdEditor :value="mdValue" :handle-change="onMdChange" /> -->
 
         </div>
 
@@ -49,8 +48,8 @@ const currentUrl = window.location.href;
 const mdValue = ref();
 const onMdChange = (v) => {
     mdValue.value = v;
-  };
-  
+};
+
 let url = ref("")
 let form = ref({})
 let linklist = ref([]);
@@ -97,9 +96,9 @@ const options = ref([
 )
 const pdfIframe = ref(null);
 onMounted(async () => {
-     await loadPDF(router.currentRoute.value.params.fileId)
+    await loadPDF(router.currentRoute.value.params.fileId)
     await pdfIframe.value;
-    await  setupMonacoEditror()
+    await setupMonacoEditror()
 });
 // loadPDF(router.currentRoute.value.params.fileId);
 function handleIframeLoad() {
@@ -118,13 +117,13 @@ function showquestion(pagenumber) {
     const iframe = document.getElementById('pdf-iframe');
     if (iframe.contentWindow && iframe.contentWindow.PDFViewerApplication) {
         const pdfViewer = iframe.contentWindow.PDFViewerApplication;
-         
+
         pdfViewer.pdfDocument.getPage(pagenumber).then(page => {
             page.getTextContent().then(content => {
                 console.log(pagenumber);
                 const textItems = content.items.map(item => item.str);
                 const pageText = textItems.join(' ');
-              
+
                 // 使用正则表达式查找包含 "http://localhost:7100/questioncontent/{数字}" 的字符串
                 const regex = /questioncontent\/\d+/g;
                 const matches = pageText.match(regex);
@@ -133,8 +132,8 @@ function showquestion(pagenumber) {
                 if (matches) {
                     console.log(matches);
                     const baseUrl = currentUrl.split('/').slice(0, 3).join('/');
-                 
-                   linklist.value=matches.map(match => `${baseUrl}/${match}`);
+
+                    linklist.value = matches.map(match => `${baseUrl}/${match}`);
                 }
             });
         });
@@ -154,19 +153,17 @@ function gotoquestion() {
 
             qiddata.value = res.data;
             console.log(qiddata.value);
-            if(qiddata.value.length===0)
-            {
+            if (qiddata.value.length === 0) {
                 window.$message({
-                message: "该课程没有相关题目",
-                type: 'error'
-            });
+                    message: "该课程没有相关题目",
+                    type: 'error'
+                });
             }
-            else
-            {
-                 const randomIndex = Math.floor(Math.random() * qiddata.value.length);
-                  router.push(`/questioncontent/${qiddata.value[randomIndex].questionid}`)
+            else {
+                const randomIndex = Math.floor(Math.random() * qiddata.value.length);
+                router.push(`/questioncontent/${qiddata.value[randomIndex].questionid}`)
             }
-    
+
         } else {
             window.$message({
                 message: res.msg,
@@ -177,10 +174,10 @@ function gotoquestion() {
 
 }
 function loadPDF(fileId) {
-     
+
     downloadPDF(fileId).then((res) => {
-      
-        let opurl= window.URL.createObjectURL(res);
+
+        let opurl = window.URL.createObjectURL(res);
         url.value = '/web/viewer.html?file=' + encodeURIComponent(opurl);
         console.log("最终地址：");
         console.log(url.value);
@@ -259,4 +256,5 @@ function onChangeEditorLang(lang) {
 .ppt-container {
     flex: 1 0 100%;
     position: relative;
-}</style>
+}
+</style>

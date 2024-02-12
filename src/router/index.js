@@ -19,6 +19,7 @@ import homeworkteacherView from "@/views/teacher/HomeworkteacherView.vue";
 import gradeworkView from "@/views/student/gradeworkView.vue";
 import QuestionbankteacherView from "@/views/teacher/QuestionbankteacherView.vue";
 import notfoundVue from '@/views/notfound.vue';
+import codeconrollerViewVue from '@/views/admin/codeconrollerView.vue';
 const router = createRouter({
    
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -91,6 +92,11 @@ const router = createRouter({
           path: 'code',
           meta:{name:"代码情况"},
           name: 'code',component: codeView
+        },
+        {
+          path: 'codeconroller',
+          meta:{name:"代码管理"},
+          name: 'codeconroller',component: codeconrollerViewVue
         },
         {
           path: 'homework',

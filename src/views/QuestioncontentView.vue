@@ -6,16 +6,30 @@
             <p class="uppercase-text">题目名称：{{ Qdata.name }}</p>
             <p class="uppercase-text">题目描述：</p>
             <p class="lowercase-text">{{ questiondata.content }}</p>
-            <p class="lowercase-text">题目条件：{{ questiondata.tiaojian }}</p>
+            <p class="uppercase-text">题目条件:</p>
+            <p class="lowercase-text">时间限制:{{ judgeConfig.timeLimit }}ms&nbsp;&nbsp;
+                内存限制:{{ judgeConfig.memoryLimit }}KB&nbsp;&nbsp;
+                堆栈限制:{{ judgeConfig.stackLimit }}KB
+            </p>
+
+
 
             <p class="uppercase-text">Input:</p>
             <p class="lowercase-text">{{ questiondata.input }}</p>
             <p class="uppercase-text">Output</p>
             <p class="lowercase-text">{{ questiondata.output }}</p>
             <p class="uppercase-text">Sample Input</p>
-            <p class="lowercase-text">{{ questiondata.examplein }}</p>
+            <ul class="lowercase-text">
+                <li v-for="item in JudgeCase" :key="item.input">
+                      {{ item.input }} 
+                </li>
+            </ul>
             <p class="uppercase-text">Sample Output</p>
-            <p class="lowercase-text">{{ questiondata.exampleout }}</p>
+            <ul class="lowercase-text">
+                <li v-for="item in JudgeCase" :key="item.input">
+                      {{ item.output }} 
+                </li>
+            </ul>
         </el-card>
 
         <div style="width:50%">
@@ -37,8 +51,8 @@
 </template>
     
 <script setup>
-import { ref, onMounted,toRaw } from 'vue';
-import { findbyid, findquestion } from "@/api/index.js";
+import { ref, onMounted, toRaw } from 'vue';
+import { findbyid, findquestion, submitcode } from "@/api/index.js";
 import * as monaco from "monaco-editor";
 import { useRouter, RouterLink } from "vue-router";
 let router = useRouter()
@@ -53,8 +67,17 @@ let params = ref({
 })
 
 let questiondata = ref([]);
- let Qdata = ref([]);
+let judgeConfig = ref({
+    timeLimit: "",
+    memoryLimit: "",
+    stackLimit: "",
+})
+let JudgeCase = ref([])
+let Qdata = ref([]);
 let language = ref("c");
+const codemonaco = ref();
+const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+let submitcontent = ref({});
 let options = ref([
     {
         value: 'java',
@@ -97,14 +120,46 @@ findBySearch();
 onMounted(async () => {
     await setupMonacoEditror();
 });
+function runCode() {
+    submitcontent.value.userid = user.value.id;
+    submitcontent.value.questionid = router.currentRoute.value.params.questionid;
+    submitcontent.value.language = language.value;
+    submitcontent.value.code = toRaw(codemonaco.value).getValue();
+    submitcontent.value.status = 0;
+    console.log(toRaw(codemonaco.value).getValue());
+    submitcode(submitcontent.value).then(
+        res => {
+            if (res.code === '0') {
+                window.$message({
+                    message: res.msg,
+                    type: 'success'
+                });
+
+            } else {
+                window.$message({
+                    message: res.msg,
+                    type: 'error'
+                });
+            }
+        }
+    )
+}
 function findBySearch() {
     params.value.questionid = router.currentRoute.value.params.questionid;
     // console.log(params.value.questionid);
     findquestion(params.value).then(res => {
         if (res.code === '0') {
-           questiondata.value = res.data;
-             console.log("题目数据");
-            console.log(res.data);
+            questiondata.value = res.data;
+            let str = questiondata.value.judgeConfig;
+            // 将字符串转换为JSON对象
+            const json = JSON.parse(str);
+            judgeConfig.value = json;
+            let str2 = questiondata.value.judgeCase;
+            // 将字符串转换为JSON对象
+            console.log(str2);
+            const json2 = JSON.parse(str2);
+            JudgeCase.value = json2;
+            console.log(JudgeCase);
         } else {
             window.$message({
                 message: res.msg,
@@ -127,9 +182,9 @@ function findBySearch() {
     })
 }
 
-function  setupMonacoEditror() {
+function setupMonacoEditror() {
     const container = document.querySelector('.monaco-editor')
-    const monacoInstance = monaco.editor.create(container, {
+    codemonaco.value = monaco.editor.create(container, {
         value: '',
         language: language.value,
         lineNumbers: 'on',
@@ -138,25 +193,17 @@ function  setupMonacoEditror() {
             enabled: false
         }
     })
-    monaco = monacoInstance
+    monaco = codemonaco.value
 }
 function onChangeEditorLang(lang) {
-    monaco.updateOptions({
-        language: lang
-    })
+    // monaco.updateOptions({
+    //     language: lang
+    // })
     // 获取编辑器的值
-    // console.log({
-    //     language: language.value,
-    //     code: monaco.getValue()
-    // });
-}
-function handleSizeChange(pageSize) {
-    params.value.pageSize = pageSize;
-    findBySearch();
-}
-function handleCurrentChange(pageNum) {
-    params.value.pageNum = pageNum;
-    findBySearch();
+    console.log({
+        language: language.value,
+        code: toRaw(codemonaco.value).getValue()
+    });
 }
 
 

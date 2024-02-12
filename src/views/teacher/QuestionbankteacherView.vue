@@ -23,7 +23,7 @@
                 <el-table-column prop="creator" label="创建者" width="80px"></el-table-column>
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
-                    <template #default="{ row }" >
+                    <template #default="{ row }">
                         <el-button type="primary" @click="edit(row)">编辑</el-button>
                         <el-button slot="reference" type="primary" @click="show(row.questionid)">查看</el-button>
                         <el-popconfirm v-if="row.creator === user.name.toString()" title="确定删除吗？"
@@ -56,7 +56,7 @@
                         <el-input v-model="form.type" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
                     <el-form-item label="题目创建者" label-width="25%">
-                        <el-input v-model="form.creator"  readonly autocomplete="off" style="width: 90%"></el-input>
+                        <el-input v-model="form.creator" readonly autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
                     <el-form-item label="题目描述" label-width="25%">
                         <el-input v-model="form.description" autocomplete="off" style="width: 90%"></el-input>
@@ -78,7 +78,16 @@
                         <el-input v-model="form.content" autocomplete="off" style="width: 90%" type="textarea"></el-input>
                     </el-form-item>
                     <el-form-item label="题目条件" label-width="25%">
-                        <el-input v-model="form.tiaojian" autocomplete="off" style="width: 90%"></el-input>
+                        <label>时间限制:</label>
+                        <el-input v-model="judgeConfig.timeLimit" autocomplete="off" style="width: 15%"></el-input>
+
+                        <label>内存限制:</label>
+                        <el-input v-model="judgeConfig.memoryLimit" autocomplete="off" style="width: 15%"></el-input>
+
+                        <label>堆栈限制:</label>
+                        <el-input v-model="judgeConfig.stackLimit" autocomplete="off" style="width:15%"></el-input>
+                        <span class="centered-text">时间限制单位为ms,内存和堆栈限制单位为KB</span>
+
                     </el-form-item>
                     <el-form-item label="输入要求" label-width="25%">
                         <el-input v-model="form.input" autocomplete="off" style="width: 90%" type="textarea"></el-input>
@@ -86,12 +95,20 @@
                     <el-form-item label="输出要求" label-width="25%">
                         <el-input v-model="form.output" autocomplete="off" style="width: 90%" type="textarea"></el-input>
                     </el-form-item>
-                    <el-form-item label="输入样例" label-width="25%">
-                        <el-input v-model="form.examplein" autocomplete="off" style="width: 90%" type="textarea"></el-input>
-                    </el-form-item>
-                    <el-form-item label="输出样例" label-width="25%">
-                        <el-input v-model="form.exampleout" autocomplete="off" style="width: 90%"
-                            type="textarea"></el-input>
+                    <el-form-item v-for="(judgeCaseItem, index) of JudgeCase" :key="index">
+                        <el-space direction="vertical" style="min-width: 640px">
+                            <el-form-item :prop="`form.judgeCase[${index}].input`" :label="`输入用例-${index}`" :key="index">
+                                <el-input v-model="judgeCaseItem.input" placeholder="请输入测试输入用例"></el-input>
+                            </el-form-item>
+                            <el-form-item :prop="`form.judgeCase[${index}].output`" :label="`输出用例-${index}`" :key="index">
+                                <el-input v-model="judgeCaseItem.output" placeholder="请输入测试输出用例"></el-input>
+                            </el-form-item>
+                            <el-row>
+                                <el-button type="danger" @click="handleDelete(index)">删除</el-button>
+                                <el-button @click="handleAdd" type="primary">新增测试用例</el-button>
+                            </el-row>
+
+                        </el-space>
                     </el-form-item>
                 </el-form>
                 <div class="container">
@@ -133,6 +150,12 @@ let selectedquestionid = ref([]);
 let form = ref({})
 let list = ref({})
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+let judgeConfig = ref({
+    timeLimit: "",
+    memoryLimit: "",
+    stackLimit: "",
+})
+let JudgeCase = ref([])
 function findBySearch() {
     findquestionbanks(params.value).then(res => {
         if (res.code === '0') {
@@ -147,6 +170,16 @@ function findBySearch() {
     })
 }
 findBySearch();
+function handleAdd() {
+  JudgeCase.value.push({
+    input: "",
+    output: "",
+  });
+
+}
+const handleDelete = (index) => {
+  JudgeCase.value.splice(index, 1);
+};
 function reset() {
     params.value = {
         pageNum: 1,
@@ -181,7 +214,24 @@ function show(id) {
     params.value.questionid = id;
     findquestion(params.value).then(res => {
         if (res.code === '0') {
+            JudgeCase.value = []
             form.value = res.data;
+            let str = form.value.judgeConfig;
+            // 将字符串转换为JSON对象
+            const json = JSON.parse(str);
+            judgeConfig.value = json;
+            let str2 = form.value.judgeCase;
+
+            if (str2 == "[]") {
+                JudgeCase.value.push({
+                    input: "",
+                    output: "",
+                });
+            }
+            else {
+                let json2 = JSON.parse(str2);
+                JudgeCase.value = json2;
+            }
             contentVisible.value = true;
         } else {
             window.$message({
@@ -228,6 +278,11 @@ function submit() {
 
 }
 function savecontent() {
+    const jsonString = JSON.stringify(judgeConfig.value);
+
+    form.value.judgeConfig = jsonString.toString();
+    const jsonString2 = JSON.stringify(JudgeCase.value);
+    form.value.judgeCase = jsonString2.toString();
     changequestion(form.value).then(res => {
         if (res.code === '0') {
             window.$message({

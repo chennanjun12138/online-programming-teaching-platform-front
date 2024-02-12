@@ -89,3 +89,18 @@ export const delBatchquestion = (data) => {
         data:data
     })
 }
+export const submitcode = (data) => {
+     
+    return request({
+        url: '/question_submit/submit',
+        method: 'post',
+        data:data
+    })
+}
+export const searchcode = (data) => {
+    return request({
+        url: '/question_submit/search',
+        method: 'get',
+        params:data
+    })
+}

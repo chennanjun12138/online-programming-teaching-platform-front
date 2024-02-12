@@ -39,6 +39,12 @@
             </el-icon>
             <span slot="title">题库管理</span>
           </el-menu-item>
+          <el-menu-item index="/codeconroller" v-if="user.role === 'ROLE_ADMIN'">
+            <el-icon>
+              <Setting />
+            </el-icon>
+            <span slot="title">代码管理</span>
+          </el-menu-item>
           <el-menu-item index="/user" v-if="user.role === 'ROLE_ADMIN'">
             <el-icon>
               <Setting />
