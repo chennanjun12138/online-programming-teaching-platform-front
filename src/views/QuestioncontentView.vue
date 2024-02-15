@@ -21,13 +21,13 @@
             <p class="uppercase-text">Sample Input</p>
             <ul class="lowercase-text">
                 <li v-for="item in JudgeCase" :key="item.input">
-                      {{ item.input }} 
+                    {{ item.input }}
                 </li>
             </ul>
             <p class="uppercase-text">Sample Output</p>
             <ul class="lowercase-text">
                 <li v-for="item in JudgeCase" :key="item.input">
-                      {{ item.output }} 
+                    {{ item.output }}
                 </li>
             </ul>
         </el-card>
@@ -35,7 +35,7 @@
         <div style="width:50%">
             <el-row>
                 编程语言：
-                <el-select @change="onChangeEditorLang" v-model="language" placeholder="请选择" style="width: 200px;">
+                <el-select @change="onChangeEditorLang()" v-model="language" placeholder="请选择" style="width: 200px;">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
@@ -195,10 +195,10 @@ function setupMonacoEditror() {
     })
     monaco = codemonaco.value
 }
-function onChangeEditorLang(lang) {
-    // monaco.updateOptions({
-    //     language: lang
-    // })
+function onChangeEditorLang() {
+    // var model = monaco.editor.getModel(); // 获取当前编辑器的模型
+     monaco.editor.setModelLanguage( toRaw(codemonaco.value).getModel(), language.value); // 设置模型的语言
+    // console.log(codemonaco.value.language)
     // 获取编辑器的值
     console.log({
         language: language.value,

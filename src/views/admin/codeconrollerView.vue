@@ -23,9 +23,14 @@
                 <el-table-column prop="createTime" label="提交时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button slot="reference" type="primary" @click="">查看</el-button>
-                        <el-button type="primary" @click="show">评价</el-button>
+                        <el-button slot="reference" type="primary" @click="show">查看</el-button>
+                        <el-button type="primary" @click="evaluate">评价</el-button>
 
+                        <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
+                            <template #reference>
+                                <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                            </template>
+                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -46,7 +51,7 @@
                 </div>
             </el-dialog>
             <el-dialog title="请填写评价" v-model="contentVisible" width="30%">
-                
+
             </el-dialog>
         </div>
     </div>
@@ -62,7 +67,7 @@ import MdEditor from "@/components/MdEditor.vue";
 const mdValue = ref('');
 const onMdChange = (v) => {
     mdValue.value = v;
-  };
+};
 let params = ref({
     name: '',
     phone: '',
@@ -75,9 +80,10 @@ let tableData = ref([]);
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let dialogFormVisible = ref(false);
 let contentVisible = ref(false);
-function show()
-{
-    dialogFormVisible.value=true;
+function evaluate() {
+    dialogFormVisible.value = true;
+}
+function show() {
 }
 function findBySearch() {
     searchcode(params.value).then(res => {
@@ -106,13 +112,13 @@ function handleCurrentChange(pageNum) {
     findBySearch();
 }
 function reset() {
-  params.value = {
-    pageNum: 1,
-    pageSize: 5,
-    name: '',
-    phone: ''
-  }
-  findBySearch();
+    params.value = {
+        pageNum: 1,
+        pageSize: 5,
+        name: '',
+        phone: ''
+    }
+    findBySearch();
 }
 </script>
     
