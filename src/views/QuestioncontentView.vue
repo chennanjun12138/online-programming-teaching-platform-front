@@ -32,7 +32,7 @@
             </ul>
         </el-card>
 
-        <div style="width:50%">
+        <div style="width:60%">
             <el-row>
                 编程语言：
                 <el-select @change="onChangeEditorLang()" v-model="language" placeholder="请选择" style="width: 200px;">
@@ -74,7 +74,7 @@ let judgeConfig = ref({
 })
 let JudgeCase = ref([])
 let Qdata = ref([]);
-let language = ref("c");
+let language = ref("java");
 const codemonaco = ref();
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let submitcontent = ref({});
@@ -131,7 +131,7 @@ function runCode() {
         res => {
             if (res.code === '0') {
                 window.$message({
-                    message: res.msg,
+                    message: "提交成功",
                     type: 'success'
                 });
 

@@ -13,7 +13,7 @@
         <div>
             <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column prop="id" label="提交id" width="80px"></el-table-column>
+                <!-- <el-table-column prop="id" label="提交id" width="80px"></el-table-column> -->
 
                 <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
@@ -23,9 +23,10 @@
                 <el-table-column prop="createTime" label="提交时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button slot="reference" type="primary" @click="">查看</el-button>
-                        <el-button type="primary" @click="show">评价</el-button>
+                        <el-button slot="reference" type="primary" @click="show(tableData.indexOf(row))">查看</el-button>
+                        <el-button type="primary" @click="evaluate(row.id)">评价</el-button>
 
+                    
                     </template>
                 </el-table-column>
             </el-table>
@@ -45,8 +46,17 @@
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
-            <el-dialog title="请填写评价" v-model="contentVisible" width="30%">
-                
+            <el-dialog title="查看信息" v-model="contentVisible" width="60%">
+                <div class='monaco-editor'>
+                    <pre style="white-space: pre-wrap;">
+                        {{ codecontent }}
+                    </pre>
+                </div>
+                <el-table :data="evaluateData" style="width: 100%; margin: 15px 0px" ref="table"
+                    @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                    <el-table-column prop="content" label="评价内容"></el-table-column>
+                    <el-table-column prop="teachername" label="评价者" width="80px"></el-table-column>
+                </el-table>
             </el-dialog>
         </div>
     </div>
@@ -55,14 +65,17 @@
 <script setup  >
 import { ref } from 'vue';
 import {
-    searchcode
+    searchcode, deletequestionsubmit, addevaluate, findevaluate,findteachers,getsubmitbyteachers
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
+import * as monaco from "monaco-editor";
+
 const mdValue = ref('');
+const codemonaco = ref();
 const onMdChange = (v) => {
     mdValue.value = v;
-  };
+};
 let params = ref({
     name: '',
     phone: '',
@@ -75,12 +88,62 @@ let tableData = ref([]);
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let dialogFormVisible = ref(false);
 let contentVisible = ref(false);
-function show()
-{
-    dialogFormVisible.value=true;
+let codecontent = ref("");
+let form = ref({});
+let submitid = ref(0);
+let evaluateData = ref([]);
+function evaluate(id) {
+    dialogFormVisible.value = true;
+    submitid.value = id;
+}
+function show(id) {
+    contentVisible.value = true;
+    codecontent.value = tableData.value[id].code;
+    params.value.question_submitid=tableData.value[id].id;
+    findevaluate(params.value).then(res => {
+        if (res.code === '0') {
+            evaluateData.value=res.data;
+            console.log(res.data);
+            console.log(evaluateData.value);
+        }
+        else {
+            window.$message({
+                message: res.msg,
+                type: 'error'
+            });
+        }
+    })
+}
+function submit() {
+    form.value.question_submitid = submitid.value;
+    form.value.teacherid = user.value.id;
+    form.value.teachername = user.value.name;
+    form.value.content = mdValue.value;
+    mdValue.value='';
+    console.log( form.value) 
+    addevaluate(form.value).then(
+        res => {
+            if (res.code === '0') {
+                window.$message({
+                    message: '操作成功',
+                    type: 'success'
+                });
+                dialogFormVisible.value=false;
+            }
+            else {
+                window.$message({
+                    message: res.msg,
+                    type: 'error'
+                });
+            }
+
+        }
+    )
+
 }
 function findBySearch() {
-    searchcode(params.value).then(res => {
+    params.value.userid=user.value.id;
+    getsubmitbyteachers(params.value).then(res => {
         if (res.code === '0') {
             tableData.value = res.data.list;
             total.value = res.data.total;
@@ -88,6 +151,7 @@ function findBySearch() {
                 console.log(tableData.value[i].createTime);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
             }
+            console.log(tableData.value);
         } else {
             window.$message({
                 message: res.msg,
@@ -95,6 +159,19 @@ function findBySearch() {
             });
         }
     })
+}
+function del(id) {
+    deletequestionsubmit(id).then(res => {
+        if (res.code === '0') {
+            findBySearch();
+        } else {
+            window.$message({
+                message: res.msg,
+                type: 'success'
+            });
+        }
+    })
+
 }
 findBySearch();
 function handleSizeChange(pageSize) {
@@ -106,14 +183,21 @@ function handleCurrentChange(pageNum) {
     findBySearch();
 }
 function reset() {
-  params.value = {
-    pageNum: 1,
-    pageSize: 5,
-    name: '',
-    phone: ''
-  }
-  findBySearch();
+    params.value = {
+        pageNum: 1,
+        pageSize: 5,
+        name: '',
+        phone: ''
+    }
+    findBySearch();
 }
 </script>
     
-<style></style>
+<style>
+.monaco-editor {
+    width: 100%;
+    height: 50%;
+    margin-top: 5px;
+    background-color:black;
+}
+</style>

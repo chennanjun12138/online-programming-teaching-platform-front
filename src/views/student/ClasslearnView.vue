@@ -223,10 +223,12 @@ function down(flag) {
   location.href = 'http://localhost:8080/api/files/' + flag
 }
 function joinlearn(id, author, fileId) {
-  link.value.teacherid = id.toString();
+  
+  link.value.classid = id.toString();
   link.value.teachername = author;
   link.value.studentid = user.value.id.toString();
   link.value.studentname = user.value.name;
+  link.value.teacherid=user.value.id;
   addconnect(link.value).then(res => {
     if (res.code === '0') {
       window.$message({

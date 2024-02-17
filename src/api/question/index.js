@@ -68,6 +68,12 @@ export const deletequestionbank= (id) => {
         method: 'delete',
     })
 }
+export const deletequestionsubmit= (id) => {
+    return request({
+        url: '/question_submit/' + id,
+        method: 'delete',
+    })
+}
 export const deletequestion= (id) => {
     return request({
         url: '/question/' + id,
@@ -102,5 +108,27 @@ export const searchcode = (data) => {
         url: '/question_submit/search',
         method: 'get',
         params:data
+    })
+}
+
+export const findevaluate = (data) => {
+    return request({
+        url: '/question_submit/getevaluate',
+        method: 'get',
+        params:data
+    })
+}
+export const getsubmitbyteachers = (data) => {
+    return request({
+        url: '/question_submit/getsubmitbyteachers',
+        method: 'get',
+        params:data
+    })
+}
+export const addevaluate = (data)=> {
+    return request({
+        url: '/question_submit/addevaluate',
+        method: 'post',
+        data:data
     })
 }
