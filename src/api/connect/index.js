@@ -14,3 +14,18 @@ export const findteachers = (data)=> {
         params:data
     })
 }
+export const findconnects = (data)=> {
+    return request({
+        url: '/connect/search',
+        method: 'get',
+        params:data
+    })
+}
+export const deleteconnect = (id) => {
+    return request({
+        url: '/connect/' + id,
+        method: 'delete',
+    })
+}
+
+ 

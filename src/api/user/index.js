@@ -51,3 +51,19 @@ export const delBatchuser = (data) => {
         data:data
     })
 }
+
+export const findByid = (id) => {
+    return request({
+        url: '/user/' + id,
+        method: 'get',
+       
+    })
+}
+
+export const findByname = (name) => {
+    return request({
+        url: '/user/' + name,
+        method: 'get',
+       
+    })
+}

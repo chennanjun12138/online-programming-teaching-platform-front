@@ -4,7 +4,10 @@
         <div>
             <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
             <el-input v-model="params.userid" style="width: 200px; margin-left: 5px" placeholder="请输入提交者id"></el-input>
-
+            <el-select v-model="params.language" clearable placeholder="请选择编程语言" style="margin-left: 5px; width: 200px;">
+                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
             <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
 
@@ -26,7 +29,7 @@
                         <el-button slot="reference" type="primary" @click="show(tableData.indexOf(row))">查看</el-button>
                         <el-button type="primary" @click="evaluate(row.id)">评价</el-button>
 
-                    
+
                     </template>
                 </el-table-column>
             </el-table>
@@ -65,7 +68,7 @@
 <script setup  >
 import { ref } from 'vue';
 import {
-    searchcode, deletequestionsubmit, addevaluate, findevaluate,findteachers,getsubmitbyteachers
+    searchcode, deletequestionsubmit, addevaluate, findevaluate, findteachers, getsubmitbyteachers
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
@@ -83,6 +86,45 @@ let params = ref({
     pageNum: 1,
     pageSize: 5
 })
+
+let options = ref([
+    {
+        value: 'java',
+        label: 'Java'
+    },
+    {
+        value: 'c',
+        label: 'C'
+    },
+    {
+        value: 'javascript',
+        label: 'Javascript'
+    },
+    {
+        value: 'html',
+        label: 'Html'
+    },
+    {
+        value: 'json',
+        label: 'Json'
+    },
+    {
+        value: 'markdown',
+        label: 'Markdown'
+    },
+    {
+        value: 'sql',
+        label: 'Sql'
+    },
+    {
+        value: 'python',
+        label: 'Python'
+    },
+    {
+        value: 'xml',
+        label: 'xml'
+    },
+])
 let total = ref(0);
 let tableData = ref([]);
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
@@ -99,10 +141,10 @@ function evaluate(id) {
 function show(id) {
     contentVisible.value = true;
     codecontent.value = tableData.value[id].code;
-    params.value.question_submitid=tableData.value[id].id;
+    params.value.question_submitid = tableData.value[id].id;
     findevaluate(params.value).then(res => {
         if (res.code === '0') {
-            evaluateData.value=res.data;
+            evaluateData.value = res.data;
             console.log(res.data);
             console.log(evaluateData.value);
         }
@@ -114,13 +156,27 @@ function show(id) {
         }
     })
 }
+function display(status) {
+    if (status === 0) {
+        return "等待中";
+    }
+    else if (status === 1) {
+        return "判题中";
+    }
+    else if (status === 2) {
+        return "判题成功";
+    }
+    else if (status === 3) {
+        return "判题失败";
+    }
+}
 function submit() {
     form.value.question_submitid = submitid.value;
     form.value.teacherid = user.value.id;
     form.value.teachername = user.value.name;
     form.value.content = mdValue.value;
-    mdValue.value='';
-    console.log( form.value) 
+    mdValue.value = '';
+    console.log(form.value)
     addevaluate(form.value).then(
         res => {
             if (res.code === '0') {
@@ -128,7 +184,7 @@ function submit() {
                     message: '操作成功',
                     type: 'success'
                 });
-                dialogFormVisible.value=false;
+                dialogFormVisible.value = false;
             }
             else {
                 window.$message({
@@ -142,13 +198,13 @@ function submit() {
 
 }
 function findBySearch() {
-    params.value.userid=user.value.id;
+    params.value.teacherid = user.value.id;
     getsubmitbyteachers(params.value).then(res => {
         if (res.code === '0') {
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
-                console.log(tableData.value[i].createTime);
+                tableData.value[i].status=display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
             }
             console.log(tableData.value);
@@ -198,6 +254,6 @@ function reset() {
     width: 100%;
     height: 50%;
     margin-top: 5px;
-    background-color:black;
+    background-color: black;
 }
 </style>

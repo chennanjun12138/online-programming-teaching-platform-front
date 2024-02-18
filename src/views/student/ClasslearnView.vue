@@ -228,7 +228,7 @@ function joinlearn(id, author, fileId) {
   link.value.teachername = author;
   link.value.studentid = user.value.id.toString();
   link.value.studentname = user.value.name;
-  link.value.teacherid=user.value.id;
+  
   addconnect(link.value).then(res => {
     if (res.code === '0') {
       window.$message({

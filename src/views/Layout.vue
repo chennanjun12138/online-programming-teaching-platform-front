@@ -51,6 +51,12 @@
             </el-icon>
             <span slot="title">用户管理</span>
           </el-menu-item>
+          <el-menu-item index="/connectcontroller" v-if="user.role === 'ROLE_ADMIN'">
+            <el-icon>
+              <Setting />
+            </el-icon>
+            <span slot="title">师生关系管理</span>
+          </el-menu-item>
           <el-menu-item index="/classteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
               <Reading />
@@ -70,6 +76,12 @@
             </el-icon>
             <span slot="title">题库管理</span>
           </el-menu-item>
+          <el-menu-item index="/connectteacher" v-if="user.role === 'ROLE_TEACHER'">
+            <el-icon>
+              <Setting />
+            </el-icon>
+            <span slot="title">师生关系管理</span>
+          </el-menu-item>
           <el-menu-item index="/homeworkteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
               <Medal />
@@ -80,7 +92,7 @@
               <Search />
             </el-icon><span slot="title">代码查看和评价</span>
           </el-menu-item>
-
+          
           <el-menu-item index="/classlearn" v-if="user.role === 'ROLE_STUDENT'">
             <el-icon>
               <Reading />
@@ -101,6 +113,11 @@
             <el-icon>
               <Document />
             </el-icon><span slot="title">代码情况</span>
+          </el-menu-item>
+          <el-menu-item index="/connectstudent" v-if="user.role === 'ROLE_STUDENT'">
+            <el-icon>
+              <Connection />
+            </el-icon><span slot="title">师生关系</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -147,7 +164,7 @@
 
 <script setup>
 import { ref, reactive, computed } from "vue"
-import { Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Document, Reading, Search, Medal } from "@element-plus/icons-vue"
+import {Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Document, Reading, Search, Medal } from "@element-plus/icons-vue"
 import { useRouter, RouterLink, useRoute } from "vue-router";
 
 const router = useRouter()

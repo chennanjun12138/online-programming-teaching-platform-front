@@ -9,6 +9,13 @@ export const findclasss = (data)=> {
         params:data
     })
 }
+export const findclassall = (data)=> {
+    return request({
+        url: '/class/findall',
+        method: 'get',
+        params:data
+    })
+}
 export const findcourse = (data)=> {
     return request({
         url: '/class/getcourse',
