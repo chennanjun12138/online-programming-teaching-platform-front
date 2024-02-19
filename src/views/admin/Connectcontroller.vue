@@ -19,7 +19,7 @@
                 <el-table-column prop="studentname" label="学生名"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
- 
+
                         <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
                             <template #reference>
                                 <el-button type="danger" style="margin-left: 5px">删除</el-button>
@@ -39,21 +39,16 @@
             <el-dialog title="请填写信息" v-model="dialogFormVisible" width="40%">
                 <el-form :model="form">
                     <el-form-item label="课程id" label-width="15%">
-                        <el-input v-model="form.classid" autocomplete="off" style="width: 90%"></el-input>
+                        <el-select v-model="form.classid" clearable placeholder="请选择课程" style="width: 90%">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
-                    <el-form-item label="教师id" label-width="15%">
-                        <el-input v-model="form.teacherid" autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
-                    <el-form-item label="教师名" label-width="15%">
-                        <el-input v-model="form.teachername" autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
-                    <el-form-item label="学生id" label-width="15%">
-                        <el-input v-model="form.studentid" autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
+
                     <el-form-item label="学生名" label-width="15%">
                         <el-input v-model="form.studentname" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
-                    
+
                 </el-form>
                 <div class="container">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -66,7 +61,7 @@
     
 <script setup>
 import { ref } from 'vue';
-import { findconnects,deleteconnect,addconnect } from "@/api/index.js";
+import { findconnects, deleteconnect, addconnect, findclassall, findByname } from "@/api/index.js";
 
 let params = ref({
     name: '',
@@ -79,6 +74,9 @@ let total = ref(0);
 let tableData = ref([]);
 let dialogFormVisible = ref(false);
 let form = ref({})
+let options = ref([])
+let ans = ref({})
+let classes = ref([])
 function findBySearch() {
     findconnects(params.value).then(res => {
         if (res.code === '0') {
@@ -88,6 +86,27 @@ function findBySearch() {
 
         }
     })
+    findclassall(params.value).then(res => {
+        options.value = []
+        if (res.code === '0') {
+
+            for (let i = 0; i < res.data.length; i++) {
+                ans.value = {
+                    value: res.data[i].id,
+                    label: "课程号" + res.data[i].id
+                }
+                options.value.push(ans.value);
+
+            }
+            classes.value = res.data;
+        } else {
+            window.$message({
+                message: res.msg,
+                type: 'error'
+            });
+        }
+    })
+
 }
 findBySearch();
 function reset() {
@@ -112,23 +131,45 @@ function add() {
     form.value = {};
     dialogFormVisible.value = true;
 }
- 
+
 function submit() {
-    addconnect(form.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            dialogFormVisible.value = false;
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
+    for (let i = 0; i < classes.value.length; i++) {
+        if (form.value.classid === classes.value[i].id) {
+            form.value.teachername = classes.value[i].author;
+            findByname(form.value.teachername).then(
+                res => {
+                    if (res.code === '0') {
+                        form.value.teacherid = res.data.id;
+                    }
+                }
+            )
         }
-    })
+    }
+    findByname(form.value.studentname).then(
+        res => {
+            if (res.code === '0') {
+                form.value.studentid = res.data.id.toString();
+                console.log(form.value.studentid);
+                addconnect(form.value).then(res => {
+                    if (res.code === '0') {
+                        window.$message({
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                        dialogFormVisible.value = false;
+                        findBySearch();
+                    } else {
+                        window.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
+                    }
+                })
+            }
+        }
+    )
+
+
 }
 function getRowKeys(row) {
     return row.id;

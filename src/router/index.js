@@ -138,17 +138,17 @@ const router = createRouter({
         },
         {
           path: 'connectcontroller',
-          meta:{name:"师生关系管理"},
+          meta:{name:"课程关系管理"},
           name: 'connectcontroller',component: ConnectcontrollerVue
         },
         {
           path: 'connectteacher',
-          meta:{name:"师生关系管理"},
+          meta:{name:"课程关系管理"},
           name: 'connectteacher',component: ConnectteacherVue
         },
         {
           path: 'connectstudent',
-          meta:{name:"师生关系"},
+          meta:{name:"课程关系"},
           name: 'connectstudent',component: ConnectstudentVue
         },
       ]

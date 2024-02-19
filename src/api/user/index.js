@@ -62,7 +62,7 @@ export const findByid = (id) => {
 
 export const findByname = (name) => {
     return request({
-        url: '/user/' + name,
+        url: '/user/name/' + name,
         method: 'get',
        
     })

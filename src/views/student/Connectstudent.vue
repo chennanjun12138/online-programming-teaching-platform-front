@@ -3,7 +3,7 @@
 
         <div>
             <el-input v-model="params.teachername" style="width: 200px" placeholder="请输入教师名"></el-input>
-             <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+            <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
             <el-button type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
 
@@ -17,7 +17,7 @@
                 <el-table-column prop="studentname" label="学生名"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
- 
+
                         <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
                             <template #reference>
                                 <el-button type="danger" style="margin-left: 5px">删除</el-button>
@@ -40,10 +40,10 @@
                         <el-select v-model="form.classid" clearable placeholder="请选择课程" style="width: 90%">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
-                        </el-select> 
+                        </el-select>
                     </el-form-item>
-                   
-                    
+
+
                 </el-form>
                 <div class="container">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -56,7 +56,7 @@
     
 <script setup>
 import { ref } from 'vue';
-import { findconnects,deleteconnect,addconnect,findclassall ,findByname} from "@/api/index.js";
+import { findconnects, deleteconnect, addconnect, findclassall, findByname } from "@/api/index.js";
 
 let params = ref({
     name: '',
@@ -71,10 +71,10 @@ let dialogFormVisible = ref(false);
 let form = ref({})
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let options = ref([])
-let ans=ref({})
-let classes=ref([])
+let ans = ref({})
+let classes = ref([])
 function findBySearch() {
-    params.value.studentid=user.value.id;
+    params.value.studentid = user.value.id;
     findconnects(params.value).then(res => {
         if (res.code === '0') {
             tableData.value = res.data.list;
@@ -83,20 +83,19 @@ function findBySearch() {
 
         }
     })
-    params.value={}
+    params.value = {}
     findclassall(params.value).then(res => {
         if (res.code === '0') {
-            console.log(res.data);
-            for(let i=0;i<res.data.length;i++)
-            {
-                ans.value={
-                    value:res.data[i].id,
-                    label:"课程号"+res.data[i].id
-                } 
-                 options.value.push(ans.value);
-                console.log(ans);
-            }  
-            classes.value=res.data;
+            // console.log(res.data);
+            for (let i = 0; i < res.data.length; i++) {
+                ans.value = {
+                    value: res.data[i].id,
+                    label: "课程号" + res.data[i].id
+                }
+                options.value.push(ans.value);
+                // console.log(ans);
+            }
+            classes.value = res.data;
         } else {
             window.$message({
                 message: res.msg,
@@ -104,6 +103,13 @@ function findBySearch() {
             });
         }
     })
+    params.value = {
+        name: '',
+        phone: '',
+        role: '',
+        pageNum: 1,
+        pageSize: 5
+    }
 }
 findBySearch();
 function reset() {
@@ -128,31 +134,43 @@ function add() {
     form.value = {};
     dialogFormVisible.value = true;
 }
- 
+
 function submit() {
-    for(let i=0;i<classes.value.length;i++)
-    {
-        if(form.value.classid===classes.value[i].id)
-        {
-              form.value.teachername=classes.value[i].author;
-              findByname(form.value.teachername).then(
-                res=>{
-                    if(res.code==='0')
-                    {
-                        form.value.teacherid=res.data.id;
+    for (let i = 0; i < classes.value.length; i++) {
+        if (form.value.classid === classes.value[i].id) {
+            form.value.teachername = classes.value[i].author;
+            findByname(form.value.teachername).then(
+                res => {
+                    if (res.code === '0') {
+                        form.value.teacherid = res.data.id;
                     }
                 }
-              )
+            )
         }
     }
-    form.value.studentid=user.value.id;
-    form.value.studentname=user.value.name;
+    // console.log(form.value.classid)
+    form.value.studentid = user.value.id;
+    form.value.studentname = user.value.name;
+
     addconnect(form.value).then(res => {
         if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
+
+            if (res.data === 0) {
+
+                window.$message({
+                    message: '该课程早已添加',
+                    type: 'success'
+                });
+
+            }
+            else {
+
+                window.$message({
+                    message: '添加成功',
+                    type: 'success'
+                });
+            }
+
             dialogFormVisible.value = false;
             findBySearch();
         } else {

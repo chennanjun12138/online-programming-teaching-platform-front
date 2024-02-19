@@ -55,7 +55,7 @@
             <el-icon>
               <Setting />
             </el-icon>
-            <span slot="title">师生关系管理</span>
+            <span slot="title">课程关系管理</span>
           </el-menu-item>
           <el-menu-item index="/classteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
@@ -80,7 +80,7 @@
             <el-icon>
               <Setting />
             </el-icon>
-            <span slot="title">师生关系管理</span>
+            <span slot="title">课程关系管理</span>
           </el-menu-item>
           <el-menu-item index="/homeworkteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
@@ -117,7 +117,7 @@
           <el-menu-item index="/connectstudent" v-if="user.role === 'ROLE_STUDENT'">
             <el-icon>
               <Connection />
-            </el-icon><span slot="title">师生关系</span>
+            </el-icon><span slot="title">课程关系</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

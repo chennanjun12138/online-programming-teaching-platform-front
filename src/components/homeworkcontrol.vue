@@ -6,7 +6,7 @@
                 placeholder="请输入作业教师"></el-input>
             <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
             <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findBySearch()">返回</el-button>
-            <span v-if="tableVisible2" style="margin-left: 20px">题目说明：{{ notice }}</span>
+            <span v-if="tableVisible2" style="margin-left: 20px">作业说明：{{ notice }}</span>
 
             <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
             <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="add()">新增</el-button>

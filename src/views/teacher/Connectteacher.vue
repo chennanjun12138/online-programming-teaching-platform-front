@@ -43,9 +43,7 @@
                             </el-option>
                         </el-select> 
                     </el-form-item>
-                    <el-form-item label="学生id" label-width="15%">
-                        <el-input v-model="form.studentid" autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
+                  
                     <el-form-item label="学生名" label-width="15%">
                         <el-input v-model="form.studentname" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
@@ -62,7 +60,7 @@
     
 <script setup>
 import { ref } from 'vue';
-import { findconnects, deleteconnect, addconnect, findclasss } from "@/api/index.js";
+import { findconnects, deleteconnect, addconnect, findclasss,findByname  } from "@/api/index.js";
 
 let params = ref({
     name: '',
@@ -105,8 +103,7 @@ function findBySearch() {
                  options.value.push(ans.value);
                 console.log(ans);
 
-            }
-            //  options.value=res.data.list;
+            } 
             console.log(res.data.list);
         } else {
             window.$message({
@@ -143,21 +140,29 @@ function add() {
 function submit() {
     form.value.teacherid = user.value.id;
     form.value.teachername = user.value.name;
-    addconnect(form.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            dialogFormVisible.value = false;
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
+    findByname(form.value.studentname).then(
+        res => {
+            if (res.code === '0') {
+                form.value.studentid = res.data.id.toString();
+                console.log(form.value.studentid);
+                addconnect(form.value).then(res => {
+                    if (res.code === '0') {
+                        window.$message({
+                            message: '操作成功',
+                            type: 'success'
+                        });
+                        dialogFormVisible.value = false;
+                        findBySearch();
+                    } else {
+                        window.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
+                    }
+                })
+            }
         }
-    })
+    )
 }
 function getRowKeys(row) {
     return row.id;
