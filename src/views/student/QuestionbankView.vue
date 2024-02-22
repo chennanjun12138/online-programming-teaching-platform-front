@@ -4,7 +4,10 @@
         <div>
             <el-input v-model="params.name" style="width: 200px" placeholder="请输入题目名"></el-input>
             <el-input v-model="params.creator" style="width: 200px; margin-left: 5px" placeholder="请输入题目创建者"></el-input>
-
+            <el-select v-model="params.type" clearable placeholder="请选择题目类型" style="margin-left: 5px; width: 200px;">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
             <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
 
@@ -85,7 +88,42 @@ let dialogFormVisible = ref(false);
 let multipleSelection = ref([]);
 let form = ref({})
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+let options = ref([
+  {
+    value: '算法设计与分析',
+    label: '算法设计与分析'
+  },
+  {
+    value: '数据结构',
+    label: '数据结构'
+  },
+  {
+    value: '数学问题',
+    label: '数学问题'
+  },
+  {
+    value: '字符串处理',
+    label: '字符串处理'
+  },
+  {
+    value: '计算几何',
+    label: '计算几何'
+  },
+  {
+    value: '模拟题',
+    label: '模拟题'
+  },
+  {
+    value: '图论',
+    label: '图论'
+  },
+  {
+    value: '动态规划',
+    label: '动态规划'
+  },
+]
 
+)
 function gotoquestion(questionid) {
     router.push(`/questioncontent/${questionid}`)
 }

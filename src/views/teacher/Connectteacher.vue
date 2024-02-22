@@ -11,13 +11,14 @@
         <div>
             <el-table :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column prop="classid" label="课程号"></el-table-column>
-                <el-table-column prop="teacherid" label="教师id"></el-table-column>
+                <el-table-column prop="classid" label="课程号" width="80px"></el-table-column>
+                <el-table-column prop="teacherid" label="教师id" width="80px"></el-table-column>
                 <el-table-column prop="teachername" label="教师名"></el-table-column>
-                <el-table-column prop="studentid" label="学生号"></el-table-column>
+                <el-table-column prop="studentid" label="学生号" width="80px"></el-table-column>
                 <el-table-column prop="studentname" label="学生名"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
+                        <el-button type="primary" @click="show(row.studentid)">查看代码和做题情况</el-button>
 
                         <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
                             <template #reference>
@@ -41,9 +42,9 @@
                         <el-select v-model="form.classid" clearable placeholder="请选择课程" style="width: 90%">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
-                        </el-select> 
+                        </el-select>
                     </el-form-item>
-                  
+
                     <el-form-item label="学生名" label-width="15%">
                         <el-input v-model="form.studentname" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
@@ -54,13 +55,17 @@
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
+            <el-dialog   class="chartflex" style="width: 90%;" v-model="contentVisible">
+                <Chart ref="pieRef" :QuestionData="questiondata" :SubmitData="submitdata" />
+            </el-dialog>
         </div>
     </div>
 </template>
     
 <script setup>
-import { ref } from 'vue';
-import { findconnects, deleteconnect, addconnect, findclasss,findByname  } from "@/api/index.js";
+import { nextTick, ref } from 'vue';
+import { findconnects, deleteconnect, addconnect, findclasss, findByname, getallsubmit, findbyquestionid } from "@/api/index.js";
+import Chart from '@/components/Chart.vue';
 
 let params = ref({
     name: '',
@@ -69,14 +74,122 @@ let params = ref({
     pageNum: 1,
     pageSize: 5
 })
+const pieRef = ref()
 let total = ref(0);
 let tableData = ref([]);
 let options = ref([])
 let dialogFormVisible = ref(false);
-let form = ref({})
-let ans=ref({})
-const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+let contentVisible = ref(false);
+let questiondata = ref([
+    { value: 0, name: '算法设计与分析' },
+    { value: 0, name: '数据结构' },
+    { value: 0, name: '字符串处理' },
+    { value: 0, name: '数学问题' },
+    { value: 0, name: '模拟题' },
+    { value: 0, name: '计算几何' },
+    { value: 0, name: '动态规划' },
+    { value: 0, name: '图论' },
+])
+let submitdata = ref([
+    {
+        name: 'Accepted',
+        value: 0
+    },
+    {
+        name: 'Wrong Answer',
+        value: 0
+    },
 
+    {
+        name: '内存溢出',
+        value: 0
+    },
+    {
+        name: '超时',
+        value: 0
+    },
+
+])
+ 
+let form = ref({})
+let ans = ref({})
+const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+function down(id) {
+    questiondata.value = [
+        { value: 0, name: '算法设计与分析' },
+        { value: 0, name: '数据结构' },
+        { value: 0, name: '字符串处理' },
+        { value: 0, name: '数学问题' },
+        { value: 0, name: '模拟题' },
+        { value: 0, name: '计算几何' },
+        { value: 0, name: '动态规划' },
+        { value: 0, name: '图论' },
+    ]
+    submitdata.value = [
+        {
+            name: 'Accepted',
+            value: 0
+        },
+        {
+            name: 'Wrong Answer',
+            value: 0
+        },
+
+        {
+            name: '内存溢出',
+            value: 0
+        },
+        {
+            name: '超时',
+            value: 0
+        },
+    ]
+    params.value.userid = id;
+    getallsubmit(params.value).then(res => {
+        if (res.code === '0') {
+            let questions = ref([]);
+            for (let i = 0; i < res.data.length; i++) {
+                const jsonData = JSON.parse(res.data[i].judgeInfo);
+                submitdata.value.forEach(item => {
+                    if (item.name === jsonData.message) {
+                        item.value++;
+                    }
+                });
+                params.value.questionid = res.data[i].questionid;
+
+                if (!questions.value.includes(res.data[i].questionid)) {
+                    findbyquestionid(params.value).then(
+                        res => {
+                            if (res.code === '0') {
+
+                                questiondata.value.forEach(item => {
+                                    if (item.name === res.data[0].type) {
+                                        item.value++;
+                                    }
+                                });
+                            }
+                        }
+                    )
+                    questions.value.push(res.data[i].questionid)
+                }
+
+
+            }
+            params.value.questionid = ''
+        }
+    })
+  
+    
+}
+function show(id)
+{
+    down(id);
+    contentVisible.value = true;
+
+    // nextTick(()=> {
+    //     console.log(pieRef.value, '------');
+    // })
+}
 function findBySearch() {
     params.value.teachername = user.value.name;
     findconnects(params.value).then(res => {
@@ -93,18 +206,13 @@ function findBySearch() {
     params.value.author = user.value.name;
     findclasss(params.value).then(res => {
         if (res.code === '0') {
-           
-            for(let i=0;i<res.data.list.length;i++)
-            {
-                ans.value={
-                    value:res.data.list[i].id,
-                    label:"课程号"+res.data.list[i].id
-                } 
-                 options.value.push(ans.value);
-                console.log(ans);
-
-            } 
-            console.log(res.data.list);
+            for (let i = 0; i < res.data.list.length; i++) {
+                ans.value = {
+                    value: res.data.list[i].id,
+                    label: "课程号" + res.data.list[i].id
+                }
+                options.value.push(ans.value);
+            }
         } else {
             window.$message({
                 message: res.msg,
@@ -112,6 +220,7 @@ function findBySearch() {
             });
         }
     })
+    
 }
 findBySearch();
 function reset() {
@@ -144,7 +253,7 @@ function submit() {
         res => {
             if (res.code === '0') {
                 form.value.studentid = res.data.id.toString();
-                console.log(form.value.studentid);
+                // console.log(form.value.studentid);
                 addconnect(form.value).then(res => {
                     if (res.code === '0') {
                         window.$message({
@@ -185,4 +294,11 @@ function del(id) {
 }
 </script>
     
-<style></style>
+<style>
+.chartflex {
+    display: flex;
+    justify-content: center;
+
+    height: 450px;
+}
+</style>

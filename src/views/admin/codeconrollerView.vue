@@ -16,8 +16,7 @@
         <div>
             <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <!-- <el-table-column prop="id" label="提交id" width="80px"></el-table-column> -->
-
+ 
                 <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
                 <el-table-column prop="judgeInfo" label="判题信息"></el-table-column>
@@ -76,10 +75,9 @@ import {
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
-import * as monaco from "monaco-editor";
+ 
 
-const mdValue = ref('');
-const codemonaco = ref();
+const mdValue = ref(''); 
 const onMdChange = (v) => {
     mdValue.value = v;
 };

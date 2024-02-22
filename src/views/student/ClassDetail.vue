@@ -31,25 +31,20 @@
 
             <div class='monaco-editor'>
             </div>
-
+            
         </div>
 
     </div>
 </template>
     
 <script setup>
-import { ref, onMounted } from 'vue';
-import { downloadPDF, findcontract } from "@/api/index.js";
-import * as monaco from "monaco-editor";
-import MdEditor from "@/components/MdEditor.vue";
-import { useRouter, RouterLink } from "vue-router";
+import { ref, onMounted ,toRaw} from 'vue';
+import { downloadPDF, findcontract ,runcode} from "@/api/index.js";
+import * as monaco from "monaco-editor"; 
+import { useRouter } from "vue-router";
 const router = useRouter()
 const currentUrl = window.location.href;
-const mdValue = ref();
-const onMdChange = (v) => {
-    mdValue.value = v;
-};
-
+ 
 let url = ref("")
 let form = ref({})
 let linklist = ref([]);
@@ -95,6 +90,10 @@ const options = ref([
 ],
 )
 const pdfIframe = ref(null);
+let submitcontent = ref({});
+const codemonaco = ref();
+const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+
 onMounted(async () => {
     await loadPDF(router.currentRoute.value.params.fileId)
     await pdfIframe.value;
@@ -141,7 +140,25 @@ function showquestion(pagenumber) {
 }
 
 function runCode() {
-
+    submitcontent.value.userid = user.value.id;
+    submitcontent.value.language = language.value;
+    submitcontent.value.code = toRaw(codemonaco.value).getValue();
+    runcode(submitcontent.value).then(
+        res => {
+            if (res.code === '0') {
+                window.$message({
+                    message: "提交成功",
+                    type: 'success'
+                });
+                console.log(res.data);
+            } else {
+                window.$message({
+                    message: res.msg,
+                    type: 'error'
+                });
+            }
+        }
+    )
 }
 function goback() {
     router.push("/classlearn");
@@ -187,7 +204,7 @@ function loadPDF(fileId) {
 
 function setupMonacoEditror() {
     const container = document.querySelector('.monaco-editor')
-    const monacoInstance = monaco.editor.create(container, {
+    codemonaco.value = monaco.editor.create(container, {
         value: '',
         language: language.value,
         lineNumbers: 'on',
@@ -196,17 +213,16 @@ function setupMonacoEditror() {
             enabled: false
         }
     })
-    monaco = monacoInstance
+    monaco = codemonaco.value
 }
 
 function onChangeEditorLang(lang) {
-    monaco.value.updateOptions({
-        language: lang
-    })
+    monaco.editor.setModelLanguage( toRaw(codemonaco.value).getModel(), language.value); // 设置模型的语言
+
     // 获取编辑器的值
     console.log({
         language: language.value,
-        code: monaco.value.getValue()
+        code: toRaw(codemonaco.value).getValue()
     });
 
 }

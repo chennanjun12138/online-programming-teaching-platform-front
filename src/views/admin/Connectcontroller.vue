@@ -12,13 +12,14 @@
         <div>
             <el-table :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column prop="classid" label="课程id"></el-table-column>
-                <el-table-column prop="teacherid" label="教师id"></el-table-column>
+                <el-table-column prop="classid" label="课程id"  width="80px"></el-table-column>
+                <el-table-column prop="teacherid" label="教师id"  width="80px"></el-table-column>
                 <el-table-column prop="teachername" label="教师名"></el-table-column>
-                <el-table-column prop="studentid" label="学生id"></el-table-column>
-                <el-table-column prop="studentname" label="学生名"></el-table-column>
+                <el-table-column prop="studentid" label="学生id"  width="80px"></el-table-column>
+                <el-table-column prop="studentname" label="学生名"  width="80px"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
+                        <el-button type="primary" @click="show(row.studentid)">查看学生代码和做题情况</el-button>
 
                         <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
                             <template #reference>
@@ -55,13 +56,17 @@
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
+            <el-dialog   class="chartflex" style="width: 90%;" v-model="contentVisible">
+                <Chart ref="pieRef" :QuestionData="questiondata" :SubmitData="submitdata" />
+            </el-dialog>
         </div>
     </div>
 </template>
     
 <script setup>
 import { ref } from 'vue';
-import { findconnects, deleteconnect, addconnect, findclassall, findByname } from "@/api/index.js";
+import { findconnects, deleteconnect, addconnect, findclassall, findByname , getallsubmit, findbyquestionid} from "@/api/index.js";
+import Chart from '@/components/Chart.vue';
 
 let params = ref({
     name: '',
@@ -77,6 +82,110 @@ let form = ref({})
 let options = ref([])
 let ans = ref({})
 let classes = ref([])
+let contentVisible = ref(false);
+let questiondata = ref([
+    { value: 0, name: '算法设计与分析' },
+    { value: 0, name: '数据结构' },
+    { value: 0, name: '字符串处理' },
+    { value: 0, name: '数学问题' },
+    { value: 0, name: '模拟题' },
+    { value: 0, name: '计算几何' },
+    { value: 0, name: '动态规划' },
+    { value: 0, name: '图论' },
+])
+let submitdata = ref([
+    {
+        name: 'Accepted',
+        value: 0
+    },
+    {
+        name: 'Wrong Answer',
+        value: 0
+    },
+
+    {
+        name: '内存溢出',
+        value: 0
+    },
+    {
+        name: '超时',
+        value: 0
+    },
+
+])
+function down(id) {
+    questiondata.value = [
+        { value: 0, name: '算法设计与分析' },
+        { value: 0, name: '数据结构' },
+        { value: 0, name: '字符串处理' },
+        { value: 0, name: '数学问题' },
+        { value: 0, name: '模拟题' },
+        { value: 0, name: '计算几何' },
+        { value: 0, name: '动态规划' },
+        { value: 0, name: '图论' },
+    ]
+    submitdata.value = [
+        {
+            name: 'Accepted',
+            value: 0
+        },
+        {
+            name: 'Wrong Answer',
+            value: 0
+        },
+
+        {
+            name: '内存溢出',
+            value: 0
+        },
+        {
+            name: '超时',
+            value: 0
+        },
+    ]
+    params.value.userid = id;
+    getallsubmit(params.value).then(res => {
+        if (res.code === '0') {
+            let questions = ref([]);
+            for (let i = 0; i < res.data.length; i++) {
+                const jsonData = JSON.parse(res.data[i].judgeInfo);
+                submitdata.value.forEach(item => {
+                    if (item.name === jsonData.message) {
+                        item.value++;
+                    }
+                });
+                params.value.questionid = res.data[i].questionid;
+
+                if (!questions.value.includes(res.data[i].questionid)) {
+                    findbyquestionid(params.value).then(
+                        res => {
+                            if (res.code === '0') {
+
+                                questiondata.value.forEach(item => {
+                                    if (item.name === res.data[0].type) {
+                                        item.value++;
+                                    }
+                                });
+                            }
+                        }
+                    )
+                    questions.value.push(res.data[i].questionid)
+                }
+
+
+            }
+            params.value.questionid = ''
+        }
+    })
+  
+    
+}
+function show(id)
+{
+    down(id);
+    contentVisible.value = true;
+ 
+}
 function findBySearch() {
     findconnects(params.value).then(res => {
         if (res.code === '0') {
@@ -192,4 +301,12 @@ function del(id) {
 }
 </script>
     
-<style></style>
+<style>
+.chartflex {
+    display: flex;
+    justify-content: center;
+
+    height: 450px;
+}
+
+</style>

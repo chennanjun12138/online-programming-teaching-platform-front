@@ -3,7 +3,10 @@
     <div>
       <el-input v-model="params.name" style="width: 200px" placeholder="请输入题目名"></el-input>
       <el-input v-model="params.creator" style="width: 200px; margin-left: 5px" placeholder="请输入题目创建者"></el-input>
-
+      <el-select v-model="params.type" clearable placeholder="请选择题目类型" style="margin-left: 5px; width: 200px;">
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
       <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
       <el-button type="warning" @click="reset()">清空</el-button>
       <el-button type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
@@ -61,7 +64,10 @@
             <el-input v-model="form.name" autocomplete="off" style="width: 90%"></el-input>
           </el-form-item>
           <el-form-item label="题目类型" label-width="25%">
-            <el-input v-model="form.type" autocomplete="off" style="width: 90%"></el-input>
+            <el-select v-model="form.type" clearable placeholder="请选择题目类型" style="width: 90%">
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="题目创建者" label-width="25%">
             <el-input v-model="form.creator" readonly autocomplete="off" style="width: 90%"></el-input>
@@ -143,7 +149,42 @@ import {
   findquestion,
   findquestionbanks
 } from "@/api/index.js";
+let options = ref([
+  {
+    value: '算法设计与分析',
+    label: '算法设计与分析'
+  },
+  {
+    value: '数据结构',
+    label: '数据结构'
+  },
+  {
+    value: '数学问题',
+    label: '数学问题'
+  },
+  {
+    value: '字符串处理',
+    label: '字符串处理'
+  },
+  {
+    value: '计算几何',
+    label: '计算几何'
+  },
+  {
+    value: '模拟题',
+    label: '模拟题'
+  },
+  {
+    value: '图论',
+    label: '图论'
+  },
+  {
+    value: '动态规划',
+    label: '动态规划'
+  },
+]
 
+)
 let params = ref({
   name: '',
   phone: '',

@@ -32,7 +32,13 @@ export const findquestionbanks = (data)=> {
         params:data
     })
 }
-
+export const findbyquestionid = (data)=> {
+    return request({
+        url: '/questionbank/findbyquesionid',
+        method: 'get',
+        params:data
+    })
+}
 
 export const changequestionbank = (data)=> {
     return request({
@@ -103,6 +109,14 @@ export const submitcode = (data) => {
         data:data
     })
 }
+export const runcode = (data) => {
+     
+    return request({
+        url: '/question_submit/submit_class',
+        method: 'post',
+        data:data
+    })
+}
 export const searchcode = (data) => {
     return request({
         url: '/question_submit/search',
@@ -121,6 +135,13 @@ export const findevaluate = (data) => {
 export const getsubmitbyteachers = (data) => {
     return request({
         url: '/question_submit/getsubmitbyteachers',
+        method: 'get',
+        params:data
+    })
+}
+export const getallsubmit = (data) => {
+    return request({
+        url: '/question_submit/getall',
         method: 'get',
         params:data
     })

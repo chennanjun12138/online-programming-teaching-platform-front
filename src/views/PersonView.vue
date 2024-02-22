@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        
         <el-card class="elcard" shadow="hover">
 
             <el-form label-width="80px" size="default">
@@ -45,6 +46,7 @@
 import { ref } from 'vue';
 import { changeuser, delBatchuser, findusers } from "@/api/index.js";
 import { CirclePlus  } from "@element-plus/icons-vue"
+import Chart from '@/components/Chart.vue';
 
 let params = ref({
     name: '',

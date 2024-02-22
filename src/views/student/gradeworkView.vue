@@ -151,8 +151,7 @@ function findBySearch() {
         if (res.code === '0') {
 
             console.log("变化结果：")
-            console.log(res.data);
-            // params.value.teacher=''
+            console.log(res.data); 
             tableData.value = res.data.list;
             total.value = res.data.total;
             tableVisible.value = true;

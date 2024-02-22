@@ -80,9 +80,10 @@
 </template>
     
 <script setup>
-import { ref } from 'vue';
+import { ref,  } from 'vue';
 import { addconnect, changeclass, findclasss, findcourse } from "@/api/index.js";
 import { useRouter, RouterLink } from "vue-router";
+ 
 const router = useRouter()
 let params = ref({
   name: '',

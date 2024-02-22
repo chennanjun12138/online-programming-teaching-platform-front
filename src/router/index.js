@@ -19,10 +19,11 @@ import homeworkteacherView from "@/views/teacher/HomeworkteacherView.vue";
 import gradeworkView from "@/views/student/gradeworkView.vue";
 import QuestionbankteacherView from "@/views/teacher/QuestionbankteacherView.vue";
 import notfoundVue from '@/views/notfound.vue';
-import codeconrollerViewVue from '@/views/admin/codeconrollerView.vue';
+ 
 import ConnectcontrollerVue from '@/views/admin/Connectcontroller.vue';
 import ConnectteacherVue from '@/views/teacher/Connectteacher.vue';
-import ConnectstudentVue from '@/views/student/Connectstudent.vue';
+import ConnectstudentVue from '@/views/student/Connectstudent.vue'; 
+import codeconrollerViewVue from '@/views/admin/CodeconrollerView.vue';
 const router = createRouter({
    
   history: createWebHistory(import.meta.env.BASE_URL),

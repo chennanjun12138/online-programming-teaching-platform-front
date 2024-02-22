@@ -9,6 +9,7 @@
                 </el-option>
             </el-select>
             <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+            <el-button type="warning" style="margin-left: 10px" @click="showchart()">查看情况</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
 
 
@@ -16,8 +17,6 @@
         <div>
             <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <!-- <el-table-column prop="id" label="提交id" width="80px"></el-table-column> -->
-
                 <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
                 <el-table-column prop="judgeInfo" label="判题信息"></el-table-column>
@@ -53,7 +52,9 @@
                     <el-table-column prop="teachername" label="评价者" width="80px"></el-table-column>
                 </el-table>
             </el-dialog>
-
+            <el-dialog class="chartflex" style="width: 90%;" v-model="contentVisible">
+                <Chart :QuestionData="questiondata" :SubmitData="submitdata" />
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -61,10 +62,12 @@
 <script setup  >
 import { ref } from 'vue';
 import {
-    searchcode, findevaluate,findByid
+    searchcode, findevaluate, findByid, getallsubmit, findbyquestionid
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
+import Chart from '@/components/Chart.vue';
+
 const mdValue = ref('');
 const onMdChange = (v) => {
     mdValue.value = v;
@@ -77,7 +80,40 @@ let params = ref({
     pageSize: 5,
 })
 let total = ref(0);
-let tableData = ref([]);
+let tableData = ref([
+
+]);
+let questiondata = ref([
+    { value: 0, name: '算法设计与分析' },
+    { value: 0, name: '数据结构' },
+    { value: 0, name: '字符串处理' },
+    { value: 0, name: '数学问题' },
+    { value: 0, name: '模拟题' },
+    { value: 0, name: '计算几何' },
+    { value: 0, name: '动态规划' },
+    { value: 0, name: '图论' },
+])
+let submitdata = ref([
+    {
+        name: 'Accepted',
+        value: 0
+    },
+    {
+        name: 'Wrong Answer',
+        value: 0
+    },
+
+    {
+        name: '内存溢出',
+        value: 0
+    },
+    {
+        name: '超时',
+        value: 0
+    },
+
+])
+
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let dialogFormVisible = ref(false);
 let contentVisible = ref(false);
@@ -121,6 +157,9 @@ let options = ref([
 ])
 let evaluateData = ref([]);
 let codecontent = ref("");
+function showchart() {
+    contentVisible.value = true;
+}
 function show(id) {
     dialogFormVisible.value = true;
     codecontent.value = tableData.value[id].code;
@@ -142,16 +181,18 @@ function show(id) {
 findBySearch();
 function findBySearch() {
     params.value.userid = user.value.id;
-    console.log(params.value)
     searchcode(params.value).then(res => {
         if (res.code === '0') {
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
-                tableData.value[i].username=user.value.name;
-                tableData.value[i].status=display(tableData.value[i].status);
+                tableData.value[i].username = user.value.name;
+                tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
+
+
             }
+
         } else {
             window.$message({
                 message: res.msg,
@@ -159,7 +200,42 @@ function findBySearch() {
             });
         }
     })
+    getallsubmit(params.value).then(res => {
+        if (res.code === '0') {
+            let questions = ref([]);
+            for (let i = 0; i < res.data.length; i++) {
+                const jsonData = JSON.parse(res.data[i].judgeInfo);
+                submitdata.value.forEach(item => {
+                    if (item.name === jsonData.message) {
+                        item.value++;
+                    }
+                });
+                params.value.questionid = res.data[i].questionid;
+
+                if (!questions.value.includes(res.data[i].questionid)) {
+                    findbyquestionid(params.value).then(
+                        res => {
+                            if (res.code === '0') {
+
+                                questiondata.value.forEach(item => {
+                                    if (item.name === res.data[0].type) {
+                                        item.value++;
+                                    }
+                                });
+                            }
+                        }
+                    )
+                    questions.value.push(res.data[i].questionid)
+                }
+
+
+            }
+            params.value.questionid = ''
+        }
+    })
+
 }
+
 function display(status) {
     if (status === 0) {
         return "等待中";
@@ -195,4 +271,11 @@ function handleCurrentChange(pageNum) {
 
 </script>
   
-<style></style>
+<style>
+.chartflex {
+    display: flex;
+    justify-content: center;
+
+    height: 450px;
+}
+</style>

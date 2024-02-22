@@ -126,7 +126,7 @@ function runCode() {
     submitcontent.value.language = language.value;
     submitcontent.value.code = toRaw(codemonaco.value).getValue();
     submitcontent.value.status = 0;
-    console.log(toRaw(codemonaco.value).getValue());
+ 
     submitcode(submitcontent.value).then(
         res => {
             if (res.code === '0') {
