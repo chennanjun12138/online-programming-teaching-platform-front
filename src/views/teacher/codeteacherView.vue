@@ -204,7 +204,7 @@ function findBySearch() {
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
-                tableData.value[i].status=display(tableData.value[i].status);
+                tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
             }
             console.log(tableData.value);

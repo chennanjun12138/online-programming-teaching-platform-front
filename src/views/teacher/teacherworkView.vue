@@ -1,12 +1,10 @@
 <template>
-           <homeworkcontrol msg="B"></homeworkcontrol>
+        <homeworkcontrol msg="B"></homeworkcontrol>
 </template>
     
 <script setup>
-        import homeworkcontrol from '@/components/homeworkcontrol.vue';
+import homeworkcontrol from '@/components/homeworkcontrol.vue';
 
 </script>
     
-<style>
-    
-</style>
+<style></style>

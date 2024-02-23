@@ -16,7 +16,7 @@
         <div>
             <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
- 
+
                 <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
                 <el-table-column prop="judgeInfo" label="判题信息"></el-table-column>
@@ -75,9 +75,9 @@ import {
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
- 
 
-const mdValue = ref(''); 
+
+const mdValue = ref('');
 const onMdChange = (v) => {
     mdValue.value = v;
 };
@@ -205,7 +205,7 @@ function findBySearch() {
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
-                tableData.value[i].status=display(tableData.value[i].status);
+                tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
             }
         } else {

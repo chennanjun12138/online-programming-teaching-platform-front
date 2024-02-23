@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        
+
         <el-card class="elcard" shadow="hover">
 
             <el-form label-width="80px" size="default">
@@ -8,8 +8,10 @@
                     <el-upload class="avatar-uploader" action="http://localhost:8080/api/files/upload"
                         :show-file-list="false" :on-success="successUpload">
                         <img v-if="user.photo" :src="'http://localhost:8080/api/files/' + user.photo" class="avatar">
-                       <!--   <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
-                        <i v-else  class="avatar" style="color: rgb(116, 118, 118);" ><CirclePlus /></i>
+                        <!--   <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
+                        <i v-else class="avatar" style="color: rgb(116, 118, 118);">
+                            <CirclePlus />
+                        </i>
                     </el-upload>
                 </div>
                 <el-form-item label="用户名" style="margin-top: 10px; margin-left: 200px; ">
@@ -44,9 +46,8 @@
     
 <script setup >
 import { ref } from 'vue';
-import { changeuser, delBatchuser, findusers } from "@/api/index.js";
-import { CirclePlus  } from "@element-plus/icons-vue"
-import Chart from '@/components/Chart.vue';
+import { changeuser, findusers } from "@/api/index.js";
+import { CirclePlus } from "@element-plus/icons-vue"
 
 let params = ref({
     name: '',
@@ -57,10 +58,6 @@ let params = ref({
 })
 let total = ref(0);
 let tableData = ref([]);
-let dialogFormVisible = ref(false);
-let form = ref({})
-let multipleSelection = ref([]);
-const defaultAvatar = ref('@/assets/logo.svg')
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 function findBySearch() {
     findusers(params.value).then(res => {
@@ -83,19 +80,6 @@ function display(res) {
         return "管理员";
     }
 }
-
-function handleSizeChange(pageSize) {
-    params.value.pageSize = pageSize;
-    findBySearch();
-}
-function handleCurrentChange(pageNum) {
-    params.value.pageNum = pageNum;
-    findBySearch();
-}
-function edit(obj) {
-    form.value = obj;
-    dialogFormVisible.value = true;
-}
 function successUpload(res) {
     user.value.photo = res.data;
 }
@@ -117,26 +101,6 @@ function submit() {
     })
 }
 
-function handleSelectionChange(val) {
-    multipleSelection.value = val;
-}
-function delBatch() {
-    if (multipleSelection.value.length === 0) {
-        window.$message.warning("请勾选您要删除的项")
-        return
-    }
-    delBatchuser(multipleSelection.value).then(res => {
-        if (res.code === '0') {
-            window.$message.success("批量删除成功")
-            findBySearch()
-        } else {
-            window.$message.error(res.msg)
-        }
-    })
-}
-function getRowKeys(row) {
-    return row.id;
-}
 </script>
     
 <style>

@@ -103,9 +103,9 @@ const options = ref([{
     value: 'ROLE_TEACHER',
     label: '教师'
 }]);
-const maprol={
-     ROLE_STUDENT:'学生',
-     ROLE_TEACHER:'教师'
+const maprol = {
+    ROLE_STUDENT: '学生',
+    ROLE_TEACHER: '教师'
 }
 function findBySearch() {
     findusers(params.value).then(res => {
@@ -113,13 +113,11 @@ function findBySearch() {
             tableData.value = res.data.list;
             console.log(tableData);
             total.value = res.data.total;
-        } else {
-
         }
     })
 }
 findBySearch();
- 
+
 function reset() {
     params.value = {
         pageNum: 1,

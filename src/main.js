@@ -11,10 +11,12 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import "bytemd/dist/index.css"
+const pinia = createPinia()
 
 const app = createApp(App)
 window.$message=ElMessage;
 
+app.use(pinia)
 app.use(createPinia())
 app.use(router)
 app.use(ElementPlus, { size: 'default',locale: zhCn });

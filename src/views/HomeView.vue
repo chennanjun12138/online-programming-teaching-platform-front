@@ -1,17 +1,17 @@
 <template>
   <div>
     <div>
-      <template v-if="user.role=== 'ROLE_STUDENT'" >
+      <template v-if="user.role === 'ROLE_STUDENT'">
         <div v-for="(paragraph, index) in studentcontent" :key="index" class="multiline-text paragraph">
           {{ paragraph }}
         </div>
       </template>
-      <template v-if="user.role=== 'ROLE_TEACHER'" >
+      <template v-if="user.role === 'ROLE_TEACHER'">
         <div v-for="(paragraph, index) in teachercontent" :key="index" class="multiline-text paragraph">
           {{ paragraph }}
         </div>
       </template>
-      <template v-if="user.role=== 'ROLE_ADMIN'" >
+      <template v-if="user.role === 'ROLE_ADMIN'">
         <div v-for="(paragraph, index) in admincontent" :key="index" class="multiline-text paragraph">
           {{ paragraph }}
         </div>
@@ -19,16 +19,15 @@
 
     </div>
   </div>
-
 </template>
 
 <script setup>
 import request from "@/utils/request";
-import {ref,reactive,computed} from "vue"
+import { ref, reactive, computed } from "vue"
 
-const  user=ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
-const studentcontent=ref([
-   `学生端使用说明： 
+const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+const studentcontent = ref([
+  `学生端使用说明： 
    侧边栏显示平台各项功能，顶部栏左侧标签控制侧边栏收缩，右侧带点击放大图标进入全屏，移动到头像显示退出登录按钮 
    个人中心：显示和修改个人信息，点击头像图片上传头像，点击保存按钮保存修改信息。 
    课程学习： 
@@ -37,8 +36,8 @@ const studentcontent=ref([
    代码情况：
    课程关系： `
 ],)
-const teachercontent=ref([
-   `教师端使用说明： 
+const teachercontent = ref([
+  `教师端使用说明： 
    侧边栏显示平台各项功能，顶部栏左侧标签控制侧边栏收缩，右侧带点击放大图标进入全屏，移动到头像显示退出登录按钮 
    个人中心：显示和修改个人信息，点击头像图片上传头像，点击保存按钮保存修改信息。 
    课程管理： 
@@ -48,7 +47,7 @@ const teachercontent=ref([
    作业批改： 
    代码查看和评价：`,
 ])
-const admincontent=ref([
+const admincontent = ref([
   `管理员端使用说明： 
    侧边栏显示平台各项功能，顶部栏左侧标签控制侧边栏收缩，右侧带点击放大图标进入全屏，移动到头像显示退出登录按钮 
    个人中心：显示和修改个人信息，点击头像图片上传头像，点击保存按钮保存修改信息。 
@@ -62,14 +61,16 @@ const admincontent=ref([
    题库管理： 
    用户管理：`,
 ],)
- 
+
 </script>
 
 <style scoped>
 .multiline-text {
   white-space: pre-line;
 }
+
 .paragraph {
-  margin-bottom: 10px; /* 设置段落之间的底部边距 */
+  margin-bottom: 10px;
+  /* 设置段落之间的底部边距 */
 }
 </style>

@@ -59,7 +59,7 @@
                         <el-select v-model="form.type" clearable placeholder="请选择题目类型" style="width: 90%">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
-                        </el-select> 
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="题目创建者" label-width="25%">
                         <el-input v-model="form.creator" readonly autocomplete="off" style="width: 90%"></el-input>
@@ -367,13 +367,7 @@ function del(id, questionid) {
         }
     })
 }
-function successUpload(res) {
-    form.value.img = res.data;
 
-}
-function down(flag) {
-    location.href = 'http://localhost:8080/api/files/' + flag
-}
 function handleSelectionChange(val) {
     multipleSelection.value = val;
     selectedquestionid.value = [];
@@ -393,31 +387,7 @@ function handleSelectionChange(val) {
         })
     }
 }
-function delBatch() {
-    if (multipleSelection.value.length === 0) {
-        window.$message.warning("请勾选您要删除的项")
-        return
-    }
-    console.log(multipleSelection.value);
-    console.log('questionid');
-    console.log(selectedquestionid.value);
-    delBatchquestionbank(multipleSelection.value).then(res => {
-        if (res.code === '0') {
-            window.$message.success("批量删除成功")
-            findBySearch()
-        } else {
-            window.$message.error(res.msg)
-        }
-    })
-    delBatchquestion(selectedquestionid.value).then(res => {
-        if (res.code === '0') {
-            window.$message.success("批量删除成功")
 
-        } else {
-            window.$message.error(res.msg)
-        }
-    })
-}
 function getRowKeys(row) {
     return row.id;
 }

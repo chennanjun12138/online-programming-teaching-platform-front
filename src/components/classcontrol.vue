@@ -217,7 +217,7 @@ const options = ref([{
 ],);
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 function findBySearch() {
-    console.log(props.msg);
+    // console.log(props.msg);
     if (props.msg === 'A') {
         params.value.author = user.value.name;
     }
@@ -425,7 +425,6 @@ function addBatch() {
         $message.warning("请勾选您要添加的项")
         return
     }
-    console.log(multiContracts.value)
     addBatchcontract(multiContracts.value).then(res => {
         if (res.code === '0') {
             window.$message.success("批量添加成功")

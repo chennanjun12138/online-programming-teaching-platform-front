@@ -55,7 +55,7 @@
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
-            <el-dialog   class="chartflex" style="width: 90%;" v-model="contentVisible">
+            <el-dialog class="chartflex" style="width: 90%;" v-model="contentVisible">
                 <Chart ref="pieRef" :QuestionData="questiondata" :SubmitData="submitdata" />
             </el-dialog>
         </div>
@@ -63,7 +63,7 @@
 </template>
     
 <script setup>
-import { nextTick, ref } from 'vue';
+import { ref } from 'vue';
 import { findconnects, deleteconnect, addconnect, findclasss, findByname, getallsubmit, findbyquestionid } from "@/api/index.js";
 import Chart from '@/components/Chart.vue';
 
@@ -108,9 +108,12 @@ let submitdata = ref([
         name: '超时',
         value: 0
     },
-
+    {
+        name: '编译错误',
+        value: 0
+    },
 ])
- 
+
 let form = ref({})
 let ans = ref({})
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
@@ -141,6 +144,10 @@ function down(id) {
         },
         {
             name: '超时',
+            value: 0
+        },
+        {
+            name: '编译错误',
             value: 0
         },
     ]
@@ -178,11 +185,10 @@ function down(id) {
             params.value.questionid = ''
         }
     })
-  
-    
+
+
 }
-function show(id)
-{
+function show(id) {
     down(id);
     contentVisible.value = true;
 
@@ -220,7 +226,7 @@ function findBySearch() {
             });
         }
     })
-    
+
 }
 findBySearch();
 function reset() {

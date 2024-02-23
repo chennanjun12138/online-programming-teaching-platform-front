@@ -63,12 +63,22 @@
             </el-icon>
             <span slot="title">课程管理</span>
           </el-menu-item>
-        
+          <el-menu-item index="/connectteacher" v-if="user.role === 'ROLE_TEACHER'">
+            <el-icon>
+              <Setting />
+            </el-icon>
+            <span slot="title">课程关系管理</span>
+          </el-menu-item>
           <el-menu-item index="/teacherwork" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
               <Setting />
             </el-icon>
             <span slot="title">作业管理</span>
+          </el-menu-item>
+          <el-menu-item index="/homeworkteacher" v-if="user.role === 'ROLE_TEACHER'">
+            <el-icon>
+              <Medal />
+            </el-icon><span slot="title">作业批改</span>
           </el-menu-item>
           <el-menu-item index="/bankteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
@@ -76,23 +86,14 @@
             </el-icon>
             <span slot="title">题库管理</span>
           </el-menu-item>
-          <el-menu-item index="/connectteacher" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Setting />
-            </el-icon>
-            <span slot="title">课程关系管理</span>
-          </el-menu-item>
-          <el-menu-item index="/homeworkteacher" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Medal />
-            </el-icon><span slot="title">作业批改</span>
-          </el-menu-item>
+
+
           <el-menu-item index="/codeteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
               <Search />
             </el-icon><span slot="title">代码查看和评价</span>
           </el-menu-item>
-          
+
           <el-menu-item index="/classlearn" v-if="user.role === 'ROLE_STUDENT'">
             <el-icon>
               <Reading />
@@ -163,9 +164,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue"
-import {Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Document, Reading, Search, Medal } from "@element-plus/icons-vue"
-import { useRouter, RouterLink, useRoute } from "vue-router";
+import { ref, computed } from "vue"
+import { Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Document, Reading, Search, Medal } from "@element-plus/icons-vue"
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter()
 const route = useRoute()
@@ -180,7 +181,7 @@ const display = computed(
       return r.path === route.path
     })
 
-    if(current){
+    if (current) {
       return current.meta.name;
     }
   }
@@ -293,4 +294,5 @@ function logout() {
   display: flex;
   align-items: center;
   justify-content: flex-end
-}</style>
+}
+</style>

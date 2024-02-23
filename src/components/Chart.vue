@@ -18,7 +18,13 @@ import {
 import { PieChart } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-import { onMounted, watch, nextTick } from 'vue';
+import {  watch, nextTick } from 'vue';
+
+// import { useCounterStore } from '@/stores/counter' ;
+// import {storeToRefs, } from "pinia"
+// const {count}=storeToRefs(useCounterStore());
+// console.log(count.value)
+
 
 echarts.use([
     TitleComponent,
@@ -32,10 +38,13 @@ const props = defineProps({
     QuestionData: [],
     SubmitData: []
 })
- 
+
+
+
 defineExpose({
     initPieChart
 })
+ 
 function initPieChart() {
 
     var chartDom = document.getElementById('chart');
@@ -105,16 +114,17 @@ function initPieChart() {
             ]
         }
     )
-} 
-watch(()=> [props.QuestionData,props.SubmitData ], () => {
- 
-    nextTick(()=> initPieChart())
+}
+watch(() => [props.QuestionData, props.SubmitData], () => {
+
+    nextTick(() => initPieChart())
 }, {
     immediate: true,//一开始就执行
     deep: true,//深度监听：数组之类的
-});
+}
+);
 
- 
+
 
 </script>
     

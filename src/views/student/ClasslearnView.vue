@@ -12,10 +12,10 @@
     </div>
 
     <div>
-      <el-table :data="tableData" style="width: 100%; margin: 15px 0px" :row-key="(row)=>row.id ">
+      <el-table :data="tableData" style="width: 100%; margin: 15px 0px" :row-key="(row) => row.id">
         <el-table-column prop="img" label="课程封面">
           <template #default="{ row }">
-            <el-image preview-teleported="true"  style="width: 75px; height: 75px;border-radius: 50% "
+            <el-image preview-teleported="true" style="width: 75px; height: 75px;border-radius: 50% "
               :src="'http://localhost:8080/api/files/' + row.img"
               :preview-src-list="['http://localhost:8080/api/files/' + row.img]">
             </el-image>
@@ -80,10 +80,10 @@
 </template>
     
 <script setup>
-import { ref,  } from 'vue';
+import { ref, } from 'vue';
 import { addconnect, changeclass, findclasss, findcourse } from "@/api/index.js";
-import { useRouter, RouterLink } from "vue-router";
- 
+import { useRouter } from "vue-router";
+
 const router = useRouter()
 let params = ref({
   name: '',
@@ -101,8 +101,7 @@ let courseVisible = ref(false);
 let courescontent = ref({})
 let form = ref({})
 let link = ref({})
-let url = ref('')
-let textarea = ref("")
+
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 const options = ref([{
   value: '前端开发',
@@ -195,10 +194,6 @@ function handleCurrentChange(pageNum) {
 }
 
 
-function edit(obj) {
-  form.value = obj;
-  dialogFormVisible.value = true;
-}
 function submit() {
   changeclass(form.value).then(res => {
     if (res.code === '0') {
@@ -224,12 +219,12 @@ function down(flag) {
   location.href = 'http://localhost:8080/api/files/' + flag
 }
 function joinlearn(id, author, fileId) {
-  
+
   link.value.classid = id.toString();
   link.value.teachername = author;
   link.value.studentid = user.value.id.toString();
   link.value.studentname = user.value.name;
-  
+
   addconnect(link.value).then(res => {
     if (res.code === '0') {
       window.$message({
@@ -249,7 +244,7 @@ function joinlearn(id, author, fileId) {
     query: { classId: id },
   });
 }
-  
+
 </script>
     
 <style>

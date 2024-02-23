@@ -54,7 +54,7 @@
 import { ref, onMounted, toRaw } from 'vue';
 import { findbyid, findquestion, submitcode } from "@/api/index.js";
 import * as monaco from "monaco-editor";
-import { useRouter, RouterLink } from "vue-router";
+import { useRouter } from "vue-router";
 let router = useRouter()
 let params = ref({
     name: '',
@@ -126,7 +126,7 @@ function runCode() {
     submitcontent.value.language = language.value;
     submitcontent.value.code = toRaw(codemonaco.value).getValue();
     submitcontent.value.status = 0;
- 
+
     submitcode(submitcontent.value).then(
         res => {
             if (res.code === '0') {
@@ -197,7 +197,7 @@ function setupMonacoEditror() {
 }
 function onChangeEditorLang() {
     // var model = monaco.editor.getModel(); // 获取当前编辑器的模型
-     monaco.editor.setModelLanguage( toRaw(codemonaco.value).getModel(), language.value); // 设置模型的语言
+    monaco.editor.setModelLanguage(toRaw(codemonaco.value).getModel(), language.value); // 设置模型的语言
     // console.log(codemonaco.value.language)
     // 获取编辑器的值
     console.log({

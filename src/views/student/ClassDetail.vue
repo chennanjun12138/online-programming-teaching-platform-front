@@ -31,20 +31,22 @@
 
             <div class='monaco-editor'>
             </div>
-            
+            <el-dialog title="运行结果" v-model="runVisble">
+                {{ runResult }}
+            </el-dialog>
         </div>
 
     </div>
 </template>
     
 <script setup>
-import { ref, onMounted ,toRaw} from 'vue';
-import { downloadPDF, findcontract ,runcode} from "@/api/index.js";
-import * as monaco from "monaco-editor"; 
+import { ref, onMounted, toRaw, } from 'vue';
+import { downloadPDF, findcontract, runcode } from "@/api/index.js";
+import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
 const router = useRouter()
 const currentUrl = window.location.href;
- 
+
 let url = ref("")
 let form = ref({})
 let linklist = ref([]);
@@ -92,6 +94,8 @@ const options = ref([
 const pdfIframe = ref(null);
 let submitcontent = ref({});
 const codemonaco = ref();
+let runVisble = ref(false);
+let runResult = ref('');
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 
 onMounted(async () => {
@@ -107,7 +111,7 @@ function handleIframeLoad() {
     // 监听翻页事件
     pdfViewer.eventBus.on("pagechanging", (event) => {
         const currentPage = event.pageNumber;
-        console.log("当前页数：" + currentPage);
+        // console.log("当前页数：" + currentPage);
         linklist.value = []
         showquestion(currentPage);
     });
@@ -119,7 +123,7 @@ function showquestion(pagenumber) {
 
         pdfViewer.pdfDocument.getPage(pagenumber).then(page => {
             page.getTextContent().then(content => {
-                console.log(pagenumber);
+                // console.log(pagenumber);
                 const textItems = content.items.map(item => item.str);
                 const pageText = textItems.join(' ');
 
@@ -129,7 +133,7 @@ function showquestion(pagenumber) {
 
                 // 如果找到匹配的子串
                 if (matches) {
-                    console.log(matches);
+                    // console.log(matches);
                     const baseUrl = currentUrl.split('/').slice(0, 3).join('/');
 
                     linklist.value = matches.map(match => `${baseUrl}/${match}`);
@@ -151,6 +155,8 @@ function runCode() {
                     type: 'success'
                 });
                 console.log(res.data);
+                runResult.value = res.data;
+                runVisble.value = true;
             } else {
                 window.$message({
                     message: res.msg,
@@ -169,7 +175,7 @@ function gotoquestion() {
         if (res.code === '0') {
 
             qiddata.value = res.data;
-            console.log(qiddata.value);
+            // console.log(qiddata.value);
             if (qiddata.value.length === 0) {
                 window.$message({
                     message: "该课程没有相关题目",
@@ -217,7 +223,7 @@ function setupMonacoEditror() {
 }
 
 function onChangeEditorLang(lang) {
-    monaco.editor.setModelLanguage( toRaw(codemonaco.value).getModel(), language.value); // 设置模型的语言
+    monaco.editor.setModelLanguage(toRaw(codemonaco.value).getModel(), language.value); // 设置模型的语言
 
     // 获取编辑器的值
     console.log({

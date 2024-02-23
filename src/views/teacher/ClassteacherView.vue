@@ -1,11 +1,9 @@
 <template>
-         <classcontrol  msg="A"/>
+    <classcontrol msg="A" />
 </template>
     
 <script setup>
-    import classcontrol from '@/components/classcontrol.vue';
+import classcontrol from '@/components/classcontrol.vue';
 </script>
     
-<style>
-    
-</style>
+<style></style>

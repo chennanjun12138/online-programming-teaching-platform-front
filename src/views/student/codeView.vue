@@ -111,6 +111,10 @@ let submitdata = ref([
         name: '超时',
         value: 0
     },
+    {
+        name: '编译错误',
+        value: 0
+    },
 
 ])
 
@@ -276,6 +280,6 @@ function handleCurrentChange(pageNum) {
     display: flex;
     justify-content: center;
 
-    height: 450px;
+    height: 520px;
 }
 </style>

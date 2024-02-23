@@ -96,35 +96,8 @@ let tableVisible2 = ref(false);
 let multipleSelection = ref([]);
 let dialogFormVisible = ref(false);
 let form = ref({})
-let workid = ref(0);
-let notice = ref('')
+
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
-function delcontent(id) {
-    console.log(tableData.value)
-    let str = tableData.value[workid.value].content;
-    let arr = JSON.parse(str);
-    arr.splice(id - 1, 1);
-    let newStr = JSON.stringify(arr);
-    console.log(newStr); // 输出 '[1,3]'
-    tableData.value[workid.value].content = newStr;
-    form.value = tableData.value[workid.value];
-    console.log(form.value.id)
-    updatehomework(form.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            dialogFormVisible.value = false;
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
-    })
-}
 function findBySearch() {
 
     params.value.teacher = user.value.name;
@@ -189,10 +162,7 @@ function add(id, submitid) {
 
     dialogFormVisible.value = true;
 }
-function edit(obj) {
-    form.value = obj;
-    dialogFormVisible.value = true;
-}
+
 function submit() {
     changesubmit(form.value).then(res => {
         if (res.code === '0') {
@@ -229,24 +199,7 @@ function handleSelectionChange(val) {
     multipleSelection.value = val;
 }
 
-function delBatch() {
-    if (multipleSelection.value.length === 0) {
-        window.$message.warning("请勾选您要删除的项")
-        return
-    }
-    delBatchhomework(multipleSelection.value).then(res => {
-        if (res.code === '0') {
-            window.$message.success("批量删除成功")
-            findBySearch()
-        } else {
-            window.$message.error(res.msg)
-        }
-    })
-}
-function successUpload(res) {
-    form.value.img = res.data;
 
-}
 function getRowKeys(row) {
     return row.id;
 }
