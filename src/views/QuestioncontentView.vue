@@ -134,7 +134,7 @@ function runCode() {
                     message: "提交成功",
                     type: 'success'
                 });
-
+                router.push("/code");
             } else {
                 window.$message({
                     message: res.msg,

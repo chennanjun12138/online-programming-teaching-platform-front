@@ -4,6 +4,10 @@
         <div>
             <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
             <el-input v-model="params.userid" style="width: 200px; margin-left: 5px" placeholder="请输入提交者id"></el-input>
+            <el-select v-model="params.runresult" clearable placeholder="请输入代码结果" style="margin-left: 5px; width: 200px;">
+                <el-option v-for="item in resultoptions" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
             <el-select v-model="params.language" clearable placeholder="请选择编程语言" style="margin-left: 5px; width: 200px;">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
@@ -16,7 +20,6 @@
         <div>
             <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <!-- <el-table-column prop="id" label="提交id" width="80px"></el-table-column> -->
 
                 <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
@@ -68,14 +71,11 @@
 <script setup  >
 import { ref } from 'vue';
 import {
-    searchcode, deletequestionsubmit, addevaluate, findevaluate, findteachers, getsubmitbyteachers
+     addevaluate, findevaluate, getsubmitbyteachers
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
-import * as monaco from "monaco-editor";
-
 const mdValue = ref('');
-const codemonaco = ref();
 const onMdChange = (v) => {
     mdValue.value = v;
 };
@@ -124,6 +124,30 @@ let options = ref([
         value: 'xml',
         label: 'xml'
     },
+])
+let resultoptions = ref([
+    {
+        value: 'Accepted',
+        label: 'Accepted',
+    },
+    {
+        value: 'Wrong Answer',
+        label: 'Wrong Answer',
+    },
+
+    {
+        value: '内存溢出',
+        label: '内存溢出',
+    },
+    {
+        value: '超时',
+        label: '超时',
+    },
+    {
+        value: '编译错误',
+        label: '编译错误',
+    },
+
 ])
 let total = ref(0);
 let tableData = ref([]);
@@ -207,7 +231,7 @@ function findBySearch() {
                 tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
             }
-            console.log(tableData.value);
+            
         } else {
             window.$message({
                 message: res.msg,
@@ -215,19 +239,6 @@ function findBySearch() {
             });
         }
     })
-}
-function del(id) {
-    deletequestionsubmit(id).then(res => {
-        if (res.code === '0') {
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
-    })
-
 }
 findBySearch();
 function handleSizeChange(pageSize) {

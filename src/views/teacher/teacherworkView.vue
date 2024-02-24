@@ -3,7 +3,7 @@
 </template>
     
 <script setup>
-import homeworkcontrol from '@/components/homeworkcontrol.vue';
+import homeworkcontrol from '@/components/HomeworkControl.vue';
 
 </script>
     

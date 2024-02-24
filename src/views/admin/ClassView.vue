@@ -3,7 +3,7 @@
 </template>
   
 <script setup >
-import classcontrol from '@/components/classcontrol.vue';
+import classcontrol from '@/components/ClassControl.vue';
 </script>
   
 <style></style>

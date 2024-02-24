@@ -27,6 +27,12 @@
             </el-icon>
             <span>课程管理</span>
           </el-menu-item>
+          <el-menu-item index="/connectcontroller" v-if="user.role === 'ROLE_ADMIN'">
+            <el-icon>
+              <Setting />
+            </el-icon>
+            <span slot="title">课程关系管理</span>
+          </el-menu-item>
           <el-menu-item index="/homework" v-if="user.role === 'ROLE_ADMIN'">
             <el-icon>
               <Setting />
@@ -51,12 +57,7 @@
             </el-icon>
             <span slot="title">用户管理</span>
           </el-menu-item>
-          <el-menu-item index="/connectcontroller" v-if="user.role === 'ROLE_ADMIN'">
-            <el-icon>
-              <Setting />
-            </el-icon>
-            <span slot="title">课程关系管理</span>
-          </el-menu-item>
+      
           <el-menu-item index="/classteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
               <Reading />

@@ -4,6 +4,11 @@
         <div>
             <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
             <el-input v-model="params.userid" style="width: 200px; margin-left: 5px" placeholder="请输入提交者id"></el-input>
+ 
+            <el-select v-model="params.runresult" clearable placeholder="请输入代码结果" style="margin-left: 5px; width: 200px;">
+                <el-option v-for="item in resultoptions" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
             <el-select v-model="params.language" clearable placeholder="请选择编程语言" style="margin-left: 5px; width: 200px;">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
@@ -88,6 +93,30 @@ let params = ref({
     pageNum: 1,
     pageSize: 5
 })
+let resultoptions = ref([
+    {
+        value: 'Accepted',
+        label: 'Accepted',
+    },
+    {
+        value: 'Wrong Answer',
+        label: 'Wrong Answer',
+    },
+
+    {
+        value: '内存溢出',
+        label: '内存溢出',
+    },
+    {
+        value: '超时',
+        label: '超时',
+    },
+    {
+        value: '编译错误',
+        label: '编译错误',
+    },
+
+])
 let options = ref([
     {
         value: 'java',
@@ -202,6 +231,7 @@ function submit() {
 function findBySearch() {
     searchcode(params.value).then(res => {
         if (res.code === '0') {
+            console.log(res.data.list);
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {

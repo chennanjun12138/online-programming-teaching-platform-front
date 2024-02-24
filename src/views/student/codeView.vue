@@ -8,6 +8,10 @@
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
+            <el-select v-model="params.runresult" clearable placeholder="请输入代码结果" style="margin-left: 5px; width: 200px;">
+                <el-option v-for="item in resultoptions" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+            </el-select>
             <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
             <el-button type="warning" style="margin-left: 10px" @click="showchart()">查看情况</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
@@ -65,7 +69,7 @@ import {
     searchcode, findevaluate, findByid, getallsubmit, findbyquestionid
 } from "@/api/index.js";
 import dayjs from 'dayjs';
-import MdEditor from "@/components/MdEditor.vue";
+
 import Chart from '@/components/Chart.vue';
 
 const mdValue = ref('');
@@ -80,9 +84,31 @@ let params = ref({
     pageSize: 5,
 })
 let total = ref(0);
-let tableData = ref([
+let tableData = ref([]);
+let resultoptions = ref([
+    {
+        value: 'Accepted',
+        label: 'Accepted',
+    },
+    {
+        value: 'Wrong Answer',
+        label: 'Wrong Answer',
+    },
 
-]);
+    {
+        value: '内存溢出',
+        label: '内存溢出',
+    },
+    {
+        value: '超时',
+        label: '超时',
+    },
+    {
+        value: '编译错误',
+        label: '编译错误',
+    },
+
+])
 let questiondata = ref([
     { value: 0, name: '算法设计与分析' },
     { value: 0, name: '数据结构' },

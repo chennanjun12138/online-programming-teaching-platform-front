@@ -58,7 +58,7 @@
                 </el-table-column>
             </el-table>
             <el-table v-if="tableVisible2" :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
-                @selection-change="handleSelectionChange">
+                @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
@@ -70,9 +70,10 @@
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                          <el-button v-if="isNumberInArray(row.questionid)===1" type="primary" @click="insertcontract(row.questionid)">添加</el-button>
-                          <el-button v-else type="primary" disabled>已添加</el-button>
-                        </template>
+                        <el-button v-if="isNumberInArray(row.questionid) === 1" type="primary"
+                            @click="insertcontract(row.questionid)">添加</el-button>
+                        <el-button v-else type="primary" disabled>已添加</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
 
@@ -148,7 +149,7 @@ const props = defineProps({
 
 import {
     changeclass, delBatchclass, deleteclass, findclasss,
-    findcourse, findquestionbanks, submitcourse, addcontract, findquestion, addBatchcontract,judgecontract
+    findcourse, findquestionbanks, submitcourse, addcontract, findbyquestionid, addBatchcontract, judgecontract, findteachers
 } from "@/api/index.js";
 let params = ref({
     name: '',
@@ -166,7 +167,7 @@ let tableVisible2 = ref(false);
 let classid = ref(0);
 let multipleSelection = ref([]);
 let multiContracts = ref([]);
-let status=ref([]);
+let status = ref([]);
 let conteact = ref({
     classid: 0,
     questionid: 0,
@@ -224,9 +225,9 @@ function findBySearch() {
     findclasss(params.value).then(res => {
         if (res.code === '0') {
             tableData.value = res.data.list;
-            console.log(tableData.value);
+            //   console.log(tableData.value);
             total.value = res.data.total;
-            console.log(total.value);
+            //  console.log(total.value);
         } else {
             window.$message({
                 message: res.msg,
@@ -267,7 +268,7 @@ function insertcontract(id) {
                 type: 'error'
             });
         }
-    }) 
+    })
 }
 function searchcourse(id) {
     params.value.classid = id;
@@ -290,38 +291,47 @@ function searchcourse(id) {
     })
 }
 function isNumberInArray(number) {
- 
-    if(status.value.includes(number))
-    {
-       
+
+    if (status.value.includes(number)) {
+
         return 1;//未添加
     }
-    else 
-    {   
-         return 0;//已添加
+    else {
+        return 0;//已添加
     }
- 
+
 }
+
+
+
+
+
 function findquestions(id) {
     classid.value = id;
+    const allquestiondata = ref([])
+    findbyquestionid(params.value).then(
+        res => {
+            if (res.code === '0') {
+
+                allquestiondata.value = res.data;
+            }
+        }
+    )
+
     findquestionbanks(params.value).then(res => {
         if (res.code === '0') {
             questiondata.value = res.data.list;
             total.value = res.data.total;
-            status.value=[];
-             
-            for(let i=0;i<res.data.total;i++)
-            {
+            status.value = [];
+            for (let i = 0; i < res.data.total; i++) {
                 form.value = {}
                 form.value.classid = id;
-                form.value.questionid = questiondata.value[i].questionid;
-                judgecontract(form.value).then(res=>
-                { 
-                      if(res.data!==0) 
-                      {  
-                           status.value.push(res.data.toString());
-                      }
-                 }
+                form.value.questionid = allquestiondata.value[i].questionid;
+                judgecontract(form.value).then(res => {
+                    if (res.data !== 0) {
+                        status.value.push(res.data.toString());
+                    }
+                    }
                 )
             }
             tableVisible2.value = true;
@@ -333,6 +343,9 @@ function findquestions(id) {
             });
         }
     })
+    // console.log(status.value)
+
+
 }
 function reset() {
     params.value = {
@@ -345,11 +358,22 @@ function reset() {
 }
 function handleSizeChange(pageSize) {
     params.value.pageSize = pageSize;
-    findBySearch();
+    if (tableVisible.value === true) {
+        findBySearch();
+    }
+    else {
+        findquestions(classid.value);
+    }
+
 }
 function handleCurrentChange(pageNum) {
     params.value.pageNum = pageNum;
-    findBySearch();
+    if (tableVisible.value === true) {
+        findBySearch();
+    }
+    else {
+        findquestions(classid.value);
+    }
 }
 
 function add() {

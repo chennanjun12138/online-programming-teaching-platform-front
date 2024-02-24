@@ -155,11 +155,9 @@ function searchsubmit(id) {
 function add(id, submitid) {
     form.value = {};
     form.value.id = submitid;
-    if (submitdata.value[id].score != null) {
-        form.value.score = submitdata.value[id].score;
-        form.value.teacherevaluate = submitdata.value[id].teacherevaluate;
-    }
-
+    
+    form.value.score = submitdata.value[id]?.score;
+    form.value.teacherevaluate = submitdata.value[id]?.teacherevaluate;
     dialogFormVisible.value = true;
 }
 
