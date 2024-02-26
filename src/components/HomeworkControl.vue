@@ -139,7 +139,7 @@ function delcontent(listid, questionid) {
     //   console.log(arr)
     arr.splice(listid, 1);
     let newStr = JSON.stringify(arr);
-    console.log(newStr); // 输出 '[1,3]'
+    // console.log(newStr); // 输出 '[1,3]'
     tableData.value[workid.value].content = newStr;
     form.value = tableData.value[workid.value];
     updatehomework(form.value).then(res => {
@@ -216,10 +216,10 @@ function handleCurrentChange(pageNum) {
     findBySearch();
 }
 function searchbyhomework(id, content, illustrate, homeworkid) {
-    console.log(id);
+    // console.log(id);
 
     workid.value = id;
-    console.log(workid.value);
+    // console.log(workid.value);
     notice.value = illustrate;
     zuoyeid.value = homeworkid;
 
@@ -316,6 +316,5 @@ function getRowKeys(row) {
     margin-top: 10px;
     align-content: center;
     justify-content: center;
-
 }
 </style>

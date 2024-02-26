@@ -248,7 +248,7 @@ function insertcontract(id) {
     form.value.questionid = id;
     addcontract(form.value).then(res => {
         if (res.code === '0') {
-            console.log(res.data);
+            // console.log(res.data);
             if (res.data == 1) {
                 window.$message({
                     message: '添加成功',
@@ -440,7 +440,7 @@ function handleSelectionChange(val) {
         conteact.value = {}
         conteact.value.classid = classid;
         conteact.value.questionid = val[i].questionid;
-        console.log(conteact.questionid);
+        // console.log(conteact.questionid);
         multiContracts.value.push(conteact.value);
     }
 }

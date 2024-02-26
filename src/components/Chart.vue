@@ -51,8 +51,8 @@ function initPieChart() {
     var myChart = echarts.init(chartDom);
     var chartDom2 = document.getElementById('chart2');
     var myChart2 = echarts.init(chartDom2);
-    console.log(props.QuestionData)
-    console.log(props.SubmitData)
+    // console.log(props.QuestionData)
+    // console.log(props.SubmitData)
     myChart.setOption(
         {
             title: {
