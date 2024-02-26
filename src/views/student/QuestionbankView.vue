@@ -15,7 +15,6 @@
         <div>
             <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
                 <el-table-column prop="name" label="题目名称"></el-table-column>
@@ -71,8 +70,8 @@
     
 <script setup>
 import { ref } from 'vue';
-import { changequestionbank, delBatchquestionbank, deletequestionbank, findquestionbanks } from "@/api/index.js";
-import { useRouter, RouterLink } from "vue-router";
+import { changequestionbank, findquestionbanks } from "@/api/index.js";
+import { useRouter } from "vue-router";
 const router = useRouter()
 let params = ref({
     name: '',
@@ -86,7 +85,6 @@ let tableData = ref([]);
 let dialogFormVisible = ref(false);
 let multipleSelection = ref([]);
 let form = ref({})
-const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let options = ref([
     {
         value: '算法设计与分析',
@@ -158,16 +156,7 @@ function handleCurrentChange(pageNum) {
     findBySearch();
 }
 
-function add() {
-    form.value = {
-        creator: user.value.name
-    };
-    dialogFormVisible.value = true;
-}
-function edit(obj) {
-    form.value = obj;
-    dialogFormVisible.value = true;
-}
+ 
 function submit() {
     changequestionbank(form.value).then(res => {
         if (res.code === '0') {
@@ -185,57 +174,16 @@ function submit() {
         }
     })
 }
-function del(id) {
-    deletequestionbank(id).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '删除成功',
-                type: 'success'
-            });
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
-    })
-}
-function successUpload(res) {
-    form.value.img = res.data;
-
-}
-function down(flag) {
-    location.href = 'http://localhost:8080/api/files/' + flag
-}
+ 
+ 
 function handleSelectionChange(val) {
     multipleSelection.value = val;
 }
-function delBatch() {
-    if (multipleSelection.value.length === 0) {
-        window.$message.warning("请勾选您要删除的项")
-        return
-    }
-    delBatchquestionbank(multipleSelection.value).then(res => {
-        if (res.code === '0') {
-            window.$message.success("批量删除成功")
-            findBySearch()
-        } else {
-            window.$message.error(res.msg)
-        }
-    })
-}
+ 
 function getRowKeys(row) {
     return row.id;
 }
 
 </script>
     
-<style>
-.container {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-
-}
-</style>
+<style scoped></style>

@@ -55,7 +55,7 @@
 
                 <el-table-column prop="submittime" label="提交时间"></el-table-column>
                 <el-table-column prop="content" label="提交内容"></el-table-column>
-                <el-table-column prop="score" label="评分" width="50px"></el-table-column>
+                <el-table-column prop="score" label="评分" width="60px"></el-table-column>
                 <el-table-column prop="teacherevaluate" label="教师评价"></el-table-column>
 
             </el-table>
@@ -93,7 +93,7 @@ import {
     findbyhomework, findbyteacher,
     findteachers,
 } from "@/api/index.js";
-import { useRouter, RouterLink } from "vue-router";
+import { useRouter } from "vue-router";
 const router = useRouter()
 let params = ref({
     studentid: '',
@@ -255,11 +255,4 @@ function handleSelectionChange(val) {
 } 
 </script>
     
-<style>
-.container {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-
-}
-</style>
+<style></style>

@@ -8,15 +8,15 @@ import ClassView from "@/views/admin/ClassView.vue";
 import PersonView from "@/views/PersonView.vue";
 import ClasslearnView from "@/views/student/ClasslearnView.vue";
 import QuestionbankcontrollerView from "@/views/admin/QuestionbankcontrollerView.vue";
-import codeView from "@/views/student/codeView.vue";
+import codeView from "@/views/student/CodeView.vue";
 import HomeworkView from "@/views/admin/HomeworkView.vue";
 import QuestionbankView from "@/views/student/QuestionbankView.vue";
 import ClassteacherView from "@/views/teacher/ClassteacherView.vue";
 import teacherworkView from "@/views/teacher/teacherworkView.vue";
-import codeteacherView from "@/views/teacher/codeteacherView.vue";
+import codeteacherView from "@/views/teacher/CodeteacherView.vue";
 import homeworkteacherView from "@/views/teacher/HomeworkteacherView.vue";
 
-import gradeworkView from "@/views/student/gradeworkView.vue";
+import gradeworkView from "@/views/student/GradeworkView.vue";
 import QuestionbankteacherView from "@/views/teacher/QuestionbankteacherView.vue";
 import notfoundVue from '@/views/notfound.vue';
  

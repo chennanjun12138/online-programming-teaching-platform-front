@@ -199,11 +199,4 @@ function getRowKeys(row) {
 }
 </script>
     
-<style>
-.container {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-
-}
-</style>
+<style></style>

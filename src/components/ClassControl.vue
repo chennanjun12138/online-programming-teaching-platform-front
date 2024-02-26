@@ -331,7 +331,7 @@ function findquestions(id) {
                     if (res.data !== 0) {
                         status.value.push(res.data.toString());
                     }
-                    }
+                }
                 )
             }
             tableVisible2.value = true;
@@ -486,10 +486,4 @@ function getRowKeys(row) {
 
 </script>
       
-<style>
-.container {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-}
-</style>
+<style></style>

@@ -8,7 +8,6 @@
                     <el-upload class="avatar-uploader" action="http://localhost:8080/api/files/upload"
                         :show-file-list="false" :on-success="successUpload">
                         <img v-if="user.photo" :src="'http://localhost:8080/api/files/' + user.photo" class="avatar">
-                        <!--   <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
                         <i v-else class="avatar" style="color: rgb(116, 118, 118);">
                             <CirclePlus />
                         </i>
@@ -103,7 +102,7 @@ function submit() {
 
 </script>
     
-<style>
+<style  scoped  lang="scss">
 .elcard {
     height: 480px;
     width: 900px;
@@ -126,12 +125,5 @@ function submit() {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-}
-
-.container {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-
 }
 </style>
