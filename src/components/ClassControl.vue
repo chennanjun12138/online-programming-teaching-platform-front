@@ -428,7 +428,7 @@ function del(id) {
         } else {
             window.$message({
                 message: res.msg,
-                type: 'success'
+                type: 'error'
             });
         }
     })

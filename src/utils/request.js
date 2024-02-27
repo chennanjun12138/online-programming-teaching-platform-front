@@ -34,6 +34,21 @@ request.interceptors.response.use(
             res = res ? JSON.parse(res) : res
         }
         return res;
+        /*简化全局
+          if (res.code == '0') {
+            // 兼容服务端返回的字符串数据
+            if (typeof res === 'string') {
+                res = res ? JSON.parse(res) : res
+            }
+            return res;
+        }
+        else {
+            window.$message({
+                message: res.msg,
+                type: 'error'
+            });
+        }
+        */
     },
     error => {
         // console.log('err' + error) // for debug

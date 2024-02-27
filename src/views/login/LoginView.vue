@@ -26,8 +26,8 @@
 </template>
 
 <script setup>
-import { Setting, User, Lock, View } from "@element-plus/icons-vue"
-import { ref, reactive, computed } from "vue"
+import {  User, Lock } from "@element-plus/icons-vue"
+import { ref} from "vue"
 import { login } from "@/api/index.js";
 import { useRouter, RouterLink } from "vue-router";
 import { validate } from '@/utils/validate'
@@ -45,7 +45,7 @@ const rules = ref({
 const formRef = ref();
 function onLogin() {
   validate(formRef.value, () => {
-    console.log("进入")
+    
     login(user.value).then(res => {
       if (res.code == '0') {
         window.$message({

@@ -17,3 +17,23 @@ export const usehandleSizeChange = defineStore('handleSizeChange', () => {
         findBySearch
     }
 })
+
+
+export function getItem(key)
+{
+    if(localStorage.getItem(key))
+    {
+            return JSON.parse(localStorage.getItem(key));
+    }
+    else
+    {
+        return {}
+    }
+}
+
+
+
+export function setItem(key,value)
+{
+    localStorage.setItem(key,value);
+}

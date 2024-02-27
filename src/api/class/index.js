@@ -80,3 +80,19 @@ export const delBatchclass = (data) => {
         data:data
     })
 }
+
+
+export const savenotebook = (data)=> {
+    return request({
+        url: '/class/savenotebook',
+        method: 'post',
+        data:data
+    })
+}
+export const findnotebook = (data)=> {
+    return request({
+        url: '/class/getnotebook',
+        method: 'get',
+        params:data
+    })
+}

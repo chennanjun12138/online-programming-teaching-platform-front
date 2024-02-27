@@ -161,28 +161,12 @@ let options = ref([
         label: 'Javascript'
     },
     {
-        value: 'html',
-        label: 'Html'
-    },
-    {
-        value: 'json',
-        label: 'Json'
-    },
-    {
-        value: 'markdown',
-        label: 'Markdown'
-    },
-    {
         value: 'sql',
         label: 'Sql'
     },
     {
         value: 'python',
         label: 'Python'
-    },
-    {
-        value: 'xml',
-        label: 'xml'
     },
 ])
 let evaluateData = ref([]);

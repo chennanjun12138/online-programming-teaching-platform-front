@@ -57,7 +57,7 @@
             </el-icon>
             <span slot="title">用户管理</span>
           </el-menu-item>
-      
+
           <el-menu-item index="/classteacher" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
               <Reading />
@@ -179,7 +179,14 @@ let isCollapse = ref(false);
 const display = computed(
   () => {
     const current = router.getRoutes().find(r => {
-      return r.path === route.path
+      console.log(route.name, r.name)
+      if (route.name === 'questioncontent' || route.name ==='ClassDetail') {
+        return route.path.includes(r.name)
+      }
+      else {
+        return r.path === route.path
+      }
+
     })
 
     if (current) {

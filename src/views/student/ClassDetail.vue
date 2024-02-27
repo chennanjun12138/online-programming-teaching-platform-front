@@ -19,18 +19,31 @@
         </div>
 
         <div>
-            <el-row>
-                编程语言：
-                <el-select @change="onChangeEditorLang" v-model="language" placeholder="请选择" style="width: 200px;">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-button style="margin-left: 5px" type="warning" @click="runCode">运行</el-button>
 
-            </el-row>
 
-            <div class='monaco-editor'>
-            </div>
+            <el-tabs v-model="activeName" @tab-click="handleClick">
+                <el-tab-pane label="编辑器" name="first">
+                    <el-row>
+                        <el-text>编程语言：</el-text>
+                        <el-select @change="onChangeEditorLang" v-model="language" placeholder="请选择" style="width: 200px;">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <el-button style="margin-left: 5px" type="warning" @click="runCode">运行</el-button>
+
+                    </el-row>
+                    <div class='monaco-editor'>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane label="笔记本" name="second">
+
+                    <div class="notebook">
+                        <el-input v-model="textarea" :autosize="{ minRows: 16, maxRows: 16 }" type="textarea" />
+                    </div>
+                    <el-button style="margin-top: 10px;" type="warning" @click="savenote">保存</el-button>
+                </el-tab-pane>
+            </el-tabs>
+
             <el-dialog title="运行结果" v-model="runVisble">
                 {{ runResult }}
             </el-dialog>
@@ -41,9 +54,15 @@
     
 <script setup>
 import { ref, onMounted, toRaw, } from 'vue';
-import { downloadPDF, findcontract, runcode } from "@/api/index.js";
+import { downloadPDF, findcontract, runcode, savenotebook,findnotebook } from "@/api/index.js";
 import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
+
+const activeName = ref('first')
+const textarea = ref('')
+const handleClick = (tab, event) => {
+    console.log(tab, event)
+}
 const router = useRouter()
 const currentUrl = window.location.href;
 
@@ -52,7 +71,7 @@ let form = ref({})
 let linklist = ref([]);
 let qiddata = ref([]);
 let language = ref("c")
-const options = ref([
+let options = ref([
     {
         value: 'java',
         label: 'Java'
@@ -66,18 +85,6 @@ const options = ref([
         label: 'Javascript'
     },
     {
-        value: 'html',
-        label: 'Html'
-    },
-    {
-        value: 'json',
-        label: 'Json'
-    },
-    {
-        value: 'markdown',
-        label: 'Markdown'
-    },
-    {
         value: 'sql',
         label: 'Sql'
     },
@@ -85,12 +92,12 @@ const options = ref([
         value: 'python',
         label: 'Python'
     },
-    {
-        value: 'xml',
-        label: 'xml'
-    },
-],
-)
+])
+let params = ref({
+    studentid:0,
+    classid: 0,
+    content: ''
+})
 const pdfIframe = ref(null);
 let submitcontent = ref({});
 const codemonaco = ref();
@@ -102,7 +109,39 @@ onMounted(async () => {
     await loadPDF(router.currentRoute.value.params.fileId)
     await pdfIframe.value;
     await setupMonacoEditror()
+     
 });
+getnotebook()
+function savenote() {
+    form.value.classid = router.currentRoute.value.query.classId;
+    form.value.studentid=user.value.id;
+    form.value.content=textarea.value;
+    savenotebook(form.value).then(
+        res=>{
+            if(res.code=='0')
+            {
+                window.$message({
+                    message: "提交成功",
+                    type: 'success'
+                });
+            }
+        }
+    )
+}
+function getnotebook()
+{
+       params.value.classid=router.currentRoute.value.query.classId;
+       params.value.studentid=user.value.id;
+       findnotebook(params.value).then(
+        res=>{
+            if(res.code=='0')
+            {
+                 console.log(res);
+                 textarea.value=res.data.content;
+            }
+        }
+    )
+}
 // loadPDF(router.currentRoute.value.params.fileId);
 function handleIframeLoad() {
     const iframe = pdfIframe.value;
@@ -222,7 +261,7 @@ function setupMonacoEditror() {
     monaco = codemonaco.value
 }
 
-function onChangeEditorLang(lang) {
+function onChangeEditorLang() {
     monaco.editor.setModelLanguage(toRaw(codemonaco.value).getModel(), language.value); // 设置模型的语言
 
     // 获取编辑器的值
@@ -272,6 +311,12 @@ function onChangeEditorLang(lang) {
 .monaco-editor {
     width: 100%;
     height: 250px;
+    margin-top: 5px;
+}
+
+.notebook {
+    width: 300px;
+    height: 350px;
     margin-top: 5px;
 }
 

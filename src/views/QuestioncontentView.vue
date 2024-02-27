@@ -44,6 +44,7 @@
             <div class='monaco-editor'>
             </div>
             <el-button style="margin-top: 10px" type="warning" @click="runCode">提交代码</el-button>
+            <el-button style="margin-top: 10px" type="warning" @click="goback">返回</el-button>
 
         </div>
 
@@ -92,18 +93,6 @@ let options = ref([
         label: 'Javascript'
     },
     {
-        value: 'html',
-        label: 'Html'
-    },
-    {
-        value: 'json',
-        label: 'Json'
-    },
-    {
-        value: 'markdown',
-        label: 'Markdown'
-    },
-    {
         value: 'sql',
         label: 'Sql'
     },
@@ -111,21 +100,27 @@ let options = ref([
         value: 'python',
         label: 'Python'
     },
-    {
-        value: 'xml',
-        label: 'xml'
-    },
 ])
 findBySearch();
 onMounted(async () => {
     await setupMonacoEditror();
 });
+function goback()
+{
+    
+}
 function runCode() {
     submitcontent.value.userid = user.value.id;
     submitcontent.value.questionid = router.currentRoute.value.params.questionid;
     submitcontent.value.language = language.value;
     submitcontent.value.code = toRaw(codemonaco.value).getValue();
     submitcontent.value.status = 0;
+    if (!submitcontent.value.code) {
+        return window.$message({
+            message: "没有代码",
+            type: 'error'
+        });
+    }
 
     submitcode(submitcontent.value).then(
         res => {
