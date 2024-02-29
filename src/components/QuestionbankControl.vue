@@ -21,20 +21,20 @@
         @selection-change="handleSelectionChange" :row-key="getRowKeys">
         <el-table-column v-if="props.msg !== 'A'" ref="table" type="selection" width="55"
           :reserve-selection="true"></el-table-column>
-        <el-table-column  prop="questionid" label="题号" width="55px"></el-table-column>
+        <el-table-column prop="questionid" label="题号" width="55px"></el-table-column>
 
         <el-table-column prop="name" label="题目名称" width="85px"></el-table-column>
-        <el-table-column prop="type" label="题目类型" width="85px" ></el-table-column>
+        <el-table-column prop="type" label="题目类型" width="85px"></el-table-column>
 
-        <el-table-column prop="description" label="题目描述" ></el-table-column>
-        <el-table-column prop="creator" label="创建者" width="75px" ></el-table-column>
+        <el-table-column prop="description" label="题目描述"></el-table-column>
+        <el-table-column prop="creator" label="创建者" width="75px"></el-table-column>
         <el-table-column label="提交数/正确数" width="75px">
           <template #default="{ row }">
             <span>{{ row.submitnum }} / {{ row.solvenum }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createtime" label="创建时间" width="165px" ></el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column prop="createtime" label="创建时间" width="165px"></el-table-column>
+        <el-table-column label="操作">
           <template #default="{ row }">
             <span class="button-group">
               <el-button type="primary" @click="edit(row)">编辑</el-button>
@@ -231,15 +231,10 @@ function delshow(creator) {
 }
 function findBySearch() {
   findquestionbanks(params.value).then(res => {
-    if (res.code === '0') {
-      tableData.value = res.data.list;
-      total.value = res.data.total;
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'error'
-      });
-    }
+
+    tableData.value = res.data.list;
+    total.value = res.data.total;
+
   })
 }
 findBySearch();
@@ -284,75 +279,57 @@ function edit(obj) {
   dialogFormVisible.value = true;
 }
 function show(id) {
-  form.value = {
-
-  }
+  form.value = {}
   params.value.questionid = id;
   findquestion(params.value).then(res => {
-    if (res.code === '0') {
-      JudgeCase.value = []
-      form.value = res.data;
-      let str = form.value.judgeConfig;
-      // 将字符串转换为JSON对象
-      const json = JSON.parse(str);
-      judgeConfig.value = json;
-      let str2 = form.value.judgeCase;
 
-      if (str2 == "[]") {
-        JudgeCase.value.push({
-          input: "",
-          output: "",
-        });
-      }
-      else {
-        let json2 = JSON.parse(str2);
-        JudgeCase.value = json2;
-      }
+    JudgeCase.value = []
+    form.value = res.data;
+    let str = form.value.judgeConfig;
+    // 将字符串转换为JSON对象
+    const json = JSON.parse(str);
+    judgeConfig.value = json;
+    let str2 = form.value.judgeCase;
 
-      console.log(JudgeCase)
-      contentVisible.value = true;
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'error'
+    if (str2 == "[]") {
+      JudgeCase.value.push({
+        input: "",
+        output: "",
       });
     }
+    else {
+      let json2 = JSON.parse(str2);
+      JudgeCase.value = json2;
+    }
+
+    console.log(JudgeCase)
+    contentVisible.value = true;
+
   })
+  params.value = {
+    pageNum: 1,
+    pageSize: 5,
+    name: '',
+    phone: ''
+  }
 }
 function submit() {
   changequestionbank(form.value).then(res => {
-    if (res.code === '0') {
-      window.$message({
-        message: '操作成功',
-        type: 'success'
-      });
-      dialogFormVisible.value = false;
-      findBySearch();
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'error'
-      });
-    }
+    dialogFormVisible.value = false;
+    findBySearch();
+
   })
   list.value = {}
   list.value.id = form.value.questionid;
+  list.value.judgeConfig=JSON.stringify(judgeConfig.value);
+  list.value.judgeCase=JSON.stringify([{"input":"","output":""}]);
   if (form.value.id === undefined) {
     addquestion(list.value).then(
       res => {
-        if (res.code === '0') {
-          window.$message({
-            message: '操作成功',
-            type: 'success'
-          });
-        }
-        else {
-          window.$message({
-            message: res.msg,
-            type: 'success'
-          });
-        }
-
+        window.$message({
+          message: '操作成功',
+          type: 'success'
+        });
       }
     )
   }
@@ -365,45 +342,30 @@ function savecontent() {
   const jsonString2 = JSON.stringify(JudgeCase.value);
   form.value.judgeCase = jsonString2.toString();
   changequestion(form.value).then(res => {
-    if (res.code === '0') {
+ 
       window.$message({
         message: '操作成功',
         type: 'success'
       });
       contentVisible.value = false;
 
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'success'
-      });
-    }
+  
   })
 }
 function del(id, questionid) {
   deletequestionbank(id).then(res => {
-    if (res.code === '0') {
+     
       findBySearch();
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'success'
-      });
-    }
+    
   })
   deletequestion(questionid).then(res => {
-    if (res.code === '0') {
+     
       window.$message({
         message: '删除成功',
         type: 'success'
       });
 
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'success'
-      });
-    }
+     
   })
 }
 function handleSelectionChange(val) {
@@ -414,14 +376,9 @@ function handleSelectionChange(val) {
     params.value.questionid = val[i].questionid;
 
     findquestion(params.value).then(res => {
-      if (res.code === '0') {
+    
         selectedquestionid.value.push(res.data);
-      } else {
-        window.$message({
-          message: res.msg,
-          type: 'error'
-        });
-      }
+     
     })
   }
 }
@@ -434,20 +391,15 @@ function delBatch() {
   console.log('questionid');
   console.log(selectedquestionid.value);
   delBatchquestionbank(multipleSelection.value).then(res => {
-    if (res.code === '0') {
+    
       window.$message.success("批量删除成功")
       findBySearch()
-    } else {
-      window.$message.error(res.msg)
-    }
+    
   })
   delBatchquestion(selectedquestionid.value).then(res => {
     if (res.code === '0') {
       window.$message.success("批量删除成功")
-
-    } else {
-      window.$message.error(res.msg)
-    }
+    }  
   })
 }
 function getRowKeys(row) {
@@ -456,7 +408,6 @@ function getRowKeys(row) {
 </script>
       
 <style>
-
 .multiline-text {
   white-space: pre-line;
 }

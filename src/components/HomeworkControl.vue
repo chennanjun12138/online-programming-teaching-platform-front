@@ -2,8 +2,8 @@
     <div>
         <div>
             <el-input v-if="tableVisible" v-model="params.name" style="width: 200px" placeholder="请输入作业名"></el-input>
-            <el-input v-if="tableVisible&&props.msg!='B'" v-model="params.teacher" style="width: 200px; margin-left: 5px"
-                placeholder="请输入作业教师"></el-input>
+            <el-input v-if="tableVisible && props.msg != 'B'" v-model="params.teacher"
+                style="width: 200px; margin-left: 5px" placeholder="请输入作业教师"></el-input>
             <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
             <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findBySearch()">返回</el-button>
             <span v-if="tableVisible2" style="margin-left: 20px">作业说明：{{ notice }}</span>
@@ -76,15 +76,15 @@
                     <el-form-item label="作业名" label-width="25%">
                         <el-input v-model="form.name" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
-                    <el-form-item label="作业教师" label-width="25%">
+                    <el-form-item v-if="props.msg!='B'" label="作业教师" label-width="25%">
                         <el-input v-model="form.teacher" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
                     <el-form-item label="开始时间" label-width="25%">
-                        <el-date-picker v-model="form.starttime" type="date" placeholder="选择日期">
+                        <el-date-picker v-model="form.starttime" type="date" placeholder="选择日期" value-format="YYYY-MM-DD">
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="结束时间" label-width="25%">
-                        <el-date-picker v-model="form.endtime" type="date" placeholder="选择日期">
+                        <el-date-picker v-model="form.endtime" type="date" placeholder="选择日期" value-format="YYYY-MM-DD">
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="作业说明" label-width="25%">
@@ -143,37 +143,27 @@ function delcontent(listid, questionid) {
     tableData.value[workid.value].content = newStr;
     form.value = tableData.value[workid.value];
     updatehomework(form.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            dialogFormVisible.value = false;
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
+
+        window.$message({
+            message: '操作成功',
+            type: 'success'
+        });
+        dialogFormVisible.value = false;
+        findBySearch();
+
     })
     form.value = {}
     form.value.questionid = questionid;
     form.value.homeworkid = zuoyeid.value;
     updatequestionbank(form.value).then(
         res => {
-            if (res.code === '0') {
-                this.$message({
-                    message: '修改成功',
-                    type: 'success'
-                });
 
-            } else {
-                this.$message({
-                    message: res.msg,
-                    type: 'success'
-                });
-            }
+            this.$message({
+                message: '修改成功',
+                type: 'success'
+            });
+
+
         }
     )
 }
@@ -182,19 +172,14 @@ function findBySearch() {
         params.value.teacher = user.value.name;
     }
     findhomeworks(params.value).then(res => {
-        if (res.code === '0') {
 
-            tableData.value = res.data.list;
-            total.value = res.data.total;
 
-            tableVisible.value = true;
-            tableVisible2.value = false;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
-        }
+        tableData.value = res.data.list;
+        total.value = res.data.total;
+
+        tableVisible.value = true;
+        tableVisible2.value = false;
+
     })
 }
 findBySearch();
@@ -226,22 +211,20 @@ function searchbyhomework(id, content, illustrate, homeworkid) {
 
     params.value.content = content.substring(1, content.length - 1);
     findbyhomework(params.value).then(res => {
-        if (res.code === '0') {
-            questiondata.value = res.data.list;
-            total.value = res.data.total;
 
-            tableVisible.value = false;
-            tableVisible2.value = true;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
-        }
+        questiondata.value = res.data.list;
+        total.value = res.data.total;
+
+        tableVisible.value = false;
+        tableVisible2.value = true;
+
     })
 }
 function add() {
     form.value = { content: '[]' };
+    if (props.msg === 'B') {
+        form.value.teacher = user.value.name;
+    }
     dialogFormVisible.value = true;
 }
 function edit(obj) {
@@ -249,36 +232,27 @@ function edit(obj) {
     dialogFormVisible.value = true;
 }
 function submit() {
+
     changehomework(form.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            dialogFormVisible.value = false;
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
+
+        window.$message({
+            message: '操作成功',
+            type: 'success'
+        });
+        dialogFormVisible.value = false;
+        findBySearch();
+
     })
 }
 function del(id) {
     deletehomework(id).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '删除成功',
-                type: 'success'
-            });
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
+
+        window.$message({
+            message: '删除成功',
+            type: 'success'
+        });
+        findBySearch();
+
     })
 }
 function handleSelectionChange(val) {
@@ -290,12 +264,10 @@ function delBatch() {
         return
     }
     delBatchhomework(multipleSelection.value).then(res => {
-        if (res.code === '0') {
-            window.$message.success("批量删除成功")
-            findBySearch()
-        } else {
-            window.$message.error(res.msg)
-        }
+
+        window.$message.success("批量删除成功")
+        findBySearch()
+
     })
 }
 function getRowKeys(row) {

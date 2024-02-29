@@ -60,11 +60,10 @@ let tableData = ref([]);
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 function findBySearch() {
     findusers(params.value).then(res => {
-        if (res.code === '0') {
-            tableData.value = res.data.list;
-            total.value = res.data.total;
-        } else {
-        }
+
+        tableData.value = res.data.list;
+        total.value = res.data.total;
+
     })
 }
 findBySearch();
@@ -84,19 +83,11 @@ function successUpload(res) {
 }
 function submit() {
     changeuser(user.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            localStorage.setItem("user", JSON.stringify(user.value));
-
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
+        window.$message({
+            message: '操作成功',
+            type: 'success'
+        });
+        localStorage.setItem("user", JSON.stringify(user.value));
     })
 }
 

@@ -223,17 +223,12 @@ function findBySearch() {
         params.value.author = user.value.name;
     }
     findclasss(params.value).then(res => {
-        if (res.code === '0') {
-            tableData.value = res.data.list;
-            //   console.log(tableData.value);
-            total.value = res.data.total;
-            //  console.log(total.value);
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
-        }
+
+        tableData.value = res.data.list;
+        //   console.log(tableData.value);
+        total.value = res.data.total;
+        //  console.log(total.value);
+
     })
 }
 findBySearch();
@@ -247,47 +242,37 @@ function insertcontract(id) {
     form.value.classid = classid;
     form.value.questionid = id;
     addcontract(form.value).then(res => {
-        if (res.code === '0') {
-            // console.log(res.data);
-            if (res.data == 1) {
-                window.$message({
-                    message: '添加成功',
-                    type: 'success'
-                });
-            }
-            else {
-                window.$message({
-                    message: '早已添加',
-                    type: 'success'
-                });
 
-            }
-        } else {
+        // console.log(res.data);
+        if (res.data == 1) {
             window.$message({
-                message: res.msg,
-                type: 'error'
+                message: '添加成功',
+                type: 'success'
             });
         }
+        else {
+            window.$message({
+                message: '早已添加',
+                type: 'success'
+            });
+
+        }
+
     })
 }
 function searchcourse(id) {
     params.value.classid = id;
     findcourse(params.value).then(res => {
-        if (res.code === '0') {
-            if (res.data != null) {
-                courescontent.value = res.data;
-            }
-            else {
-                courescontent.value = {};
-                courescontent.value.classid = id;
-            }
-            courseVisible.value = true;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
+
+        if (res.data != null) {
+            courescontent.value = res.data;
         }
+        else {
+            courescontent.value = {};
+            courescontent.value.classid = id;
+        }
+        courseVisible.value = true;
+
     })
 }
 function isNumberInArray(number) {
@@ -311,37 +296,29 @@ function findquestions(id) {
     const allquestiondata = ref([])
     findbyquestionid(params.value).then(
         res => {
-            if (res.code === '0') {
-
-                allquestiondata.value = res.data;
-            }
+            allquestiondata.value = res.data;
         }
     )
 
     findquestionbanks(params.value).then(res => {
-        if (res.code === '0') {
-            questiondata.value = res.data.list;
-            total.value = res.data.total;
-            status.value = [];
-            for (let i = 0; i < res.data.total; i++) {
-                form.value = {}
-                form.value.classid = id;
-                form.value.questionid = allquestiondata.value[i].questionid;
-                judgecontract(form.value).then(res => {
-                    if (res.data !== 0) {
-                        status.value.push(res.data.toString());
-                    }
+
+        questiondata.value = res.data.list;
+        total.value = res.data.total;
+        status.value = [];
+        for (let i = 0; i < res.data.total; i++) {
+            form.value = {}
+            form.value.classid = id;
+            form.value.questionid = allquestiondata.value[i].questionid;
+            judgecontract(form.value).then(res => {
+                if (res.data !== 0) {
+                    status.value.push(res.data.toString());
                 }
-                )
             }
-            tableVisible2.value = true;
-            tableVisible.value = false;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
+            )
         }
+        tableVisible2.value = true;
+        tableVisible.value = false;
+
     })
     // console.log(status.value)
 
@@ -386,51 +363,36 @@ function edit(obj) {
 }
 function savecourse() {
     submitcourse(courescontent.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            courseVisible.value = false;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
+
+        window.$message({
+            message: '操作成功',
+            type: 'success'
+        });
+        courseVisible.value = false;
+
     })
 }
 function submit() {
     changeclass(form.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            dialogFormVisible.value = false;
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
+
+        window.$message({
+            message: '操作成功',
+            type: 'success'
+        });
+        dialogFormVisible.value = false;
+        findBySearch();
+
     })
 }
 function del(id) {
     deleteclass(id).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '删除成功',
-                type: 'success'
-            });
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
-        }
+
+        window.$message({
+            message: '删除成功',
+            type: 'success'
+        });
+        findBySearch();
+
     })
 }
 function handleSelectionChange(val) {
@@ -450,12 +412,10 @@ function addBatch() {
         return
     }
     addBatchcontract(multiContracts.value).then(res => {
-        if (res.code === '0') {
-            window.$message.success("批量添加成功")
 
-        } else {
-            window.$message.error(res.msg)
-        }
+        window.$message.success("批量添加成功")
+
+
     })
 } function delBatch() {
     if (multipleSelection.value.length === 0) {
@@ -463,12 +423,10 @@ function addBatch() {
         return
     }
     delBatchclass(multipleSelection.value).then(res => {
-        if (res.code === '0') {
-            window.$message.success("批量删除成功");
-            findBySearch();
-        } else {
-            window.$message.error(res.msg)
-        }
+
+        window.$message.success("批量删除成功");
+        findBySearch();
+
     })
 } function successUpload(res) {
     form.value.img = res.data;

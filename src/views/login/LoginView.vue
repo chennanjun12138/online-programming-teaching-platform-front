@@ -26,8 +26,8 @@
 </template>
 
 <script setup>
-import {  User, Lock } from "@element-plus/icons-vue"
-import { ref} from "vue"
+import { User, Lock } from "@element-plus/icons-vue"
+import { ref } from "vue"
 import { login } from "@/api/index.js";
 import { useRouter, RouterLink } from "vue-router";
 import { validate } from '@/utils/validate'
@@ -45,22 +45,16 @@ const rules = ref({
 const formRef = ref();
 function onLogin() {
   validate(formRef.value, () => {
-    
-    login(user.value).then(res => {
-      if (res.code == '0') {
-        window.$message({
-          message: '登录成功',
-          type: 'success'
-        });
-        localStorage.setItem("user", JSON.stringify(res.data));
-        router.push("/");
-      } else {
 
-        window.$message({
-          type: 'error',
-          message: res.msg,
-        })
-      }
+    login(user.value).then(res => {
+
+      window.$message({
+        message: '登录成功',
+        type: 'success'
+      });
+      localStorage.setItem("user", JSON.stringify(res.data));
+      router.push("/");
+
     }
     )
   })
