@@ -4,7 +4,7 @@
         <div>
             <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
             <el-input v-model="params.userid" style="width: 200px; margin-left: 5px" placeholder="请输入提交者id"></el-input>
- 
+
             <el-select v-model="params.runresult" clearable placeholder="请输入代码结果" style="margin-left: 5px; width: 200px;">
                 <el-option v-for="item in resultoptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
@@ -172,17 +172,12 @@ function show(id) {
     codecontent.value = tableData.value[id].code;
     params.value.question_submitid = tableData.value[id].id;
     findevaluate(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             evaluateData.value = res.data;
             console.log(res.data);
             console.log(evaluateData.value);
         }
-        else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
-        }
+
     })
 }
 function submit() {
@@ -194,18 +189,12 @@ function submit() {
     console.log(form.value)
     addevaluate(form.value).then(
         res => {
-            if (res.code === '0') {
+            if (res) {
                 window.$message({
                     message: '操作成功',
                     type: 'success'
                 });
                 dialogFormVisible.value = false;
-            }
-            else {
-                window.$message({
-                    message: res.msg,
-                    type: 'error'
-                });
             }
 
         }
@@ -214,7 +203,7 @@ function submit() {
 }
 function findBySearch() {
     searchcode(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             console.log(res.data.list);
             tableData.value = res.data.list;
             total.value = res.data.total;
@@ -222,23 +211,13 @@ function findBySearch() {
                 tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
             }
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 }
 function del(id) {
     deletequestionsubmit(id).then(res => {
-        if (res.code === '0') {
+        if (res) {
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
         }
     })
 

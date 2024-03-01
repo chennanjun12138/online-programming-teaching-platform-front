@@ -127,18 +127,13 @@ function gotoquestion(questionid) {
 function findbyteachers() {
     params.value.studentid = user.value.id;
     findteachers(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             console.log("检查结果：");
 
             const ans = [...new Set(res.data)];
             console.log(ans);
             params.value.teacher = ans.toString();
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 }
@@ -148,7 +143,7 @@ function getRowKeys(row) {
 }
 function findBySearch() {
     findbyteacher(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
 
             console.log("变化结果：")
             console.log(res.data);
@@ -157,11 +152,6 @@ function findBySearch() {
             tableVisible.value = true;
             tableVisible2.value = false;
             tableVisible3.value = false;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
     params.value.teacher = '';
@@ -187,17 +177,12 @@ function searchbystudent(id) {
     params.value.userid = user.value.id;
     params.value.homeworkid = id;
     findbystudent(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             submitdata.value = res.data.list;
             total.value = res.data.total;
             tableVisible.value = false;
             tableVisible2.value = false;
             tableVisible3.value = true;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 }
@@ -209,17 +194,12 @@ function searchbyhomework(id, content, illustrate) {
 
     params.value.content = content.substring(1, content.length - 1);
     findbyhomework(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             questiondata.value = res.data.list;
             total.value = res.data.total;
 
             tableVisible.value = false;
             tableVisible2.value = true;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 }
@@ -234,18 +214,13 @@ function submit() {
     form.value.studentname = user.value.name;
     form.value.homeworkid =
         addsubmit(form.value).then(res => {
-            if (res.code === '0') {
+            if (res) {
                 window.$message({
                     message: '提交成功',
                     type: 'success'
                 });
                 dialogFormVisible.value = false;
 
-            } else {
-                window.$message({
-                    message: res.msg,
-                    type: 'success'
-                });
             }
         })
 }

@@ -71,7 +71,7 @@
 <script setup  >
 import { ref } from 'vue';
 import {
-     addevaluate, findevaluate, getsubmitbyteachers
+    addevaluate, findevaluate, getsubmitbyteachers
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
@@ -150,17 +150,12 @@ function show(id) {
     codecontent.value = tableData.value[id].code;
     params.value.question_submitid = tableData.value[id].id;
     findevaluate(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             evaluateData.value = res.data;
             console.log(res.data);
             console.log(evaluateData.value);
         }
-        else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
-        }
+
     })
 }
 function display(status) {
@@ -186,19 +181,14 @@ function submit() {
     console.log(form.value)
     addevaluate(form.value).then(
         res => {
-            if (res.code === '0') {
+            if (res) {
                 window.$message({
                     message: '操作成功',
                     type: 'success'
                 });
                 dialogFormVisible.value = false;
             }
-            else {
-                window.$message({
-                    message: res.msg,
-                    type: 'error'
-                });
-            }
+
 
         }
     )
@@ -207,19 +197,14 @@ function submit() {
 function findBySearch() {
     params.value.teacherid = user.value.id;
     getsubmitbyteachers(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
                 tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
             }
-            
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
+
         }
     })
 }

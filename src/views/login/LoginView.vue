@@ -47,15 +47,17 @@ function onLogin() {
   validate(formRef.value, () => {
 
     login(user.value).then(res => {
+      if (res) {
+        window.$message({
+          message: '登录成功',
+          type: 'success'
+        });
+        localStorage.setItem("user", JSON.stringify(res.data));
+        router.push("/");
 
-      window.$message({
-        message: '登录成功',
-        type: 'success'
-      });
-      localStorage.setItem("user", JSON.stringify(res.data));
-      router.push("/");
-
+      }
     }
+
     )
   })
 

@@ -109,7 +109,7 @@ const maprol = {
 }
 function findBySearch() {
     findusers(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             tableData.value = res.data.list;
             console.log(tableData);
             total.value = res.data.total;
@@ -146,35 +146,25 @@ function edit(obj) {
 }
 function submit() {
     changeuser(form.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             window.$message({
                 message: '操作成功',
                 type: 'success'
             });
             dialogFormVisible.value = false;
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
         }
     })
 }
 function del(id) {
     deleteuser(id).then(res => {
-        if (res.code === '0') {
+        if (res) {
             window.$message({
                 message: '删除成功',
                 type: 'success'
             });
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
+        } 
     })
 }
 function handleSelectionChange(val) {
@@ -186,11 +176,9 @@ function delBatch() {
         return
     }
     delBatchuser(multipleSelection.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             window.$message.success("批量删除成功")
-                .findBySearch()
-        } else {
-            window.$message.error(res.msg)
+            findBySearch()
         }
     })
 }

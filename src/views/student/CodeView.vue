@@ -179,24 +179,19 @@ function show(id) {
     codecontent.value = tableData.value[id].code;
     params.value.question_submitid = tableData.value[id].id;
     findevaluate(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             evaluateData.value = res.data;
             console.log(res.data);
             console.log(evaluateData.value);
         }
-        else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
-        }
+
     })
 }
 findBySearch();
 function findBySearch() {
     params.value.userid = user.value.id;
     searchcode(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
@@ -204,18 +199,11 @@ function findBySearch() {
                 tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
 
-
             }
-
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
     getallsubmit(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             let questions = ref([]);
             for (let i = 0; i < res.data.length; i++) {
                 const jsonData = JSON.parse(res.data[i].judgeInfo);
@@ -229,7 +217,7 @@ function findBySearch() {
                 if (!questions.value.includes(res.data[i].questionid)) {
                     findbyquestionid(params.value).then(
                         res => {
-                            if (res.code === '0') {
+                            if (res) {
 
                                 questiondata.value.forEach(item => {
                                     if (item.name === res.data[0].type) {

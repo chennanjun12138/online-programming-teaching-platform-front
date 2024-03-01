@@ -42,8 +42,6 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-
-
                 </el-form>
                 <div class="container">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -76,16 +74,15 @@ let classes = ref([])
 function findBySearch() {
     params.value.studentid = user.value.id;
     findconnects(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             tableData.value = res.data.list;
             total.value = res.data.total;
-        } else {
-
         }
     })
     params.value = {}
+    options.value=[]
     findclassall(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             // console.log(res.data);
             for (let i = 0; i < res.data.length; i++) {
                 ans.value = {
@@ -96,11 +93,6 @@ function findBySearch() {
                 // console.log(ans);
             }
             classes.value = res.data;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
     params.value = {
@@ -141,7 +133,7 @@ function submit() {
             form.value.teachername = classes.value[i].author;
             findByname(form.value.teachername).then(
                 res => {
-                    if (res.code === '0') {
+                    if (res) {
                         form.value.teacherid = res.data.id;
                     }
                 }
@@ -153,7 +145,7 @@ function submit() {
     form.value.studentname = user.value.name;
 
     addconnect(form.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
 
             if (res.data === 0) {
 
@@ -173,11 +165,6 @@ function submit() {
 
             dialogFormVisible.value = false;
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
         }
     })
 }
@@ -186,17 +173,12 @@ function getRowKeys(row) {
 }
 function del(id) {
     deleteconnect(id).then(res => {
-        if (res.code === '0') {
+        if (res) {
             window.$message({
                 message: '删除成功',
                 type: 'success'
             });
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
         }
     })
 }

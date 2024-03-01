@@ -28,14 +28,15 @@ request.interceptors.response.use(
     response => {
         // response.data即为后端返回的Result
         let res = response.data;
-        // console.log(response)
+        console.log(response)
         // // 兼容服务端返回的字符串数据
         // if (typeof res === 'string') {
         //     res = res ? JSON.parse(res) : res
         // }
         // return res;
         // 简化全局
-          if (res.code === '0') {
+       
+        if (res.code === '0' || res instanceof Blob) {
             // 兼容服务端返回的字符串数据
             if (typeof res === 'string') {
                 res = res ? JSON.parse(res) : res
@@ -48,7 +49,7 @@ request.interceptors.response.use(
                 type: 'error'
             });
         }
-         
+
     },
     error => {
         // console.log('err' + error) // for debug

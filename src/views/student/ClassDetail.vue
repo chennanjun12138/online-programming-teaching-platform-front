@@ -54,7 +54,7 @@
     
 <script setup>
 import { ref, onMounted, toRaw, } from 'vue';
-import { downloadPDF, findcontract, runcode, savenotebook,findnotebook } from "@/api/index.js";
+import { downloadPDF, findcontract, runcode, savenotebook, findnotebook } from "@/api/index.js";
 import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
 
@@ -94,7 +94,7 @@ let options = ref([
     },
 ])
 let params = ref({
-    studentid:0,
+    studentid: 0,
     classid: 0,
     content: ''
 })
@@ -109,17 +109,16 @@ onMounted(async () => {
     await loadPDF(router.currentRoute.value.params.fileId)
     await pdfIframe.value;
     await setupMonacoEditror()
-     
+
 });
 getnotebook()
 function savenote() {
     form.value.classid = router.currentRoute.value.query.classId;
-    form.value.studentid=user.value.id;
-    form.value.content=textarea.value;
+    form.value.studentid = user.value.id;
+    form.value.content = textarea.value;
     savenotebook(form.value).then(
-        res=>{
-            if(res.code=='0')
-            {
+        res => {
+            if (res) {
                 window.$message({
                     message: "提交成功",
                     type: 'success'
@@ -128,16 +127,14 @@ function savenote() {
         }
     )
 }
-function getnotebook()
-{
-       params.value.classid=router.currentRoute.value.query.classId;
-       params.value.studentid=user.value.id;
-       findnotebook(params.value).then(
-        res=>{
-            if(res.code=='0')
-            {
-                 console.log(res);
-                 textarea.value=res.data.content;
+function getnotebook() {
+    params.value.classid = router.currentRoute.value.query.classId;
+    params.value.studentid = user.value.id;
+    findnotebook(params.value).then(
+        res => {
+            if (res) {
+                console.log(res);
+                textarea.value = res.data.content;
             }
         }
     )
@@ -188,7 +185,7 @@ function runCode() {
     submitcontent.value.code = toRaw(codemonaco.value).getValue();
     runcode(submitcontent.value).then(
         res => {
-            if (res.code === '0') {
+            if (res) {
                 window.$message({
                     message: "提交成功",
                     type: 'success'
@@ -196,11 +193,6 @@ function runCode() {
                 console.log(res.data);
                 runResult.value = res.data;
                 runVisble.value = true;
-            } else {
-                window.$message({
-                    message: res.msg,
-                    type: 'error'
-                });
             }
         }
     )
@@ -211,7 +203,7 @@ function goback() {
 function gotoquestion() {
     form.value.classid = router.currentRoute.value.query.classId;
     findcontract(form.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
 
             qiddata.value = res.data;
             // console.log(qiddata.value);
@@ -226,11 +218,6 @@ function gotoquestion() {
                 router.push(`/questioncontent/${qiddata.value[randomIndex].questionid}`)
             }
 
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 

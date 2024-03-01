@@ -102,18 +102,13 @@ function findBySearch() {
 
     params.value.teacher = user.value.name;
     findhomeworks(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
 
             tableData.value = res.data.list;
             total.value = res.data.total;
 
             tableVisible.value = true;
             tableVisible2.value = false;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 }
@@ -139,23 +134,18 @@ function searchsubmit(id) {
 
     params.value.homeworkid = id;
     findsubmit(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             submitdata.value = res.data.list;
             total.value = res.data.total;
             tableVisible.value = false;
             tableVisible2.value = true;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 }
 function add(id, submitid) {
     form.value = {};
     form.value.id = submitid;
-    
+
     form.value.score = submitdata.value[id]?.score;
     form.value.teacherevaluate = submitdata.value[id]?.teacherevaluate;
     dialogFormVisible.value = true;
@@ -163,33 +153,23 @@ function add(id, submitid) {
 
 function submit() {
     changesubmit(form.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             window.$message({
                 message: '操作成功',
                 type: 'success'
             });
             dialogFormVisible.value = false;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
         }
     })
 }
 function del(id) {
     deletehomework(id).then(res => {
-        if (res.code === '0') {
+        if (res) {
             window.$message({
                 message: '删除成功',
                 type: 'success'
             });
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
         }
     })
 }

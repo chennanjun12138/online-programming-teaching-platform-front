@@ -315,14 +315,19 @@ function show(id) {
 }
 function submit() {
   changequestionbank(form.value).then(res => {
-    dialogFormVisible.value = false;
-    findBySearch();
-
+    if (res) {
+      dialogFormVisible.value = false;
+      findBySearch();
+      window.$message({
+        message: '操作成功',
+        type: 'success'
+      });
+    }
   })
   list.value = {}
   list.value.id = form.value.questionid;
-  list.value.judgeConfig=JSON.stringify(judgeConfig.value);
-  list.value.judgeCase=JSON.stringify([{"input":"","output":""}]);
+  list.value.judgeConfig = JSON.stringify(judgeConfig.value);
+  list.value.judgeCase = JSON.stringify([{ "input": "", "output": "" }]);
   if (form.value.id === undefined) {
     addquestion(list.value).then(
       res => {
@@ -342,30 +347,31 @@ function savecontent() {
   const jsonString2 = JSON.stringify(JudgeCase.value);
   form.value.judgeCase = jsonString2.toString();
   changequestion(form.value).then(res => {
- 
+    if (res) {
       window.$message({
         message: '操作成功',
         type: 'success'
       });
       contentVisible.value = false;
+    }
 
-  
+
+
   })
 }
 function del(id, questionid) {
   deletequestionbank(id).then(res => {
-     
+    if (res) {
       findBySearch();
-    
+    }
   })
   deletequestion(questionid).then(res => {
-     
+    if (res) {
       window.$message({
         message: '删除成功',
         type: 'success'
       });
-
-     
+    }
   })
 }
 function handleSelectionChange(val) {
@@ -376,9 +382,9 @@ function handleSelectionChange(val) {
     params.value.questionid = val[i].questionid;
 
     findquestion(params.value).then(res => {
-    
-        selectedquestionid.value.push(res.data);
-     
+
+      selectedquestionid.value.push(res.data);
+
     })
   }
 }
@@ -391,15 +397,17 @@ function delBatch() {
   console.log('questionid');
   console.log(selectedquestionid.value);
   delBatchquestionbank(multipleSelection.value).then(res => {
-    
+    if (res) {
       window.$message.success("批量删除成功")
       findBySearch()
-    
+    }
+
+
   })
   delBatchquestion(selectedquestionid.value).then(res => {
-    if (res.code === '0') {
+    if (res) {
       window.$message.success("批量删除成功")
-    }  
+    }
   })
 }
 function getRowKeys(row) {

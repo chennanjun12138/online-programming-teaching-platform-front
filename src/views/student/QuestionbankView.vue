@@ -38,39 +38,13 @@
             </el-pagination>
 
         </div>
-        <div>
-            <el-dialog title="请填写信息" v-model="dialogFormVisible" width="30%">
-                <el-form :model="form">
-                    <el-form-item label="题号" label-width="25%">
-                        <el-input v-model="form.questionid" autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
-                    <el-form-item label="题目名" label-width="25%">
-                        <el-input v-model="form.name" autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
-                    <el-form-item label="题目类型" label-width="25%">
-                        <el-input v-model="form.type" autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="题目创建者" label-width="25%">
-                        <el-input v-model="form.creator" readonly autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
-
-                    <el-form-item label="题目描述" label-width="25%">
-                        <el-input v-model="form.description" autocomplete="off" style="width: 90%"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button type="info" @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="submit()">确 定</el-button>
-                </div>
-            </el-dialog>
-        </div>
+      
     </div>
 </template>
     
 <script setup>
 import { ref } from 'vue';
-import { changequestionbank, findquestionbanks } from "@/api/index.js";
+import {  findquestionbanks } from "@/api/index.js";
 import { useRouter } from "vue-router";
 const router = useRouter()
 let params = ref({
@@ -82,9 +56,7 @@ let params = ref({
 })
 let total = ref(0);
 let tableData = ref([]);
-let dialogFormVisible = ref(false);
 let multipleSelection = ref([]);
-let form = ref({})
 let options = ref([
     {
         value: '算法设计与分析',
@@ -126,15 +98,10 @@ function gotoquestion(questionid) {
 }
 function findBySearch() {
     findquestionbanks(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             tableData.value = res.data.list;
             total.value = res.data.total;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
-        }
+        } 
     })
 }
 findBySearch();
@@ -156,26 +123,6 @@ function handleCurrentChange(pageNum) {
     findBySearch();
 }
 
- 
-function submit() {
-    changequestionbank(form.value).then(res => {
-        if (res.code === '0') {
-            window.$message({
-                message: '操作成功',
-                type: 'success'
-            });
-            dialogFormVisible.value = false;
-            findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
-        }
-    })
-}
- 
- 
 function handleSelectionChange(val) {
     multipleSelection.value = val;
 }

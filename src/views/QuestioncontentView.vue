@@ -105,9 +105,8 @@ findBySearch();
 onMounted(async () => {
     await setupMonacoEditror();
 });
-function goback()
-{
-    
+function goback() {
+    router.back();
 }
 function runCode() {
     submitcontent.value.userid = user.value.id;
@@ -124,17 +123,12 @@ function runCode() {
 
     submitcode(submitcontent.value).then(
         res => {
-            if (res.code === '0') {
+            if (res) {
                 window.$message({
                     message: "提交成功",
                     type: 'success'
                 });
                 router.push("/code");
-            } else {
-                window.$message({
-                    message: res.msg,
-                    type: 'error'
-                });
             }
         }
     )
@@ -143,7 +137,7 @@ function findBySearch() {
     params.value.questionid = router.currentRoute.value.params.questionid;
     // console.log(params.value.questionid);
     findquestion(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             questiondata.value = res.data;
             let str = questiondata.value.judgeConfig;
             // 将字符串转换为JSON对象
@@ -155,24 +149,14 @@ function findBySearch() {
             const json2 = JSON.parse(str2);
             JudgeCase.value = json2;
             console.log(JudgeCase);
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
     params.value.content = router.currentRoute.value.params.questionid;
     findbyid(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             Qdata.value = res.data;
             console.log("题目名称");
             console.log(res.data);
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 }

@@ -51,13 +51,15 @@ const user = ref({});
 function Onregister() {
     validate(formRef.value, () => {
         register(user.value).then(res => {
-            
+            if (res) {
                 window.$message({
                     message: '注册成功',
                     type: 'success'
                 });
                 router.push("/login");
-            
+            }
+
+
         })
     })
 

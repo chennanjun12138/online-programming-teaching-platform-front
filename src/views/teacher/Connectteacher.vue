@@ -153,7 +153,7 @@ function down(id) {
     ]
     params.value.userid = id;
     getallsubmit(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             let questions = ref([]);
             for (let i = 0; i < res.data.length; i++) {
                 const jsonData = JSON.parse(res.data[i].judgeInfo);
@@ -167,7 +167,7 @@ function down(id) {
                 if (!questions.value.includes(res.data[i].questionid)) {
                     findbyquestionid(params.value).then(
                         res => {
-                            if (res.code === '0') {
+                            if (res) {
 
                                 questiondata.value.forEach(item => {
                                     if (item.name === res.data[0].type) {
@@ -199,19 +199,14 @@ function show(id) {
 function findBySearch() {
     params.value.teachername = user.value.name;
     findconnects(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             tableData.value = res.data.list;
             total.value = res.data.total;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
     params.value.author = user.value.name;
     findclasss(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             for (let i = 0; i < res.data.list.length; i++) {
                 ans.value = {
                     value: res.data.list[i].id,
@@ -219,11 +214,6 @@ function findBySearch() {
                 }
                 options.value.push(ans.value);
             }
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 
@@ -257,22 +247,17 @@ function submit() {
     form.value.teachername = user.value.name;
     findByname(form.value.studentname).then(
         res => {
-            if (res.code === '0') {
+            if (res) {
                 form.value.studentid = res.data.id.toString();
                 // console.log(form.value.studentid);
                 addconnect(form.value).then(res => {
-                    if (res.code === '0') {
+                    if (res) {
                         window.$message({
                             message: '操作成功',
                             type: 'success'
                         });
                         dialogFormVisible.value = false;
                         findBySearch();
-                    } else {
-                        window.$message({
-                            message: res.msg,
-                            type: 'success'
-                        });
                     }
                 })
             }
@@ -284,17 +269,12 @@ function getRowKeys(row) {
 }
 function del(id) {
     deleteconnect(id).then(res => {
-        if (res.code === '0') {
+        if (res) {
             window.$message({
                 message: '删除成功',
                 type: 'success'
             });
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
         }
     })
 }

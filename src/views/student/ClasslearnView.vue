@@ -147,15 +147,10 @@ function searchcourse(id) {
   console.log("clasid:" + id);
   params.value.classid = id;
   findcourse(params.value).then(res => {
-    if (res.code === '0') {
+    if (res) {
       courescontent.value = res.data;
       console.log(res.data);
       courseVisible.value = true;
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'error'
-      });
     }
   })
 }
@@ -163,14 +158,9 @@ function searchcourse(id) {
 // methods里定义一个findBySearch
 function findBySearch() {
   findclasss(params.value).then(res => {
-    if (res.code === '0') {
+    if (res) {
       tableData.value = res.data.list;
       total.value = res.data.total;
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'error'
-      });
     }
   })
 }
@@ -196,18 +186,13 @@ function handleCurrentChange(pageNum) {
 
 function submit() {
   changeclass(form.value).then(res => {
-    if (res.code === '0') {
+    if (res) {
       window.$message({
         message: '操作成功',
         type: 'success'
       });
       dialogFormVisible.value = false;
       findBySearch();
-    } else {
-      window.$message({
-        message: res.msg,
-        type: 'success'
-      });
     }
   })
 }
@@ -226,14 +211,9 @@ function joinlearn(id, author, fileId) {
   link.value.studentname = user.value.name;
 
   addconnect(link.value).then(res => {
-    if (res.code === '0') {
+    if (res) {
       window.$message({
         message: '操作成功',
-        type: 'success'
-      });
-    } else {
-      window.$message({
-        message: res.msg,
         type: 'success'
       });
     }

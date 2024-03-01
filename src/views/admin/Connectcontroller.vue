@@ -152,7 +152,7 @@ function down(id) {
     ]
     params.value.userid = id;
     getallsubmit(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             let questions = ref([]);
             for (let i = 0; i < res.data.length; i++) {
                 const jsonData = JSON.parse(res.data[i].judgeInfo);
@@ -166,7 +166,7 @@ function down(id) {
                 if (!questions.value.includes(res.data[i].questionid)) {
                     findbyquestionid(params.value).then(
                         res => {
-                            if (res.code === '0') {
+                            if (res) {
 
                                 questiondata.value.forEach(item => {
                                     if (item.name === res.data[0].type) {
@@ -194,16 +194,14 @@ function show(id) {
 }
 function findBySearch() {
     findconnects(params.value).then(res => {
-        if (res.code === '0') {
+        if (res) {
             tableData.value = res.data.list;
             total.value = res.data.total;
-        } else {
-
         }
     })
     findclassall(params.value).then(res => {
         options.value = []
-        if (res.code === '0') {
+        if (res) {
 
             for (let i = 0; i < res.data.length; i++) {
                 ans.value = {
@@ -214,11 +212,6 @@ function findBySearch() {
 
             }
             classes.value = res.data;
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'error'
-            });
         }
     })
 
@@ -253,7 +246,7 @@ function submit() {
             form.value.teachername = classes.value[i].author;
             findByname(form.value.teachername).then(
                 res => {
-                    if (res.code === '0') {
+                    if (res) {
                         form.value.teacherid = res.data.id;
                     }
                 }
@@ -262,22 +255,17 @@ function submit() {
     }
     findByname(form.value.studentname).then(
         res => {
-            if (res.code === '0') {
+            if (res) {
                 form.value.studentid = res.data.id.toString();
                 console.log(form.value.studentid);
                 addconnect(form.value).then(res => {
-                    if (res.code === '0') {
+                    if (res) {
                         window.$message({
                             message: '操作成功',
                             type: 'success'
                         });
                         dialogFormVisible.value = false;
                         findBySearch();
-                    } else {
-                        window.$message({
-                            message: res.msg,
-                            type: 'success'
-                        });
                     }
                 })
             }
@@ -291,17 +279,12 @@ function getRowKeys(row) {
 }
 function del(id) {
     deleteconnect(id).then(res => {
-        if (res.code === '0') {
+        if (res) {
             window.$message({
                 message: '删除成功',
                 type: 'success'
             });
             findBySearch();
-        } else {
-            window.$message({
-                message: res.msg,
-                type: 'success'
-            });
         }
     })
 }
