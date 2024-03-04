@@ -122,10 +122,10 @@
           <el-form-item v-for="(judgeCaseItem, index) of JudgeCase" :key="index">
             <el-space direction="vertical" style="min-width: 640px">
               <el-form-item :prop="`form.judgeCase[${index}].input`" :label="`输入用例-${index}`" :key="index">
-                <el-input v-model="judgeCaseItem.input" placeholder="请输入测试输入用例"></el-input>
+                <el-input type="textarea" v-model="judgeCaseItem.input" placeholder="请输入测试输入用例"></el-input>
               </el-form-item>
               <el-form-item :prop="`form.judgeCase[${index}].output`" :label="`输出用例-${index}`" :key="index">
-                <el-input v-model="judgeCaseItem.output" placeholder="请输入测试输出用例"></el-input>
+                <el-input type="textarea" v-model="judgeCaseItem.output" placeholder="请输入测试输出用例"></el-input>
               </el-form-item>
               <el-row>
                 <el-button @click="ShowAnswer" type="primary">查看题解</el-button>
