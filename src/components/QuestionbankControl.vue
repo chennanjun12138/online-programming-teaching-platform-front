@@ -29,12 +29,14 @@
         <el-table-column prop="description" label="题目描述"></el-table-column>
         <el-table-column prop="creator" label="创建者" width="75px"></el-table-column>
         <el-table-column label="提交数/正确数" width="75px">
+
           <template #default="{ row }">
             <span>{{ row.submitnum }} / {{ row.solvenum }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="createtime" label="创建时间" width="165px"></el-table-column>
         <el-table-column label="操作">
+
           <template #default="{ row }">
             <span class="button-group">
               <el-button type="primary" @click="edit(row)">编辑</el-button>
@@ -50,9 +52,9 @@
       </el-table>
     </div>
     <div style="margin-top: 10px">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="params.pageNum"
-        :page-sizes="[5, 10, 15, 20]" :page-size="params.pageSize" layout="total, sizes, prev, pager, next"
-        :total="total">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page="params.pageNum" :page-sizes="[5, 10, 15, 20]" :page-size="params.pageSize"
+        layout="total, sizes, prev, pager, next" :total="total">
       </el-pagination>
 
     </div>
@@ -89,7 +91,11 @@
       </el-dialog>
       <el-dialog title="题目内容" v-model="contentVisible" width="50%">
         <el-form :model="form" class="multiline-text">
+          <el-dialog v-model="innerVisible" width="40%" title="题解" append-to-body>
 
+            <el-input v-model="form.answer" :autosize="{ minRows: 16, maxRows: 16 }" type="textarea" />
+
+          </el-dialog>
           <el-form-item label="题目描述" label-width="25%">
             <el-input v-model="form.content" autocomplete="off" style="width: 90%" type="textarea"></el-input>
           </el-form-item>
@@ -122,14 +128,17 @@
                 <el-input v-model="judgeCaseItem.output" placeholder="请输入测试输出用例"></el-input>
               </el-form-item>
               <el-row>
-                <el-button type="danger" @click="handleDelete(index)">删除</el-button>
+                <el-button @click="ShowAnswer" type="primary">查看题解</el-button>
                 <el-button @click="handleAdd" type="primary">新增测试用例</el-button>
+                <el-button type="danger" @click="handleDelete(index)">删除</el-button>
+
               </el-row>
 
             </el-space>
           </el-form-item>
 
         </el-form>
+
         <div class="container">
           <el-button type="info" @click="contentVisible = false">取 消</el-button>
           <el-button type="primary" @click="savecontent()">确 定</el-button>
@@ -138,8 +147,8 @@
     </div>
   </div>
 </template>
-      
-<script setup >
+
+<script setup>
 import { ref } from 'vue';
 const props = defineProps({
   msg: String,
@@ -201,6 +210,7 @@ let total = ref(0);
 let tableData = ref([]);
 let dialogFormVisible = ref(false);
 let contentVisible = ref(false);
+let innerVisible = ref(false);
 let judgeConfig = ref({
   timeLimit: "",
   memoryLimit: "",
@@ -213,6 +223,9 @@ let form = ref({
 })
 let list = ref({})
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+function ShowAnswer() {
+  innerVisible.value = true;
+}
 function delshow(creator) {
   if (props.msg !== 'A') {
     return true;
@@ -414,7 +427,7 @@ function getRowKeys(row) {
   return row.id;
 }
 </script>
-      
+
 <style>
 .multiline-text {
   white-space: pre-line;

@@ -11,9 +11,6 @@
                 内存限制:{{ judgeConfig.memoryLimit }}KB&nbsp;&nbsp;
                 堆栈限制:{{ judgeConfig.stackLimit }}KB
             </p>
-
-
-
             <p class="uppercase-text">Input:</p>
             <p class="lowercase-text">{{ questiondata.input }}</p>
             <p class="uppercase-text">Output</p>
@@ -34,26 +31,41 @@
 
         <div style="width:60%">
             <el-row>
-                编程语言：
-                <el-select @change="onChangeEditorLang()" v-model="language" placeholder="请选择" style="width: 200px;">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>
-                </el-select>
+                <div style="display: flex; align-items: center;">
+                    <el-button type="warning" @click="goback" text :icon="ArrowLeft">返回</el-button>
+
+                    <span>编程语言：</span>
+                    <el-select @change="onChangeEditorLang()" v-model="language" placeholder="请选择"
+                        style="width: 200px;">
+                        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+
+                </div>
+
             </el-row>
 
             <div class='monaco-editor'>
             </div>
+
             <el-button style="margin-top: 10px" type="warning" @click="runCode">提交代码</el-button>
-            <el-button style="margin-top: 10px" type="warning" @click="goback">返回</el-button>
+            <el-button style="margin-top: 10px" key="查看题解" type="primary" text @click="ShowAnswer"> 查看题解 </el-button>
 
         </div>
+        <el-dialog v-model="innerVisible" width="40%" title="题解" append-to-body>
 
+            <el-input v-model="questiondata.answer" :autosize="{ minRows: 16, maxRows: 16 }" type="textarea" />
+
+        </el-dialog>
     </div>
 </template>
-    
+
 <script setup>
+
 import { ref, onMounted, toRaw } from 'vue';
 import { findbyid, findquestion, submitcode } from "@/api/index.js";
+import { ArrowLeft } from "@element-plus/icons-vue"
+
 import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
 let router = useRouter()
@@ -66,7 +78,7 @@ let params = ref({
     questionid: '',
     content: ''
 })
-
+let innerVisible = ref(false);
 let questiondata = ref([]);
 let judgeConfig = ref({
     timeLimit: "",
@@ -107,6 +119,9 @@ onMounted(async () => {
 });
 function goback() {
     router.back();
+}
+function ShowAnswer() {
+    innerVisible.value=true;
 }
 function runCode() {
     submitcontent.value.userid = user.value.id;
@@ -187,7 +202,7 @@ function onChangeEditorLang() {
 
 
 </script>
-    
+
 <style>
 .class-detail {
     display: flex;
