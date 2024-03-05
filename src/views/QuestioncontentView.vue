@@ -19,30 +19,28 @@
 
             <ul class="lowercase-text">
                 <li v-for="(item, index) in JudgeCase" :key="index">
-                    
-                        <el-row>
-                            <el-col>
-                                <h3>输入样例 #{{ index + 1 }} <el-button type="primary" text class="copy"
-                                        @click="handleCopy(item.input)">复制</el-button>
-                                </h3>
-                                
-                                    <code  >
+
+                    <div style="display: flex; align-items: center;">
+                        <el-col>
+                            <h3>输入样例 #{{ index + 1 }} <el-button type="primary" text class="copy"
+                                    @click="handleCopy(item.input)">复制</el-button>
+                            </h3>
+
+                            <code>
                                     {{ item.input }}
                                     </code>
-                            </el-col>
+                        </el-col>
 
-                            <el-col>
-                                <h3>输出样例 #{{ index + 1 }} <el-button type="primary" text class="copy"
-                                        @click="handleCopy(item.output)">复制</el-button>
-                                </h3>
-                                <code  >
+                        <el-col>
+                            <h3>输出样例 #{{ index + 1 }} <el-button type="primary" text class="copy"
+                                    @click="handleCopy(item.output)">复制</el-button>
+                            </h3>
+                            <code>
                                     {{ item.output }}
                                 </code>
-                            </el-col>
-
-                        </el-row>
-                     
-
+                        </el-col>
+                    </div>
+                       
                 </li>
             </ul>
 
@@ -273,12 +271,12 @@ function onChangeEditorLang() {
     font-size: 16px;
     color: #000;
     display: flex;
-
+ 
+    flex-wrap: wrap;
 }
 
 .multiline-text {
     width: 90%;
     white-space: pre-line;
 }
- 
 </style>
