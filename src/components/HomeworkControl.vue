@@ -4,8 +4,10 @@
             <el-input v-if="tableVisible" v-model="params.name" style="width: 200px" placeholder="请输入作业名"></el-input>
             <el-input v-if="tableVisible && props.msg != 'B'" v-model="params.teacher"
                 style="width: 200px; margin-left: 5px" placeholder="请输入作业教师"></el-input>
-            <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
-            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findBySearch()">返回</el-button>
+            <el-button v-if="tableVisible" type="warning" style="margin-left: 10px"
+                @click="findBySearch()">查询</el-button>
+            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px"
+                @click="findBySearch()">返回</el-button>
             <span v-if="tableVisible2" style="margin-left: 20px">作业说明：{{ notice }}</span>
 
             <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
@@ -76,11 +78,12 @@
                     <el-form-item label="作业名" label-width="25%">
                         <el-input v-model="form.name" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
-                    <el-form-item v-if="props.msg!='B'" label="作业教师" label-width="25%">
+                    <el-form-item v-if="props.msg != 'B'" label="作业教师" label-width="25%">
                         <el-input v-model="form.teacher" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
                     <el-form-item label="开始时间" label-width="25%">
-                        <el-date-picker v-model="form.starttime" type="date" placeholder="选择日期" value-format="YYYY-MM-DD">
+                        <el-date-picker v-model="form.starttime" type="date" placeholder="选择日期"
+                            value-format="YYYY-MM-DD">
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="结束时间" label-width="25%">
@@ -104,8 +107,8 @@
         </div>
     </div>
 </template>
-    
-<script setup >
+
+<script setup>
 import { ref } from 'vue';
 const props = defineProps({
     msg: String,
@@ -158,7 +161,7 @@ function delcontent(listid, questionid) {
     updatequestionbank(form.value).then(
         res => {
 
-            this.$message({
+            window.$message({
                 message: '修改成功',
                 type: 'success'
             });
@@ -173,10 +176,8 @@ function findBySearch() {
     }
     findhomeworks(params.value).then(res => {
 
-
         tableData.value = res.data.list;
         total.value = res.data.total;
-
         tableVisible.value = true;
         tableVisible2.value = false;
 
@@ -274,7 +275,7 @@ function getRowKeys(row) {
     return row.id;
 }
 </script>
-    
+
 <style>
 .centered-text {
     display: flex;

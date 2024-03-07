@@ -71,6 +71,7 @@ const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem(
 let options = ref([])
 let ans = ref({})
 let classes = ref([])
+findBySearch();
 function findBySearch() {
     params.value.studentid = user.value.id;
     findconnects(params.value).then(res => {
@@ -79,31 +80,24 @@ function findBySearch() {
             total.value = res.data.total;
         }
     })
-    params.value = {}
     options.value=[]
     findclassall(params.value).then(res => {
         if (res) {
-            // console.log(res.data);
+            
             for (let i = 0; i < res.data.length; i++) {
                 ans.value = {
                     value: res.data[i].id,
-                    label: "课程号" + res.data[i].id
+                    label: "课程" + res.data[i].id+" : "+res.data[i].name
                 }
                 options.value.push(ans.value);
-                // console.log(ans);
+               
             }
             classes.value = res.data;
         }
-    })
-    params.value = {
-        name: '',
-        phone: '',
-        role: '',
-        pageNum: 1,
-        pageSize: 5
-    }
+    }) 
+    
 }
-findBySearch();
+
 function reset() {
     params.value = {
         pageNum: 1,

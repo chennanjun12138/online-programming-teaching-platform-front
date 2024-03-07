@@ -8,7 +8,7 @@
             <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findbyteachers()">查询</el-button>
             <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px"
                 @click="findbyteachers()">返回</el-button>
-            <span v-if="tableVisible2" style="margin-left: 20px">题目说明：{{ this.notice }}</span>
+            <span v-if="tableVisible2" style="margin-left: 20px">题目说明：{{ notice }}</span>
             <el-button v-if="tableVisible3" type="warning" style="margin-left: 10px"
                 @click="findbyteachers()">返回</el-button>
             <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
@@ -142,6 +142,7 @@ function getRowKeys(row) {
     return row.id;
 }
 function findBySearch() {
+    console.log(params.value);
     findbyteacher(params.value).then(res => {
         if (res) {
 
@@ -154,7 +155,7 @@ function findBySearch() {
             tableVisible3.value = false;
         }
     })
-    params.value.teacher = '';
+      params.value.teacher = '';
 }
 function reset() {
     params.value = {

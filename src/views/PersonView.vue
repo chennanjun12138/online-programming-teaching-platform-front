@@ -17,7 +17,7 @@
                     <el-input v-model="user.name" autocomplete="off" style="width: 400px"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" style="margin-left: 200px">
-                    <el-input v-model="user.password" autocomplete="off" style="width: 400px"></el-input>
+                    <el-input v-model="user.password" autocomplete="off" style="width: 400px" show-password></el-input>
                 </el-form-item>
                 <el-form-item label="性别" style="margin-left: 200px">
                     <el-select v-model="user.sex" placeholder="请选择" autocomplete="off" style="width: 400px">

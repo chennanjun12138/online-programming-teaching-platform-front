@@ -22,8 +22,8 @@
 
                     <div style="display: flex; align-items: center;">
                         <el-col>
-                            <h3>输入样例 #{{ index + 1 }} <el-button type="primary" text class="copy"
-                                    @click="handleCopy(item.input)">复制</el-button>
+                            <h3>输入样例 #{{ index + 1 }}
+                                <el-button size="small" class="copy" @click="handleCopy(item.input)">复制</el-button>
                             </h3>
 
                             <code>
@@ -32,15 +32,15 @@
                         </el-col>
 
                         <el-col>
-                            <h3>输出样例 #{{ index + 1 }} <el-button type="primary" text class="copy"
-                                    @click="handleCopy(item.output)">复制</el-button>
+                            <h3>输出样例 #{{ index + 1 }}
+                                <el-button size="small" class="copy" @click="handleCopy(item.output)">复制</el-button>
                             </h3>
                             <code>
                                     {{ item.output }}
                                 </code>
                         </el-col>
                     </div>
-                       
+
                 </li>
             </ul>
 
@@ -88,7 +88,6 @@ import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
 
 import Clipboard from 'clipboard'
-import { color } from 'echarts';
 
 let router = useRouter()
 let params = ref({
@@ -145,12 +144,23 @@ const handleCopy = async (content) => {
         }
     })
     await clipboard.on('success', (e) => {
+        window.$message({
+            message: "复制成功",
+            type: 'success'
+        }
+        );
+
         console.log('复制成功', e)
         // 释放内存
         clipboard.destroy()
     })
     await clipboard.on('error', (e) => {
         // 不支持复制
+        window.$message({
+            message: "该浏览器不支持自动复制",
+            type: 'error'
+        }
+        );
         console.log('该浏览器不支持自动复制', e)
         // 释放内存
         clipboard.destroy()
@@ -271,7 +281,7 @@ function onChangeEditorLang() {
     font-size: 16px;
     color: #000;
     display: flex;
- 
+
     flex-wrap: wrap;
 }
 
