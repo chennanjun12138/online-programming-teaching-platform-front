@@ -26,12 +26,13 @@
         <el-table-column prop="name" label="题目名称" width="85px"></el-table-column>
         <el-table-column prop="type" label="题目类型" width="85px"></el-table-column>
 
-        <el-table-column prop="description" label="题目描述"></el-table-column>
+        <el-table-column prop="description" label="题目描述" width="145px"></el-table-column>
         <el-table-column prop="creator" label="创建者" width="75px"></el-table-column>
-        <el-table-column label="提交数/正确数" width="75px">
+        <el-table-column label="通过率" width="80px">
 
           <template #default="{ row }">
-            <span>{{ row.submitnum }} / {{ row.solvenum }}</span>
+            <span v-if="row.submitnum!=0">{{ (row.solvenum/row.submitnum*100).toFixed(1) }} %</span>
+            <span v-else>未提交</span>
           </template>
         </el-table-column>
         <el-table-column prop="createtime" label="创建时间" width="165px"></el-table-column>

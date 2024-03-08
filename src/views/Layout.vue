@@ -210,6 +210,11 @@ function logout() {
 </script>
 
 <style scoped>
+.el-main{
+  background-image: url('src/assets/image/b1.jpg');
+  background-size: cover; /* 背景图片铺满整个页面 */
+  background-repeat: no-repeat; /* 不重复显示背景图片 */
+}
 .elside {
   overflow: hidden;
   min-height: 100vh;

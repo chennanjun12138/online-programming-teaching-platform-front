@@ -22,6 +22,13 @@
 
                 <el-table-column prop="description" label="题目描述"></el-table-column>
                 <el-table-column prop="creator" label="创建者" width="80px"></el-table-column>
+                <el-table-column label="通过率" width="80px">
+
+                    <template #default="{ row }">
+                        <span v-if="row.submitnum != 0">{{ (row.solvenum / row.submitnum * 100).toFixed(1) }}%</span>
+                        <span v-else>0.0%</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
@@ -38,13 +45,13 @@
             </el-pagination>
 
         </div>
-      
+
     </div>
 </template>
-    
+
 <script setup>
 import { ref } from 'vue';
-import {  findquestionbanks } from "@/api/index.js";
+import { findquestionbanks } from "@/api/index.js";
 import { useRouter } from "vue-router";
 const router = useRouter()
 let params = ref({
@@ -101,7 +108,7 @@ function findBySearch() {
         if (res) {
             tableData.value = res.data.list;
             total.value = res.data.total;
-        } 
+        }
     })
 }
 findBySearch();
@@ -126,11 +133,11 @@ function handleCurrentChange(pageNum) {
 function handleSelectionChange(val) {
     multipleSelection.value = val;
 }
- 
+
 function getRowKeys(row) {
     return row.id;
 }
 
 </script>
-    
+
 <style scoped></style>

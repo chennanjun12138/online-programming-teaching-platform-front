@@ -17,14 +17,14 @@
         </div>
         <div>
             <el-table :data="tableData" v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
+            :default-sort="[ { prop: 'column1', order: 'descending' }, { prop: 'column2', order: 'ascending' } ]"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column width="60px" prop="homeworkid" label="作业号"></el-table-column>
-                <el-table-column width="80px" prop="name" label="作业名"></el-table-column>
-                <el-table-column prop="teacher" label="作业教师" width="80px"></el-table-column>
-                <el-table-column prop="starttime" label="开始时间"></el-table-column>
-                <el-table-column prop="endtime" label="结束时间"></el-table-column>
-
-                <el-table-column label="操作">
+                <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
+                <el-table-column  prop="name" label="作业名" ></el-table-column>
+                <el-table-column prop="teacher" label="作业教师"></el-table-column>
+                <el-table-column prop="starttime" sortable  label="开始时间"></el-table-column>
+                <el-table-column prop="endtime" sortable label="结束时间"></el-table-column>
+                <el-table-column label="操作" width="350px">
                     <template #default="{ row }">
                         <el-button type="primary"
                             @click="searchbyhomework(row.homeworkid, row.content, row.illustrate)">查看</el-button>
