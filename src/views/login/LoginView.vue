@@ -53,7 +53,7 @@ function onLogin() {
           type: 'success'
         });
         localStorage.setItem("user", JSON.stringify(res.data));
-        router.push("/");
+        router.push("/home");
 
       }
     }

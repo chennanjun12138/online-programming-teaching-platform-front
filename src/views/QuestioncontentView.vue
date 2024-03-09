@@ -66,7 +66,7 @@
             <div class='monaco-editor'>
             </div>
 
-            <el-button style="margin-top: 10px" type="primary" @click="runCode">提交代码</el-button>
+            <el-button style="margin-top: 10px" type="primary" @click="runCode" :icon="Promotion">提交代码</el-button>
             <el-button style="margin-top: 10px" key="查看题解" type="primary" text @click="ShowAnswer"> 查看题解 </el-button>
 
         </div>
@@ -82,8 +82,7 @@
 
 import { ref, onMounted, toRaw } from 'vue';
 import { findbyid, findquestion, submitcode } from "@/api/index.js";
-import { ArrowLeft } from "@element-plus/icons-vue"
-
+import { ArrowLeft,Promotion } from "@element-plus/icons-vue" 
 import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
 
