@@ -7,18 +7,19 @@
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
-      <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+      <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
       <el-button type="warning" @click="reset()">清空</el-button>
-      <el-button type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
+      <el-button type="success" style="margin-left: 10px" @click="add()" :icon="Plus">新增</el-button>
       <el-popconfirm title="确定删除这些数据吗？" @confirm="delBatch()" v-if="props.msg !== 'A'">
         <template #reference>
-          <el-button type="danger" style="margin-left: 5px">批量删除</el-button>
+          <el-button type="danger" style="margin-left: 5px" :icon="Delete">批量删除</el-button>
         </template>
       </el-popconfirm>
     </div>
     <div>
-      <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
-        @selection-change="handleSelectionChange" :row-key="getRowKeys">
+      <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+        style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+        :row-key="getRowKeys">
         <el-table-column v-if="props.msg !== 'A'" ref="table" type="selection" width="55"
           :reserve-selection="true"></el-table-column>
         <el-table-column prop="questionid" label="题号" width="55px"></el-table-column>
@@ -31,7 +32,7 @@
         <el-table-column label="通过率" width="80px">
 
           <template #default="{ row }">
-            <span v-if="row.submitnum!=0">{{ (row.solvenum/row.submitnum*100).toFixed(1) }} %</span>
+            <span v-if="row.submitnum != 0">{{ (row.solvenum / row.submitnum * 100).toFixed(1) }} %</span>
             <span v-else>未提交</span>
           </template>
         </el-table-column>
@@ -40,11 +41,11 @@
 
           <template #default="{ row }">
             <span class="button-group">
-              <el-button type="primary" @click="edit(row)">编辑</el-button>
-              <el-button slot="reference" type="primary" @click="show(row.questionid)">查看</el-button>
+              <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
+              <el-button slot="reference" type="primary" @click="show(row.questionid)" :icon="Search">查看</el-button>
               <el-popconfirm v-if="delshow(row.creator)" title="确定删除吗？" @confirm="del(row.id, row.questionid)">
                 <template #reference>
-                  <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                  <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
                 </template>
               </el-popconfirm>
             </span>
@@ -129,9 +130,9 @@
                 <el-input type="textarea" v-model="judgeCaseItem.output" placeholder="请输入测试输出用例"></el-input>
               </el-form-item>
               <el-row>
-                <el-button @click="ShowAnswer" type="primary">查看题解</el-button>
-                <el-button @click="handleAdd" type="primary">新增测试用例</el-button>
-                <el-button type="danger" @click="handleDelete(index)">删除</el-button>
+                <el-button @click="ShowAnswer" type="primary" :icon="Search">查看题解</el-button>
+                <el-button @click="handleAdd" type="primary" :icon="Plus">新增测试用例</el-button>
+                <el-button type="danger" @click="handleDelete(index)" :icon="Delete">删除</el-button>
 
               </el-row>
 
@@ -154,6 +155,8 @@ import { ref } from 'vue';
 const props = defineProps({
   msg: String,
 })
+import { Edit, Search, Delete, Plus } from '@element-plus/icons-vue'
+
 import {
   addquestion,
   changequestion,

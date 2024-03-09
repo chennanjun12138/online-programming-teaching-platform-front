@@ -3,14 +3,17 @@
 
         <div>
             <el-input v-if="tableVisible" v-model="params.name" style="width: 200px" placeholder="请输入作业名"></el-input>
-            <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
-            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findBySearch()">返回</el-button>
+            <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="findBySearch()"
+                :icon="Search">查询</el-button>
+            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findBySearch()"
+                :icon="Back">返回</el-button>
             <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
 
 
         </div>
         <div>
-            <el-table :data="tableData" v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+                v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
                 <el-table-column prop="name" label="作业名"></el-table-column>
@@ -19,16 +22,17 @@
                 <el-table-column prop="endtime" label="结束时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="searchsubmit(row.homeworkid)">查看提交</el-button>
+                        <el-button type="primary" @click="searchsubmit(row.homeworkid)" :icon="Search">查看提交</el-button>
                         <el-popconfirm title="确定删除吗？" @confirm="del(row.homeworkid)">
                             <template #reference>
-                                <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                                <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="80px" prop="id" label="提交序号"></el-table-column>
 
@@ -68,9 +72,11 @@
         </div>
     </div>
 </template>
-    
-<script setup  >
+
+<script setup>
 import { ref } from 'vue';
+import { Search, Delete, Back } from '@element-plus/icons-vue'
+
 import {
     changesubmit,
     delBatchhomework,
@@ -182,7 +188,7 @@ function getRowKeys(row) {
     return row.id;
 }
 </script>
-    
+
 <style>
 .container {
     display: flex;

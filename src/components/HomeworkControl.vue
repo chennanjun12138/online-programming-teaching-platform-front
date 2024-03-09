@@ -4,45 +4,49 @@
             <el-input v-if="tableVisible" v-model="params.name" style="width: 200px" placeholder="请输入作业名"></el-input>
             <el-input v-if="tableVisible && props.msg != 'B'" v-model="params.teacher"
                 style="width: 200px; margin-left: 5px" placeholder="请输入作业教师"></el-input>
-            <el-button v-if="tableVisible" type="warning" style="margin-left: 10px"
-                @click="findBySearch()">查询</el-button>
-            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px"
-                @click="findBySearch()">返回</el-button>
+            <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="findBySearch()"
+                :icon="Search">查询</el-button>
+            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findBySearch()"
+                :icon="Back">返回</el-button>
             <span v-if="tableVisible2" style="margin-left: 20px">作业说明：{{ notice }}</span>
 
             <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
-            <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
+            <el-button v-if="tableVisible" type="success" style="margin-left: 10px" @click="add()"
+                :icon="Plus">新增</el-button>
             <el-popconfirm v-if="tableVisible" title="确定删除这些数据吗？" @confirm="delBatch()">
                 <template #reference>
-                    <el-button type="danger" style="margin-left: 5px">批量删除</el-button>
+                    <el-button type="danger" style="margin-left: 5px" :icon="Delete">批量删除</el-button>
                 </template>
             </el-popconfirm>
 
         </div>
         <div>
-            <el-table :data="tableData" v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
-            :default-sort="[ { prop: 'column1', order: 'descending' }, { prop: 'column2', order: 'ascending' } ]"
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+                v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
+                :default-sort="[{ prop: 'column1', order: 'descending' }, { prop: 'column2', order: 'ascending' }]"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
-                <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
+                <el-table-column prop="homeworkid" label="作业号" width="70px"></el-table-column>
                 <el-table-column prop="name" label="作业名"></el-table-column>
-                <el-table-column prop="teacher" label="作业教师"></el-table-column>
+                <el-table-column prop="teacher" label="作业教师" width="80px"></el-table-column>
                 <el-table-column prop="starttime" sortable label="开始时间" width="120px"></el-table-column>
                 <el-table-column prop="endtime" sortable label="结束时间" width="120px"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="edit(row)">编辑</el-button>
+                        <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
                         <el-button type="primary"
-                            @click="searchbyhomework(tableData.indexOf(row), row.content, row.illustrate, row.homeworkid)">查看</el-button>
+                            @click="searchbyhomework(tableData.indexOf(row), row.content, row.illustrate, row.homeworkid)"
+                            :icon="Search">查看</el-button>
                         <el-popconfirm title="确定删除吗？" @confirm="del(row.homeworkid)">
                             <template #reference>
-                                <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                                <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
@@ -57,7 +61,7 @@
                     <template #default="{ row }">
                         <el-popconfirm title="确定删除吗？" @confirm="delcontent(questiondata.indexOf(row), row.questionid)">
                             <template #reference>
-                                <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                                <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
@@ -115,6 +119,7 @@ const props = defineProps({
     msg: String,
 })
 import { changehomework, delBatchhomework, deletehomework, findbyhomework, findhomeworks, updatehomework, updatequestionbank } from "@/api/index.js";
+import { Edit, Search, Delete, Plus, Back } from '@element-plus/icons-vue'
 let params = ref({
     name: '',
     phone: '',

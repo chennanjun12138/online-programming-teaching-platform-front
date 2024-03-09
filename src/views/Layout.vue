@@ -23,19 +23,19 @@
           </el-menu-item>
           <el-menu-item index="/class" v-if="user.role === 'ROLE_ADMIN'">
             <el-icon>
-              <Setting />
+              <Management />
             </el-icon>
             <span>课程管理</span>
           </el-menu-item>
           <el-menu-item index="/connectcontroller" v-if="user.role === 'ROLE_ADMIN'">
             <el-icon>
-              <Setting />
+              <Connection />
             </el-icon>
             <span slot="title">课程关系管理</span>
           </el-menu-item>
           <el-menu-item index="/homework" v-if="user.role === 'ROLE_ADMIN'">
             <el-icon>
-              <Setting />
+              <Management />
             </el-icon>
             <span slot="title">作业管理</span>
           </el-menu-item>
@@ -72,7 +72,7 @@
           </el-menu-item>
           <el-menu-item index="/teacherwork" v-if="user.role === 'ROLE_TEACHER'">
             <el-icon>
-              <Setting />
+              <Management />
             </el-icon>
             <span slot="title">作业管理</span>
           </el-menu-item>
@@ -166,7 +166,7 @@
 
 <script setup>
 import { ref, computed } from "vue"
-import { Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Document, Reading, Search, Medal } from "@element-plus/icons-vue"
+import { Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Document, Reading, Search, Medal, Management } from "@element-plus/icons-vue"
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter()
@@ -180,7 +180,7 @@ const display = computed(
   () => {
     const current = router.getRoutes().find(r => {
       console.log(route.name, r.name)
-      if (route.name === 'questioncontent' || route.name ==='ClassDetail') {
+      if (route.name === 'questioncontent' || route.name === 'ClassDetail') {
         return route.path.includes(r.name)
       }
       else {
@@ -210,11 +210,14 @@ function logout() {
 </script>
 
 <style scoped>
-.el-main{
+.el-main {
   background-image: url('src/assets/image/b1.jpg');
-  background-size: cover; /* 背景图片铺满整个页面 */
-  background-repeat: no-repeat; /* 不重复显示背景图片 */
+  background-size: cover;
+  /* 背景图片铺满整个页面 */
+  background-repeat: no-repeat;
+  /* 不重复显示背景图片 */
 }
+
 .elside {
   overflow: hidden;
   min-height: 100vh;

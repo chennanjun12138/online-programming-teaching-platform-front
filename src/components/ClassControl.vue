@@ -3,31 +3,35 @@
 
         <div>
             <el-input v-if="tableVisible" v-model="params.name" style="width: 200px" placeholder="请输入课程名"></el-input>
-            <el-input v-if="tableVisible && props.msg != 'A'" v-model="params.author" style="width: 200px; margin-left: 5px"
-                placeholder="请输入课程教师"></el-input>
+            <el-input v-if="tableVisible && props.msg != 'A'" v-model="params.author"
+                style="width: 200px; margin-left: 5px" placeholder="请输入课程教师"></el-input>
             <el-select v-if="tableVisible" v-model="params.sort" clearable placeholder="请选择课程类型"
                 style="width: 200px;margin-left: 5px">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+            <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="findBySearch()"
+                :icon="Search">查询</el-button>
             <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
-            <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
+            <el-button v-if="tableVisible" type="success" style="margin-left: 10px" @click="add()"
+                :icon="Plus">新增</el-button>
             <el-popconfirm v-if="tableVisible" title="确定删除这些数据吗？" @confirm="delBatch()">
                 <template #reference>
-                    <el-button type="danger" style="margin-left: 5px">批量删除</el-button>
+                    <el-button type="danger" style="margin-left: 5px" :icon="Delete">批量删除</el-button>
                 </template>
             </el-popconfirm>
-            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="reback()">返回</el-button>
+            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="reback()"
+                :icon="Back">返回</el-button>
             <el-popconfirm v-if="tableVisible2" title="确定添加这些数据吗？" @confirm="addBatch()">
                 <template #reference>
-                    <el-button type="primary" style="margin-left: 5px">批量增加</el-button>
+                    <el-button type="primary" style="margin-left: 5px" :icon="Plus">批量增加</el-button>
                 </template>
             </el-popconfirm>
 
         </div>
         <div>
-            <el-table v-if="tableVisible" :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column prop="img" label="课程封面">
@@ -45,19 +49,20 @@
                 <el-table-column prop="author" label="课程教师"></el-table-column>
                 <el-table-column label="操作" width="500px">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="edit(row)">编辑</el-button>
-                        <el-button type="primary" @click="searchcourse(row.id)">查看</el-button>
-                        <el-button type="primary" @click="down(row.content)">下载</el-button>
-                        <el-button type="primary" @click="findquestions(row.id)">添加</el-button>
+                        <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
+                        <el-button type="primary" @click="searchcourse(row.id)" :icon="Search">查看</el-button>
+                        <el-button type="primary" @click="down(row.content)" :icon="Download">下载</el-button>
+                        <el-button type="primary" @click="findquestions(row.id)" :icon="Plus">添加</el-button>
                         <el-popconfirm title="确定删除吗？" @confirm="del(row.id)">
                             <template #reference>
-                                <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                                <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
@@ -71,7 +76,7 @@
                 <el-table-column label="操作">
                     <template #default="{ row }">
                         <el-button v-if="isNumberInArray(row.questionid) === 1" type="primary"
-                            @click="insertcontract(row.questionid)">添加</el-button>
+                            @click="insertcontract(row.questionid)" :icon="Plus">添加</el-button>
                         <el-button v-else type="primary" disabled>已添加</el-button>
                     </template>
                 </el-table-column>
@@ -90,7 +95,7 @@
                 <el-form :model="form">
                     <el-form-item label="课程封面" label-width="25%">
                         <el-upload action="http://localhost:8080/api/files/upload" :on-success="successUpload">
-                            <el-button size="small" type="primary">点击上传</el-button>
+                            <el-button size="small" type="primary" :icon="Upload">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="课程名" label-width="25%">
@@ -99,7 +104,8 @@
 
                     <el-form-item label="课程分类" label-width="25%">
                         <el-select v-model="form.sort" autocomplete="off" style="width: 90%" placeholder="请选择课程类型">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label"
+                                :value="item.value">
                             </el-option>
                         </el-select>
                         <!-- <el-input v-model="form.sort" autocomplete="off" style="width: 90%"></el-input> -->
@@ -110,7 +116,7 @@
 
                     <el-form-item label="课程文件" label-width="25%">
                         <el-upload action="http://localhost:8080/api/files/upload" :on-success="successUploadpdf">
-                            <el-button size="small" type="primary">点击上传</el-button>
+                            <el-button size="small" type="primary" :icon="Upload">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
                 </el-form>
@@ -138,7 +144,7 @@
         </div>
     </div>
 </template>
-      
+
 <script setup>
 
 
@@ -151,6 +157,8 @@ import {
     changeclass, delBatchclass, deleteclass, findclasss,
     findcourse, findquestionbanks, submitcourse, addcontract, findbyquestionid, addBatchcontract, judgecontract, findteachers
 } from "@/api/index.js";
+import { Edit, Search, Delete, Plus, Back, Upload, Download } from '@element-plus/icons-vue'
+
 let params = ref({
     name: '',
     phone: '',
@@ -443,5 +451,5 @@ function getRowKeys(row) {
 
 
 </script>
-      
+
 <style></style>

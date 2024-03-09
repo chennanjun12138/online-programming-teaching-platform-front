@@ -5,35 +5,39 @@
             <el-input v-if="tableVisible" v-model="params.name" style="width: 200px" placeholder="请输入作业名"></el-input>
             <el-input v-if="tableVisible" v-model="params.teacher" style="width: 200px; margin-left: 5px"
                 placeholder="请输入作业教师"></el-input>
-            <el-button v-if="tableVisible" type="warning" style="margin-left: 10px" @click="findbyteachers()">查询</el-button>
-            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px"
-                @click="findbyteachers()">返回</el-button>
+            <el-button v-if="tableVisible" type="primary" style="margin-left: 10px" @click="findbyteachers()"
+                :icon="Search">查询</el-button>
+            <el-button v-if="tableVisible2" type="warning" style="margin-left: 10px" @click="findbyteachers()"
+                :icon="Back">返回</el-button>
             <span v-if="tableVisible2" style="margin-left: 20px">题目说明：{{ notice }}</span>
-            <el-button v-if="tableVisible3" type="warning" style="margin-left: 10px"
-                @click="findbyteachers()">返回</el-button>
+            <el-button v-if="tableVisible3" type="warning" style="margin-left: 10px" @click="findbyteachers()"
+                :icon="Back">返回</el-button>
             <el-button v-if="tableVisible" type="warning" @click="reset()">清空</el-button>
 
 
         </div>
         <div>
-            <el-table :data="tableData" v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
-            :default-sort="[ { prop: 'column1', order: 'descending' }, { prop: 'column2', order: 'ascending' } ]"
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" v-if="tableVisible"
+                style="width: 100%; margin: 15px 0px" ref="table"
+                :default-sort="[{ prop: 'column1', order: 'descending' }, { prop: 'column2', order: 'ascending' }]"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
-                <el-table-column  prop="name" label="作业名" ></el-table-column>
+                <el-table-column prop="name" label="作业名"></el-table-column>
                 <el-table-column prop="teacher" label="作业教师"></el-table-column>
-                <el-table-column prop="starttime" sortable  label="开始时间"></el-table-column>
+                <el-table-column prop="starttime" sortable label="开始时间"></el-table-column>
                 <el-table-column prop="endtime" sortable label="结束时间"></el-table-column>
                 <el-table-column label="操作" width="350px">
                     <template #default="{ row }">
-                        <el-button type="primary"
-                            @click="searchbyhomework(row.homeworkid, row.content, row.illustrate)">查看</el-button>
-                        <el-button type="primary" @click="add(row.homeworkid)">提交</el-button>
-                        <el-button type="primary" @click="searchbystudent(row.homeworkid)">提交记录</el-button>
+                        <el-button type="primary" @click="searchbyhomework(row.homeworkid, row.content, row.illustrate)"
+                            :icon="Search">查看</el-button>
+                        <el-button type="primary" @click="add(row.homeworkid)" :icon="Promotion">提交</el-button>
+                        <el-button type="primary" @click="searchbystudent(row.homeworkid)"
+                            :icon="Notebook">提交记录</el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
@@ -45,12 +49,13 @@
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="gotoquestion(row.questionid)">练习</el-button>
+                        <el-button type="primary" @click="gotoquestion(row.questionid)" :icon="EditPen">练习</el-button>
 
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible3" :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table">
+            <el-table v-if="tableVisible3" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+                :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table">
                 <el-table-column width="80px" prop="id" label="提交序号"></el-table-column>
 
                 <el-table-column prop="submittime" label="提交时间"></el-table-column>
@@ -72,7 +77,8 @@
             <el-dialog title="请填写信息" v-model="dialogFormVisible" width="30%">
                 <el-form :model="form">
                     <el-form-item label="提交信息" label-width="25%">
-                        <el-input v-model="form.content" autocomplete="off" style="width: 90%" type="textarea"></el-input>
+                        <el-input v-model="form.content" autocomplete="off" style="width: 90%"
+                            type="textarea"></el-input>
                     </el-form-item>
                 </el-form>
                 <div class="container">
@@ -83,8 +89,8 @@
         </div>
     </div>
 </template>
-    
-<script setup  >
+
+<script setup>
 import { ref } from 'vue';
 import {
     addsubmit,
@@ -94,6 +100,8 @@ import {
     findteachers,
 } from "@/api/index.js";
 import { useRouter } from "vue-router";
+import { Search, Back, EditPen, Notebook, Promotion } from '@element-plus/icons-vue'
+
 const router = useRouter()
 let params = ref({
     studentid: '',
@@ -155,7 +163,7 @@ function findBySearch() {
             tableVisible3.value = false;
         }
     })
-      params.value.teacher = '';
+    params.value.teacher = '';
 }
 function reset() {
     params.value = {
@@ -230,5 +238,5 @@ function handleSelectionChange(val) {
     multipleSelection.value = val;
 } 
 </script>
-    
+
 <style></style>

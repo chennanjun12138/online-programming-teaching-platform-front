@@ -4,23 +4,26 @@
         <div>
             <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
 
-            <el-select v-model="params.language" clearable placeholder="请选择编程语言" style="margin-left: 5px; width: 200px;">
+            <el-select v-model="params.language" clearable placeholder="请选择编程语言"
+                style="margin-left: 5px; width: 200px;">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <el-select v-model="params.runresult" clearable placeholder="请输入代码结果" style="margin-left: 5px; width: 200px;">
+            <el-select v-model="params.runresult" clearable placeholder="请输入代码结果"
+                style="margin-left: 5px; width: 200px;">
                 <el-option v-for="item in resultoptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
-            <el-button type="warning" style="margin-left: 10px" @click="showchart()">查看情况</el-button>
+            <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
+            <el-button type="primary" style="margin-left: 10px" @click="showchart()" :icon="Search">查看情况</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
 
 
         </div>
         <div>
-            <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+                :row-key="getRowKeys">
                 <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
                 <el-table-column prop="judgeInfo" label="判题信息"></el-table-column>
@@ -30,7 +33,7 @@
                 <el-table-column prop="createTime" label="提交时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="show(tableData.indexOf(row))">查看评价</el-button>
+                        <el-button type="primary" @click="show(tableData.indexOf(row))" :icon="Search">查看评价</el-button>
 
                     </template>
                 </el-table-column>
@@ -47,11 +50,12 @@
             <el-dialog title="请查看评价" v-model="dialogFormVisible" width="70%">
                 <div class='monaco-editor'>
                     <pre style="white-space: pre-wrap;">
-                        {{ codecontent }}
-                    </pre>
+                {{ codecontent }}
+            </pre>
                 </div>
-                <el-table :data="evaluateData" style="width: 100%; margin: 15px 0px" ref="table"
-                    @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="evaluateData"
+                    style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+                    :row-key="getRowKeys">
                     <el-table-column prop="content" label="评价内容"></el-table-column>
                     <el-table-column prop="teachername" label="评价者" width="80px"></el-table-column>
                 </el-table>
@@ -62,13 +66,14 @@
         </div>
     </div>
 </template>
-  
-<script setup  >
+
+<script setup>
 import { ref } from 'vue';
 import {
-    searchcode, findevaluate, findByid, getallsubmit, findbyquestionid
+    searchcode, findevaluate, getallsubmit, findbyquestionid
 } from "@/api/index.js";
 import dayjs from 'dayjs';
+import { Search } from '@element-plus/icons-vue'
 
 import Chart from '@/components/Chart.vue';
 
@@ -272,7 +277,7 @@ function handleCurrentChange(pageNum) {
 }
 
 </script>
-  
+
 <style>
 .chartflex {
     display: flex;

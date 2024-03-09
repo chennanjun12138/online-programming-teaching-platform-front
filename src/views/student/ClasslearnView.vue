@@ -7,12 +7,13 @@
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
-      <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+      <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
       <el-button type="warning" @click="reset()">清空</el-button>
     </div>
 
     <div>
-      <el-table :data="tableData" style="width: 100%; margin: 15px 0px" :row-key="(row) => row.id">
+      <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+        style="width: 100%; margin: 15px 0px" :row-key="(row) => row.id">
         <el-table-column prop="img" label="课程封面">
           <template #default="{ row }">
             <el-image preview-teleported="true" style="width: 75px; height: 75px;border-radius: 50% "
@@ -24,19 +25,19 @@
         <el-table-column prop="name" label="课程名"></el-table-column>
         <el-table-column prop="sort" label="课程分类"></el-table-column>
         <el-table-column prop="author" label="课程教师" width="80px"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="300px">
           <template #default="{ row }">
-            <el-button type="primary" @click="joinlearn(row.id, row.author, row.content)">学习</el-button>
-            <el-button type="primary" @click="searchcourse(row.id)">查看</el-button>
-            <el-button type="primary" @click="down(row.content)">下载</el-button>
+            <el-button type="primary" @click="joinlearn(row.id, row.author, row.content)" :icon="Reading">学习</el-button>
+            <el-button type="primary" @click="searchcourse(row.id)" :icon="Search">查看</el-button>
+            <el-button type="primary" @click="down(row.content)" :icon="Download">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div style="margin-top: 10px">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="params.pageNum"
-        :page-sizes="[5, 10, 15, 20]" :page-size="params.pageSize" layout="total, sizes, prev, pager, next"
-        :total="total">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page="params.pageNum" :page-sizes="[5, 10, 15, 20]" :page-size="params.pageSize"
+        layout="total, sizes, prev, pager, next" :total="total">
       </el-pagination>
 
     </div>
@@ -78,11 +79,12 @@
     </div>
   </div>
 </template>
-    
+
 <script setup>
 import { ref, } from 'vue';
 import { addconnect, changeclass, findclasss, findcourse } from "@/api/index.js";
 import { useRouter } from "vue-router";
+import { Reading, Search, Download } from '@element-plus/icons-vue'
 
 const router = useRouter()
 let params = ref({
@@ -226,7 +228,7 @@ function joinlearn(id, author, fileId) {
 }
 
 </script>
-    
+
 <style>
 .container {
   display: flex;

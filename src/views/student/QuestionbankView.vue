@@ -8,13 +8,14 @@
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+            <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
 
         </div>
         <div>
-            <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+                :row-key="getRowKeys">
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
                 <el-table-column prop="name" label="题目名称"></el-table-column>
@@ -32,7 +33,7 @@
                 <el-table-column prop="createtime" label="创建时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="gotoquestion(row.questionid)">练习</el-button>
+                        <el-button type="primary" @click="gotoquestion(row.questionid)" :icon="EditPen">练习</el-button>
 
                     </template>
                 </el-table-column>
@@ -53,6 +54,8 @@
 import { ref } from 'vue';
 import { findquestionbanks } from "@/api/index.js";
 import { useRouter } from "vue-router";
+import { Search, EditPen } from '@element-plus/icons-vue'
+
 const router = useRouter()
 let params = ref({
     name: '',

@@ -3,7 +3,7 @@
 
         <div style="width: 65% " class="show-container">
             <div style="margin-left: 10px;">
-                <el-button type="warning" @click="goback()">返回</el-button>
+                <el-button type="warning" @click="goback()" :icon="Back">返回</el-button>
             </div>
             <iframe ref="pdfIframe" @load="handleIframeLoad" id="pdf-iframe" class="ppt" :src="url"></iframe>
             <div style="display: flex; align-items: center;">
@@ -13,7 +13,7 @@
                     </li>
                 </ul>
                 <div style="margin-left: auto;">
-                    <el-button type="warning" @click="gotoquestion">课后习题</el-button>
+                    <el-button type="warning" @click="gotoquestion" :icon="QuestionFilled">课后习题</el-button>
                 </div>
             </div>
         </div>
@@ -25,8 +25,10 @@
                 <el-tab-pane label="编辑器" name="first">
                     <el-row>
                         <el-text>编程语言：</el-text>
-                        <el-select @change="onChangeEditorLang" v-model="language" placeholder="请选择" style="width: 200px;">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                        <el-select @change="onChangeEditorLang" v-model="language" placeholder="请选择"
+                            style="width: 200px;">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label"
+                                :value="item.value">
                             </el-option>
                         </el-select>
                         <el-button style="margin-left: 5px" type="warning" @click="runCode">运行</el-button>
@@ -51,12 +53,13 @@
 
     </div>
 </template>
-    
+
 <script setup>
 import { ref, onMounted, toRaw, } from 'vue';
 import { downloadPDF, findcontract, runcode, savenotebook, findnotebook } from "@/api/index.js";
 import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
+import { Back, QuestionFilled } from '@element-plus/icons-vue'
 
 const activeName = ref('first')
 const textarea = ref('')
@@ -260,7 +263,7 @@ function onChangeEditorLang() {
 }
 
 </script>
-    
+
 <style>
 .show-container {
     display: flex;

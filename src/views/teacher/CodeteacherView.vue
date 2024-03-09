@@ -4,22 +4,25 @@
         <div>
             <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
             <el-input v-model="params.userid" style="width: 200px; margin-left: 5px" placeholder="请输入提交者id"></el-input>
-            <el-select v-model="params.runresult" clearable placeholder="请输入代码结果" style="margin-left: 5px; width: 200px;">
+            <el-select v-model="params.runresult" clearable placeholder="请输入代码结果"
+                style="margin-left: 5px; width: 200px;">
                 <el-option v-for="item in resultoptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <el-select v-model="params.language" clearable placeholder="请选择编程语言" style="margin-left: 5px; width: 200px;">
+            <el-select v-model="params.language" clearable placeholder="请选择编程语言"
+                style="margin-left: 5px; width: 200px;">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+            <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
 
 
         </div>
         <div>
-            <el-table :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+                :row-key="getRowKeys">
 
                 <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
@@ -29,8 +32,9 @@
                 <el-table-column prop="createTime" label="提交时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button slot="reference" type="primary" @click="show(tableData.indexOf(row))">查看</el-button>
-                        <el-button type="primary" @click="evaluate(row.id)">评价</el-button>
+                        <el-button slot="reference" type="primary" @click="show(tableData.indexOf(row))"
+                            :icon="Search">查看</el-button>
+                        <el-button type="primary" @click="evaluate(row.id)" :icon="EditPen">评价</el-button>
 
 
                     </template>
@@ -55,11 +59,12 @@
             <el-dialog title="查看信息" v-model="contentVisible" width="60%">
                 <div class='monaco-editor'>
                     <pre style="white-space: pre-wrap;">
-                        {{ codecontent }}
-                    </pre>
+                {{ codecontent }}
+            </pre>
                 </div>
-                <el-table :data="evaluateData" style="width: 100%; margin: 15px 0px" ref="table"
-                    @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="evaluateData"
+                    style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+                    :row-key="getRowKeys">
                     <el-table-column prop="content" label="评价内容"></el-table-column>
                     <el-table-column prop="teachername" label="评价者" width="80px"></el-table-column>
                 </el-table>
@@ -67,9 +72,10 @@
         </div>
     </div>
 </template>
-    
-<script setup  >
+
+<script setup>
 import { ref } from 'vue';
+import { Search, EditPen } from '@element-plus/icons-vue'
 import {
     addevaluate, findevaluate, getsubmitbyteachers
 } from "@/api/index.js";
@@ -227,7 +233,7 @@ function reset() {
     findBySearch();
 }
 </script>
-    
+
 <style>
 .monaco-editor {
     width: 100%;

@@ -8,22 +8,23 @@
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
-            <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+            <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
-            <el-button type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
+            <el-button type="success" style="margin-left: 10px" @click="add()" :icon="Plus">新增</el-button>
             <el-popconfirm title="确定删除这些数据吗？" @confirm="delBatch()">
                 <template #reference>
-                    <el-button type="danger" style="margin-left: 5px">批量删除</el-button>
+                    <el-button type="danger" style="margin-left: 5px" :icon="Delete">批量删除</el-button>
                 </template>
             </el-popconfirm>
         </div>
         <div>
-            <el-table :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
+                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+                :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
-                <el-table-column prop="name" label="姓名"></el-table-column>
-                <el-table-column prop="sex" label="性别"></el-table-column>
-                <el-table-column prop="age" label="年龄"></el-table-column>
+                <el-table-column prop="name" label="姓名" width="100"></el-table-column>
+                <el-table-column prop="sex" label="性别" width="80"></el-table-column>
+                <el-table-column prop="age" label="年龄" width="80"></el-table-column>
                 <el-table-column prop="phone" label="电话"></el-table-column>
                 <el-table-column prop="role" label="角色">
                     <template #default="{ row }">
@@ -32,11 +33,11 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="edit(row)">编辑</el-button>
+                        <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
 
                         <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
                             <template #reference>
-                                <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                                <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
@@ -80,10 +81,12 @@
         </div>
     </div>
 </template>
-    
+
 <script setup>
 import { ref } from 'vue';
 import { changeuser, findusers, deleteuser, delBatchuser } from "@/api/index.js";
+import { Edit, Search, Delete, Plus } from '@element-plus/icons-vue'
+
 let params = ref({
     name: '',
     phone: '',
@@ -164,7 +167,7 @@ function del(id) {
                 type: 'success'
             });
             findBySearch();
-        } 
+        }
     })
 }
 function handleSelectionChange(val) {
@@ -186,5 +189,5 @@ function getRowKeys(row) {
     return row.id;
 }
 </script>
-    
+
 <style></style>

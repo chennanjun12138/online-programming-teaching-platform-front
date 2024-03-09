@@ -3,27 +3,29 @@
 
         <div>
             <el-input v-model="params.teachername" style="width: 200px" placeholder="请输入教师名"></el-input>
-            <el-input v-model="params.studentid" style="width: 200px; margin-left: 5px" placeholder="请输入学生id"></el-input>
-            <el-button type="warning" style="margin-left: 10px" @click="findBySearch()">查询</el-button>
+            <el-input v-model="params.studentid" style="width: 200px; margin-left: 5px"
+                placeholder="请输入学生id"></el-input>
+            <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
-            <el-button type="primary" style="margin-left: 10px" @click="add()">新增</el-button>
+            <el-button type="success" style="margin-left: 10px" @click="add()" :icon="Plus">新增</el-button>
 
         </div>
         <div>
-            <el-table :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column prop="classid" label="课程id" width="80px"></el-table-column>
-                <el-table-column prop="teacherid" label="教师id" width="80px"></el-table-column>
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
+                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+                :row-key="getRowKeys">
+                <el-table-column prop="classid" label="课程号" width="80px"></el-table-column>
+                <el-table-column prop="teacherid" label="教师号" width="80px"></el-table-column>
                 <el-table-column prop="teachername" label="教师名"></el-table-column>
-                <el-table-column prop="studentid" label="学生id" width="80px"></el-table-column>
+                <el-table-column prop="studentid" label="学生号" width="80px"></el-table-column>
                 <el-table-column prop="studentname" label="学生名" width="80px"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="show(row.studentid)">查看学生代码和做题情况</el-button>
+                        <el-button type="primary" @click="show(row.studentid)" :icon="Search">查看学生代码和做题情况</el-button>
 
                         <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
                             <template #reference>
-                                <el-button type="danger" style="margin-left: 5px">删除</el-button>
+                                <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
                             </template>
                         </el-popconfirm>
                     </template>
@@ -41,7 +43,8 @@
                 <el-form :model="form">
                     <el-form-item label="课程id" label-width="15%">
                         <el-select v-model="form.classid" clearable placeholder="请选择课程" style="width: 90%">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                            <el-option v-for="item in options" :key="item.value" :label="item.label"
+                                :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -62,11 +65,12 @@
         </div>
     </div>
 </template>
-    
+
 <script setup>
 import { ref } from 'vue';
 import { findconnects, deleteconnect, addconnect, findclassall, findByname, getallsubmit, findbyquestionid } from "@/api/index.js";
 import Chart from '@/components/Chart.vue';
+import { Search, Delete, Plus } from '@element-plus/icons-vue'
 
 let params = ref({
     name: '',
@@ -289,7 +293,7 @@ function del(id) {
     })
 }
 </script>
-    
+
 <style>
 .chartflex {
     display: flex;
