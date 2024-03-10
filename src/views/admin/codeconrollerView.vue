@@ -25,11 +25,26 @@
                 style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
                 :row-key="getRowKeys">
 
-                <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
+                <el-table-column prop="questionid" label="题号" width="55px">
+                    <template #default="{ row }">
+                        <el-button style="width: 60%;" type="primary" @click="gotoquestion(row.questionid)" text>{{ row.questionid }}
+                        </el-button>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
-                <el-table-column prop="judgeInfo" label="判题信息"></el-table-column>
-                <el-table-column prop="status" label="判题状态" width="80px"></el-table-column>
-                <el-table-column prop="userid" label="提交号" width="75px"></el-table-column>
+                <el-table-column prop="judgeInfo" label="判题结果" width="135px">
+                    <template #default="{ row }">
+                        <el-tag size="large" v-if="row.judgeInfo.message == 'Accepted'" type="success">
+                            {{ row.judgeInfo.message }}</el-tag>
+                        <el-tag size="large" v-else type="error"> {{ row.judgeInfo.message }}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="judgeInfo" label="判题信息" width="135px">
+                    <template #default="{ row }">
+                        <span>{{ row.judgeInfo.memory }}KB/{{ row.judgeInfo.time }}ms</span>
+                    </template>
+                </el-table-column>                <el-table-column prop="status" label="判题状态" width="80px"></el-table-column>
+                <el-table-column prop="userid" label="提交者" width="80px"></el-table-column>
                 <el-table-column prop="createTime" label="提交时间" width="165px"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
@@ -81,12 +96,13 @@
 <script setup>
 import { ref } from 'vue';
 import {
-    searchcode, deletequestionsubmit, addevaluate, findevaluate
+    searchcode, deletequestionsubmit, addevaluate, findevaluate,findByid
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
 import { Search, Delete, EditPen } from '@element-plus/icons-vue'
-
+import { useRouter } from "vue-router"; 
+const router = useRouter()
 
 const mdValue = ref('');
 const onMdChange = (v) => {
@@ -154,6 +170,9 @@ let codecontent = ref("");
 let form = ref({});
 let submitid = ref(0);
 let evaluateData = ref([]);
+function gotoquestion(questionid) {
+    router.push(`/questioncontent/${questionid}`)
+}
 function evaluate(id) {
     dialogFormVisible.value = true;
     submitid.value = id;
@@ -214,11 +233,21 @@ function findBySearch() {
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
+                getname(tableData.value[i].userid, i)
+                tableData.value[i].judgeInfo = JSON.parse(tableData.value[i].judgeInfo);
                 tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
             }
         }
     })
+}
+function getname(id, i) {
+    findByid(id).then(res => {
+        if (res) {
+            tableData.value[i].userid = res.data.name;
+        }
+    })
+
 }
 function del(id) {
     deletequestionsubmit(id).then(res => {

@@ -18,7 +18,7 @@
             <el-button type="primary" class="login-button" @click="onLogin">登录</el-button>
           </el-form-item>
         </el-form>
-        <RouterLink to="/register" class="router-link">注册账号</RouterLink>
+        <RouterLink to="/register" class="router-link">没有账号？去注册</RouterLink>
       </div>
 
     </div>

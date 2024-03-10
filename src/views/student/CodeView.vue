@@ -24,9 +24,25 @@
             <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
                 style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
                 :row-key="getRowKeys">
-                <el-table-column prop="questionid" label="题号" width="60px"></el-table-column>
+                <el-table-column prop="questionid" label="题号" width="70px">
+                    <template #default="{ row }">
+                        <el-button type="primary" @click="gotoquestion(row.questionid)" text>{{ row.questionid }}
+                        </el-button>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="language" label="编程语言" width="80px"></el-table-column>
-                <el-table-column prop="judgeInfo" label="判题信息"></el-table-column>
+                <el-table-column prop="judgeInfo" label="判题结果" width="140px">
+                    <template #default="{ row }">
+                        <el-tag size="large" v-if="row.judgeInfo.message == 'Accepted'" type="success">
+                            {{ row.judgeInfo.message }}</el-tag>
+                        <el-tag size="large" v-else type="error"> {{ row.judgeInfo.message }}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="judgeInfo" label="判题信息" width="150px">
+                    <template #default="{ row }">
+                        <span>{{ row.judgeInfo.memory }}KB/{{ row.judgeInfo.time }}ms</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="status" label="判题状态" width="80px"></el-table-column>
                 <el-table-column prop="username" label="提交者" width="80px"></el-table-column>
 
@@ -74,9 +90,9 @@ import {
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import { Search } from '@element-plus/icons-vue'
-
 import Chart from '@/components/Chart.vue';
-
+import { useRouter } from "vue-router";
+const router = useRouter()
 const mdValue = ref('');
 const onMdChange = (v) => {
     mdValue.value = v;
@@ -179,6 +195,9 @@ let codecontent = ref("");
 function showchart() {
     contentVisible.value = true;
 }
+function gotoquestion(questionid) {
+    router.push(`/questioncontent/${questionid}`)
+}
 function show(id) {
     dialogFormVisible.value = true;
     codecontent.value = tableData.value[id].code;
@@ -201,6 +220,7 @@ function findBySearch() {
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
                 tableData.value[i].username = user.value.name;
+                tableData.value[i].judgeInfo = JSON.parse(tableData.value[i].judgeInfo);
                 tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
 
@@ -284,5 +304,17 @@ function handleCurrentChange(pageNum) {
     justify-content: center;
 
     height: 520px;
+}
+
+a {
+    text-decoration: none;
+    /* 去掉下划线 */
+    color: rgb(58, 178, 242);
+    /* 设置颜色为蓝色 */
+}
+
+a:visited {
+    color: rgb(58, 178, 242);
+    /* 设置已访问链接的颜色为蓝色 */
 }
 </style>
