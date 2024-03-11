@@ -31,8 +31,10 @@
                 <el-form-item label="年龄" style="margin-left: 200px">
                     <el-input v-model="user.age" autocomplete="off" style="width: 400px"></el-input>
                 </el-form-item>
-                <el-form-item label="身份" style="margin-left: 200px; ">
+                <el-form-item label="身份:" style="margin-left: 200px; ">
                     <span style="text-align: left;">{{ display(user.role) }}</span>
+                    <span style="text-align: left; margin-left: 15px;">提交数:{{ submitnum }}</span>
+                    <span style="text-align: left; margin-left: 15px;">AC数:{{ solvenum }}</span>
                 </el-form-item>
 
                 <div class="container">
@@ -42,10 +44,10 @@
         </el-card>
     </div>
 </template>
-    
-<script setup >
+
+<script setup>
 import { ref } from 'vue';
-import { changeuser, findusers } from "@/api/index.js";
+import { changeuser, getallsubmit } from "@/api/index.js";
 import { CirclePlus } from "@element-plus/icons-vue"
 
 let params = ref({
@@ -55,14 +57,25 @@ let params = ref({
     pageNum: 1,
     pageSize: 5
 })
-let total = ref(0);
-let tableData = ref([]);
+let tableData = ref([])
+let submitnum = ref(0)
+let solvenum = ref(0)
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 function findBySearch() {
-    findusers(params.value).then(res => {
+    params.value.userid = user.value.id;
+    getallsubmit(params.value).then(res => {
 
-        tableData.value = res.data.list;
-        total.value = res.data.total;
+        tableData.value = res.data;
+        submitnum.value = res.data.length;
+
+        for (let i = 0; i < res.data.length; i++) {
+
+            tableData.value[i].judgeInfo = JSON.parse(tableData.value[i].judgeInfo);
+            console.log(tableData.value[i].judgeInfo.message);
+            if (tableData.value[i].judgeInfo.message == "Accepted") {
+                solvenum.value = solvenum.value + 1;
+            }
+        }
 
     })
 }
@@ -92,12 +105,11 @@ function submit() {
 }
 
 </script>
-    
-<style  scoped  lang="scss">
+
+<style scoped lang="scss">
 .elcard {
     height: 480px;
     width: 900px;
-    margin-top: 5px;
     margin-left: 20px;
 }
 

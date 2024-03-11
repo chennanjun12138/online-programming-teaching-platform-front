@@ -116,6 +116,11 @@
               <Document />
             </el-icon><span slot="title">代码情况</span>
           </el-menu-item>
+          <el-menu-item index="/leaderboard" v-if="user.role === 'ROLE_STUDENT'">
+            <el-icon>
+              <Trophy />
+            </el-icon><span slot="title">排行榜</span>
+          </el-menu-item>
           <el-menu-item index="/connectstudent" v-if="user.role === 'ROLE_STUDENT'">
             <el-icon>
               <Connection />
@@ -166,7 +171,7 @@
 
 <script setup>
 import { ref, computed } from "vue"
-import { Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Document, Reading, Search, Medal, Management } from "@element-plus/icons-vue"
+import { Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection,Trophy, Document, Reading, Search, Medal, Management } from "@element-plus/icons-vue"
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter()

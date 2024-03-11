@@ -24,6 +24,7 @@ import ConnectcontrollerVue from '@/views/admin/Connectcontroller.vue';
 import ConnectteacherVue from '@/views/teacher/Connectteacher.vue';
 import ConnectstudentVue from '@/views/student/Connectstudent.vue';
 import codeconrollerViewVue from '@/views/admin/CodeconrollerView.vue';
+import LeaderboardView from '@/views/student/LeaderboardView.vue';
 const router = createRouter({
 
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -151,6 +152,11 @@ const router = createRouter({
           path: 'connectstudent',
           meta: { name: "课程关系" },
           name: 'connectstudent', component: ConnectstudentVue
+        },
+        {
+          path: 'leaderboard',
+          meta: { name: "排行榜" },
+          name: 'leaderboard', component: LeaderboardView
         },
       ]
     },
