@@ -24,7 +24,8 @@ import ConnectcontrollerVue from '@/views/admin/Connectcontroller.vue';
 import ConnectteacherVue from '@/views/teacher/Connectteacher.vue';
 import ConnectstudentVue from '@/views/student/Connectstudent.vue';
 import codeconrollerViewVue from '@/views/admin/CodeconrollerView.vue';
-import LeaderboardView from '@/views/student/LeaderboardView.vue';
+import LeaderboardView from '@/views/LeaderboardView.vue';
+ 
 const router = createRouter({
 
   history: createWebHistory(import.meta.env.BASE_URL),

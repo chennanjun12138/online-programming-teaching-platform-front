@@ -28,7 +28,13 @@ export const findusers = (data)=> {
         params:data
     })
 }
-
+export const getusers = (data)=> {
+    return request({
+        url: '/user/find',
+        method: 'get',
+        params:data
+    })
+}
 export const changeuser = (data)=> {
     return request({
         url: '/user',

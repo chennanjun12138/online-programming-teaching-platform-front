@@ -100,6 +100,11 @@
               <Reading />
             </el-icon><span slot="title">课程学习</span>
           </el-menu-item>
+          <el-menu-item index="/connectstudent" v-if="user.role === 'ROLE_STUDENT'">
+            <el-icon>
+              <Connection />
+            </el-icon><span slot="title">课程关系</span>
+          </el-menu-item>
           <el-menu-item index="/question" v-if="user.role === 'ROLE_STUDENT'">
             <el-icon>
               <Collection />
@@ -116,16 +121,12 @@
               <Document />
             </el-icon><span slot="title">代码情况</span>
           </el-menu-item>
-          <el-menu-item index="/leaderboard" v-if="user.role === 'ROLE_STUDENT'">
+          <el-menu-item index="/leaderboard" >
             <el-icon>
               <Trophy />
             </el-icon><span slot="title">排行榜</span>
           </el-menu-item>
-          <el-menu-item index="/connectstudent" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon>
-              <Connection />
-            </el-icon><span slot="title">课程关系</span>
-          </el-menu-item>
+          
         </el-menu>
       </el-aside>
 
@@ -176,7 +177,7 @@ import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter()
 const route = useRoute()
-console.log(router.getRoutes(), route);
+// console.log(router.getRoutes(), route);
 
 let aSidewidth = ref("200px");
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
@@ -184,7 +185,7 @@ let isCollapse = ref(false);
 const display = computed(
   () => {
     const current = router.getRoutes().find(r => {
-      console.log(route.name, r.name)
+      // console.log(route.name, r.name)
       if (route.name === 'questioncontent' || route.name === 'ClassDetail') {
         return route.path.includes(r.name)
       }

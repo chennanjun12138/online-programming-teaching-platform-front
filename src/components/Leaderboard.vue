@@ -2,15 +2,46 @@
     <div>
 
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
-                style="width: 100%; margin: 15px 0px" ref="table" :row-key="getRowKeys">
-                <el-table-column prop="name" label="姓名" width="100"></el-table-column>
-                <el-table-column prop="sex" label="性别" width="80"></el-table-column>
-                <el-table-column prop="age" label="年龄" width="80"></el-table-column>
-                <el-table-column prop="phone" label="电话"></el-table-column>
-                <el-table-column prop="role" label="角色">
+            <el-table :header-cell-style="{ background: 'rgb(102, 177, 255)', color: '#606266', textAlign: 'center' }"
+                :data="tableData.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)" stripe
+                style="width: 100%; margin: 15px 0px " ref="table" :row-key="getRowKeys"
+                :cell-style="{ textAlign: 'center' }">
+                <el-table-column min-width="40%" label="排名">
                     <template #default="{ row }">
-                        {{ maprol[row.role] }}
+                        <span v-if="(params.pageNum - 1) * params.pageSize + tableData.indexOf(row) + 1 == 1"> <img
+                                style="width: 60px; height: 60px; border-radius: 100%;" src="@/assets/image/one.jpg" />
+                        </span>
+                        <span v-else-if="(params.pageNum - 1) * params.pageSize + tableData.indexOf(row) + 1 == 2">
+                            <img style="width: 60px; height: 60px; border-radius: 100%;"
+                                src="@/assets/image/silver.jpeg" /></span>
+                        <span v-else-if="(params.pageNum - 1) * params.pageSize + tableData.indexOf(row) + 1 == 3">
+                            <img style="width: 60px; height: 60px; border-radius: 100%;"
+                                src="@/assets/image/copper.jpg" />
+                        </span>
+                        <span v-else>{{ (params.pageNum - 1) * params.pageSize + tableData.indexOf(row) + 1 }} </span>
+
+                    </template>
+                </el-table-column>
+
+                <el-table-column prop="name" label="名称"></el-table-column>
+                <el-table-column prop="photo" label="头像" width="100px">
+                    <template #default="{ row }">
+                        <img v-if="row.photo" :src="'http://localhost:8080/api/files/' + row.photo" class="avatar">
+                        <img v-else class="avatar" style="color: rgb(116, 118, 118);" src="@/assets/logo.svg">
+
+                        </img>
+                    </template>
+
+                </el-table-column>
+                <el-table-column prop="solvenum" label="ac数量"></el-table-column>
+                <el-table-column prop="submitnum" label="提交数量"></el-table-column>
+                <el-table-column prop="pass" label="通过率">
+                    <template #default="{ row }">
+
+                        <span v-if="row.submitnum != 0">{{ (row.solvenum / row.submitnum * 100).toFixed(1) }}
+                            %</span>
+                        <span v-else>未提交</span>
+
                     </template>
                 </el-table-column>
 
@@ -28,7 +59,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { findusers, getallsubmit } from "@/api/index.js";
+import { getusers, getallsubmit } from "@/api/index.js";
 
 let params = ref({
     name: '',
@@ -40,19 +71,51 @@ let params = ref({
 let total = ref(0);
 let tableData = ref([]);
 
-const maprol = {
-    ROLE_STUDENT: '学生',
-    ROLE_TEACHER: '教师'
-}
+const sortTableData = () => {
+    tableData.value = tableData.value.slice().sort((a, b) => {
+        if (a.solvenum !== b.solvenum) {
+            return b.solvenum - a.solvenum; // 先按AC数降序排序
+        } else {
+
+            if (a.submitnum === 0 || b.submitnum === 0) {
+                return b.submitnum - a.submitnum; // 如果通过数为0，则按通过数降序排序
+            } else {
+                return a.submitnum - b.submitnum; // 否则按通过数升序排序
+            }
+        }
+    });
+};
+
 function findBySearch() {
-    findusers(params.value).then(res => {
+    getusers(params.value).then(res => {
         if (res) {
-            tableData.value = res.data.list;
-            console.log(tableData);
-            total.value = res.data.total;
+            const promises = [];
+
+            for (let i = 0; i < res.data.length; i++) {
+                params.value.userid = res.data[i].id;
+                promises.push(getallsubmit(params.value).then(submitRes => {
+                    let solvenum = 0;
+                    for (let j = 0; j < submitRes.data.length; j++) {
+                        submitRes.data[j].judgeInfo = JSON.parse(submitRes.data[j].judgeInfo);
+                        if (submitRes.data[j].judgeInfo.message === "Accepted") {
+                            solvenum++;
+                        }
+                    }
+                    res.data[i].submitnum = submitRes.data.length;
+                    res.data[i].solvenum = solvenum;
+                }));
+            }
+
+            Promise.all(promises).then(() => {
+                tableData.value = res.data;
+                total.value = res.data.length;
+                sortTableData();
+            });
+
         }
     })
 }
+
 findBySearch();
 
 function handleSizeChange(pageSize) {
@@ -71,4 +134,10 @@ function getRowKeys(row) {
 }
 </script>
 
-<style></style>
+<style>
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+</style>
