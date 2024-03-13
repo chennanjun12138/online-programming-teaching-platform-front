@@ -90,12 +90,16 @@ function onLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 20px;
   flex-direction: column;
   padding: 40px 20px;
   border-radius: 10px;
   height: 400px;
   margin: 100px auto;
+  border-top: 35px solid;
+  /* 设置顶部边框样式 */
+  border-image: url('@/assets/image/b2.jpg') 30 round;
+  /* 使用图片作为边框样式 */
+  
 }
 
 .login-card .el-form {
@@ -110,7 +114,6 @@ function onLogin() {
   display: flex;
   align-items: center;
   /* 垂直居中对齐 */
-  margin-bottom: 20px;
   font-size: 30px;
   font-weight: 500;
   line-height: 100px;
@@ -127,9 +130,9 @@ function onLogin() {
 }
 
 .form {
+
   text-align: center;
   height: 320px;
   width: 320px;
 }
 </style>
-

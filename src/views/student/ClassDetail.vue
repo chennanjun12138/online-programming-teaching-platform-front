@@ -9,7 +9,7 @@
             <div style="display: flex; align-items: center;">
                 <ul>
                     <li v-for="link in linklist">
-                        <a :href="link">{{ link }}</a>
+                        <a :href="link">{{ displaylink(link) }}</a>
                     </li>
                 </ul>
                 <div style="margin-left: auto;">
@@ -56,7 +56,7 @@
 
 <script setup>
 import { ref, onMounted, toRaw, } from 'vue';
-import { downloadPDF, findcontract, runcode, savenotebook, findnotebook } from "@/api/index.js";
+import { downloadPDF, findcontract, runcode, savenotebook, findnotebook, findbyquestionid } from "@/api/index.js";
 import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
 import { Back, QuestionFilled } from '@element-plus/icons-vue'
@@ -106,6 +106,12 @@ let submitcontent = ref({});
 const codemonaco = ref();
 let runVisble = ref(false);
 let runResult = ref('');
+let questionsum = ref([
+    {
+        id: '',
+        name: ''
+    }
+]);
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 
 onMounted(async () => {
@@ -114,7 +120,14 @@ onMounted(async () => {
     await setupMonacoEditror()
 
 });
-getnotebook()
+function displaylink(url) {
+    let id = url.substring(url.lastIndexOf('/') + 1);
+
+    const foundQuestion = questionsum.value.find(question => question.id === id);
+
+    return '题目' + id + " " + foundQuestion.name;
+}
+getcontent()
 function savenote() {
     form.value.classid = router.currentRoute.value.query.classId;
     form.value.studentid = user.value.id;
@@ -130,17 +143,31 @@ function savenote() {
         }
     )
 }
-function getnotebook() {
+function getcontent() {
+    findbyquestionid(params.value).then(
+        res => {
+
+            for (let i = 0; i < res.data.length; i++) {
+                let q = {
+                    id: res.data[i].questionid,
+                    name: res.data[i].name
+                }
+
+                questionsum.value.push(q)
+            }
+        }
+    )
     params.value.classid = router.currentRoute.value.query.classId;
     params.value.studentid = user.value.id;
     findnotebook(params.value).then(
         res => {
             if (res) {
-                console.log(res);
+                // console.log(res);
                 textarea.value = res.data.content;
             }
         }
     )
+
 }
 // loadPDF(router.currentRoute.value.params.fileId);
 function handleIframeLoad() {
@@ -193,7 +220,7 @@ function runCode() {
                     message: "提交成功",
                     type: 'success'
                 });
-                console.log(res.data);
+                // console.log(res.data);
                 runResult.value = res.data;
                 runVisble.value = true;
             }
@@ -201,7 +228,7 @@ function runCode() {
     )
 }
 function goback() {
-    router.push("/classlearn");
+    router.back();
 }
 function gotoquestion() {
     form.value.classid = router.currentRoute.value.query.classId;
@@ -231,8 +258,8 @@ function loadPDF(fileId) {
 
         let opurl = window.URL.createObjectURL(res);
         url.value = '/web/viewer.html?file=' + encodeURIComponent(opurl);
-        console.log("最终地址：");
-        console.log(url.value);
+        // console.log("最终地址：");
+        // console.log(url.value);
     })
 
 }

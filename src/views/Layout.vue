@@ -21,112 +21,155 @@
             </el-icon>
             <span slot="title">个人中心</span>
           </el-menu-item>
-          <el-menu-item index="/class" v-if="user.role === 'ROLE_ADMIN'">
+          <el-menu-item index="/leaderboard">
             <el-icon>
-              <Management />
-            </el-icon>
-            <span>课程管理</span>
+              <Trophy />
+            </el-icon><span slot="title">排行榜</span>
           </el-menu-item>
-          <el-menu-item index="/connectcontroller" v-if="user.role === 'ROLE_ADMIN'">
-            <el-icon>
-              <Connection />
-            </el-icon>
-            <span slot="title">课程关系管理</span>
-          </el-menu-item>
+          <el-sub-menu index="1" v-if="user.role === 'ROLE_ADMIN'">
+            <template #title> <el-icon>
+                <Setting />
+              </el-icon><span slot="title">课程管理</span></template>
+            <el-menu-item index="/class" v-if="user.role === 'ROLE_ADMIN'">
+              <el-icon>
+                <Management />
+              </el-icon>
+              <span>课程管理</span>
+            </el-menu-item>
+
+            <el-menu-item index="/connectcontroller" v-if="user.role === 'ROLE_ADMIN'">
+              <el-icon>
+                <Connection />
+              </el-icon>
+              <span slot="title">课程关系管理</span>
+            </el-menu-item>
+          </el-sub-menu>
+
+          <el-sub-menu index="2" v-if="user.role === 'ROLE_ADMIN'">
+            <template #title> <el-icon>
+                <Setting />
+              </el-icon><span slot="title">编程管理</span></template>
+            <el-menu-item index="/program" v-if="user.role === 'ROLE_ADMIN'">
+              <el-icon>
+                <Setting />
+              </el-icon>
+              <span slot="title">题库管理</span>
+            </el-menu-item>
+            <el-menu-item index="/codeconroller" v-if="user.role === 'ROLE_ADMIN'">
+              <el-icon>
+                <Setting />
+              </el-icon>
+              <span slot="title">代码管理</span>
+            </el-menu-item>
+          </el-sub-menu>
+
+
           <el-menu-item index="/homework" v-if="user.role === 'ROLE_ADMIN'">
             <el-icon>
-              <Management />
+              <Folder />
             </el-icon>
             <span slot="title">作业管理</span>
-          </el-menu-item>
-          <el-menu-item index="/program" v-if="user.role === 'ROLE_ADMIN'">
-            <el-icon>
-              <Setting />
-            </el-icon>
-            <span slot="title">题库管理</span>
-          </el-menu-item>
-          <el-menu-item index="/codeconroller" v-if="user.role === 'ROLE_ADMIN'">
-            <el-icon>
-              <Setting />
-            </el-icon>
-            <span slot="title">代码管理</span>
           </el-menu-item>
           <el-menu-item index="/user" v-if="user.role === 'ROLE_ADMIN'">
             <el-icon>
-              <Setting />
+              <UserFilled />
             </el-icon>
             <span slot="title">用户管理</span>
           </el-menu-item>
+          <el-sub-menu index="5" v-if="user.role === 'ROLE_TEACHER'">
+            <template #title> <el-icon>
+                <Setting />
+              </el-icon><span slot="title">课程功能</span></template>
+            <el-menu-item index="/classteacher" v-if="user.role === 'ROLE_TEACHER'">
+              <el-icon>
+                <Reading />
+              </el-icon>
+              <span slot="title">课程管理</span>
+            </el-menu-item>
+            <el-menu-item index="/connectteacher" v-if="user.role === 'ROLE_TEACHER'">
+              <el-icon>
+                <Setting />
+              </el-icon>
+              <span slot="title">课程关系管理</span>
+            </el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="6" v-if="user.role === 'ROLE_TEACHER'">
+            <template #title> <el-icon>
+                <Folder />
+              </el-icon><span slot="title">作业功能</span></template>
+            <el-menu-item index="/teacherwork" v-if="user.role === 'ROLE_TEACHER'">
+              <el-icon>
+                <Management />
+              </el-icon>
+              <span slot="title">作业管理</span>
+            </el-menu-item>
+            <el-menu-item index="/homeworkteacher" v-if="user.role === 'ROLE_TEACHER'">
+              <el-icon>
+                <Medal />
+              </el-icon><span slot="title">作业批改</span>
+            </el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="7" v-if="user.role === 'ROLE_TEACHER'">
+            <template #title> <el-icon>
+                <Setting />
+              </el-icon><span slot="title">编程管理</span></template>
+            <el-menu-item index="/bankteacher" v-if="user.role === 'ROLE_TEACHER'">
+              <el-icon>
+                <Setting />
+              </el-icon>
+              <span slot="title">题库管理</span>
+            </el-menu-item>
 
-          <el-menu-item index="/classteacher" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Reading />
-            </el-icon>
-            <span slot="title">课程管理</span>
-          </el-menu-item>
-          <el-menu-item index="/connectteacher" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Setting />
-            </el-icon>
-            <span slot="title">课程关系管理</span>
-          </el-menu-item>
-          <el-menu-item index="/teacherwork" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Management />
-            </el-icon>
-            <span slot="title">作业管理</span>
-          </el-menu-item>
-          <el-menu-item index="/homeworkteacher" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Medal />
-            </el-icon><span slot="title">作业批改</span>
-          </el-menu-item>
-          <el-menu-item index="/bankteacher" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Setting />
-            </el-icon>
-            <span slot="title">题库管理</span>
-          </el-menu-item>
+
+            <el-menu-item index="/codeteacher" v-if="user.role === 'ROLE_TEACHER'">
+              <el-icon>
+                <Search />
+              </el-icon><span slot="title">代码查看和评价</span>
+            </el-menu-item>
+          </el-sub-menu>
 
 
-          <el-menu-item index="/codeteacher" v-if="user.role === 'ROLE_TEACHER'">
-            <el-icon>
-              <Search />
-            </el-icon><span slot="title">代码查看和评价</span>
-          </el-menu-item>
+          <el-sub-menu index="3" v-if="user.role === 'ROLE_STUDENT'">
+            <template #title> <el-icon>
+                <Reading />
+              </el-icon><span slot="title">课程功能</span></template>
+            <el-menu-item index="/classlearn" v-if="user.role === 'ROLE_STUDENT'">
+              <el-icon>
+                <Reading />
+              </el-icon><span slot="title">课程学习</span>
+            </el-menu-item>
+            <el-menu-item index="/connectstudent" v-if="user.role === 'ROLE_STUDENT'">
+              <el-icon>
+                <Connection />
+              </el-icon><span slot="title">课程关系</span>
+            </el-menu-item>
+          </el-sub-menu>
 
-          <el-menu-item index="/classlearn" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon>
-              <Reading />
-            </el-icon><span slot="title">课程学习</span>
-          </el-menu-item>
-          <el-menu-item index="/connectstudent" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon>
-              <Connection />
-            </el-icon><span slot="title">课程关系</span>
-          </el-menu-item>
-          <el-menu-item index="/question" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon>
-              <Collection />
-            </el-icon><span slot="title">编程题库</span>
-          </el-menu-item>
+          <el-sub-menu index="4" v-if="user.role === 'ROLE_STUDENT'">
+            <template #title> <el-icon>
+                <Operation />
+              </el-icon><span slot="title">编程功能</span></template>
+            <el-menu-item index="/question" v-if="user.role === 'ROLE_STUDENT'">
+              <el-icon>
+                <Collection />
+              </el-icon><span slot="title">编程题库</span>
+            </el-menu-item>
+            <el-menu-item index="/code" v-if="user.role === 'ROLE_STUDENT'">
+              <el-icon>
+                <Document />
+              </el-icon><span slot="title">代码情况</span>
+            </el-menu-item>
+          </el-sub-menu>
+
           <el-menu-item index="/gradework" v-if="user.role === 'ROLE_STUDENT'">
             <el-icon>
               <Folder />
             </el-icon>
             <span slot="title">作业测试</span>
           </el-menu-item>
-          <el-menu-item index="/code" v-if="user.role === 'ROLE_STUDENT'">
-            <el-icon>
-              <Document />
-            </el-icon><span slot="title">代码情况</span>
-          </el-menu-item>
-          <el-menu-item index="/leaderboard" >
-            <el-icon>
-              <Trophy />
-            </el-icon><span slot="title">排行榜</span>
-          </el-menu-item>
-          
+
+
+
         </el-menu>
       </el-aside>
 
@@ -172,7 +215,7 @@
 
 <script setup>
 import { ref, computed } from "vue"
-import { Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection,Trophy, Document, Reading, Search, Medal, Management } from "@element-plus/icons-vue"
+import { UserFilled, Operation, Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Trophy, Document, Reading, Search, Medal, Management } from "@element-plus/icons-vue"
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter()
@@ -244,7 +287,7 @@ function logout() {
 }
 
 .el-menu--inline .el-menu-item {
-  background-color: #000c17 !important;
+  background-color: rgba(0, 21, 41, .35) !important;
 }
 
 .el-menu-item:hover,
