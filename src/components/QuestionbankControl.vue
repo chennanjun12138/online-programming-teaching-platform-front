@@ -165,7 +165,8 @@ import {
   deletequestion,
   deletequestionbank,
   findquestion,
-  findquestionbanks
+  findquestionbanks,
+
 } from "@/api/index.js";
 let options = ref([
   {
@@ -330,15 +331,19 @@ function show(id) {
     phone: ''
   }
 }
+
 function submit() {
+
   changequestionbank(form.value).then(res => {
     if (res) {
       dialogFormVisible.value = false;
       findBySearch();
-      window.$message({
-        message: '操作成功',
-        type: 'success'
-      });
+      if (res.msg != '该题号已经存在') {
+        window.$message({
+          message: '操作成功',
+          type: 'success'
+        });
+      }
     }
   })
   list.value = {}
@@ -346,16 +351,8 @@ function submit() {
   list.value.judgeConfig = JSON.stringify(judgeConfig.value);
   list.value.judgeCase = JSON.stringify([{ "input": "", "output": "" }]);
   if (form.value.id === undefined) {
-    addquestion(list.value).then(
-      res => {
-        window.$message({
-          message: '操作成功',
-          type: 'success'
-        });
-      }
-    )
+      addquestion(list.value)
   }
-
 }
 function savecontent() {
 
@@ -418,8 +415,6 @@ function delBatch() {
       window.$message.success("批量删除成功")
       findBySearch()
     }
-
-
   })
   delBatchquestion(selectedquestionid.value).then(res => {
     if (res) {
