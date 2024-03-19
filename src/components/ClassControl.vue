@@ -30,8 +30,8 @@
 
         </div>
         <div>
-            <el-table v-if="tableVisible" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-                :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible" :header-cell-style="{ textAlign: 'center',background: '#eef1f6', color: '#606266' }"
+                :data="tableData" style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column prop="img" label="课程封面">
@@ -61,8 +61,8 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible2" :header-cell-style="{textAlign: 'center' , background: '#eef1f6', color: '#606266' }"
+                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>

@@ -2,28 +2,29 @@
     <div>
 
         <div>
-            <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
-
+            <el-input v-model="params.questionid" style="width: 100px" placeholder="请输入题号"></el-input>
+            <el-input v-model="params.name" style="width: 150px; margin-left: 5px" placeholder="请输入提交者"></el-input>
             <el-select v-model="params.language" clearable placeholder="请选择编程语言"
-                style="margin-left: 5px; width: 200px;">
+                style="margin-left: 5px; width: 150px;">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
             <el-select v-model="params.runresult" clearable placeholder="请输入代码结果"
-                style="margin-left: 5px; width: 200px;">
+                style="margin-left: 5px; width: 150px;">
                 <el-option v-for="item in resultoptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
             </el-select>
             <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
             <el-button type="primary" style="margin-left: 10px" @click="showchart()" :icon="Search">查看情况</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
-
+            <el-checkbox v-model="checked1" label="只查看自己提交" size="default" @change="handleCheckboxChange"
+                style="margin-left: 15px; margin-top: 10px;" />
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
-                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
+            <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="tableData" style="width: 100%; margin: 15px 0px" ref="table"
+                @selection-change="handleSelectionChange" :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
                 <el-table-column prop="questionid" label="题号" width="70px">
                     <template #default="{ row }">
                         <el-button type="primary" @click="gotoquestion(row.questionid)" text>{{ row.questionid }}
@@ -64,14 +65,15 @@
         </div>
         <div>
             <el-dialog title="请查看评价" v-model="dialogFormVisible" width="70%">
-                <div class='monaco-editor'>
+                <div class='monaco-editor' style="border: 1px solid #ccc; padding: 10px;">
                     <pre style="white-space: pre-wrap;">
                 {{ codecontent }}
             </pre>
                 </div>
-                <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="evaluateData"
-                    style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                    :row-key="getRowKeys">
+                <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                    :data="evaluateData" style="width: 100%; margin: 15px 0px" ref="table"
+                    @selection-change="handleSelectionChange" :row-key="getRowKeys"
+                    :cell-style="{ textAlign: 'center' }">
                     <el-table-column prop="content" label="评价内容"></el-table-column>
                     <el-table-column prop="teachername" label="评价者" width="80px"></el-table-column>
                 </el-table>
@@ -93,11 +95,15 @@ import { Search } from '@element-plus/icons-vue'
 import Chart from '@/components/Chart.vue';
 import { useRouter } from "vue-router";
 const router = useRouter()
-const mdValue = ref('');
-const onMdChange = (v) => {
-    mdValue.value = v;
-};
+let checked1 = ref(false)
 let params = ref({
+    name: '',
+    phone: '',
+    author: '',
+    pageNum: 1,
+    pageSize: 5,
+})
+let params2 = ref({
     name: '',
     phone: '',
     author: '',
@@ -192,6 +198,19 @@ let options = ref([
 ])
 let evaluateData = ref([]);
 let codecontent = ref("");
+let hasExecuted = false;
+function handleCheckboxChange()
+{
+    if (checked1.value == true) {
+        params.value.userid = user.value.id;
+        findBySearch()
+    }
+    else 
+    {
+        params.value.userid=null;
+        findBySearch()
+    }
+}
 function showchart() {
     contentVisible.value = true;
 }
@@ -213,7 +232,19 @@ function show(id) {
 }
 findBySearch();
 function findBySearch() {
-    params.value.userid = user.value.id;
+    // params.value.userid = user.value.id;
+    const queryString = window.location.search;
+    // 创建 URLSearchParams 对象并获取参数值
+    const urlParams = new URLSearchParams(queryString);
+    const questionId = urlParams.get('param');
+    const runresult = urlParams.get('param2');
+    if (questionId != null) {
+        params.value.questionid = questionId;
+    }
+    if (runresult != null) {
+        params.value.runresult = runresult;
+    }
+
     searchcode(params.value).then(res => {
         if (res) {
             tableData.value = res.data.list;
@@ -227,7 +258,18 @@ function findBySearch() {
             }
         }
     })
-    getallsubmit(params.value).then(res => {
+
+
+
+    // 执行 getcodestatus() 函数，并在执行后将标志变量设置为 true
+    if (!hasExecuted) {
+        getcodestatus();
+        hasExecuted = true;
+    }
+}
+function getcodestatus() {
+    params2.value = params.value;
+    getallsubmit(params2.value).then(res => {
         if (res) {
             let questions = ref([]);
             for (let i = 0; i < res.data.length; i++) {
@@ -237,10 +279,10 @@ function findBySearch() {
                         item.value++;
                     }
                 });
-                params.value.questionid = res.data[i].questionid;
+                params2.value.questionid = res.data[i].questionid;
 
                 if (!questions.value.includes(res.data[i].questionid)) {
-                    findbyquestionid(params.value).then(
+                    findbyquestionid(params2.value).then(
                         res => {
                             if (res) {
 
@@ -254,15 +296,11 @@ function findBySearch() {
                     )
                     questions.value.push(res.data[i].questionid)
                 }
-
-
             }
-            params.value.questionid = ''
+            params2.value.questionid = ''
         }
     })
-
 }
-
 function display(status) {
     if (status === 0) {
         return "等待中";
@@ -284,6 +322,12 @@ function reset() {
         name: '',
         phone: ''
     }
+    // 获取当前页面的 URL
+    const currentUrl = window.location.href;
+
+    // 去掉 ? 后面的内容
+    const updatedUrl = currentUrl.split('?')[0];
+    history.pushState({}, '', updatedUrl);
     findBySearch();
 }
 
@@ -306,6 +350,8 @@ function handleCurrentChange(pageNum) {
     height: 520px;
 }
 
+
+
 a {
     text-decoration: none;
     /* 去掉下划线 */
@@ -316,5 +362,12 @@ a {
 a:visited {
     color: rgb(58, 178, 242);
     /* 设置已访问链接的颜色为蓝色 */
+}
+
+.monaco-editor {
+    width: 100%;
+    height: 50%;
+    margin-top: 5px;
+    background-color: rgb(250, 248, 248);
 }
 </style>

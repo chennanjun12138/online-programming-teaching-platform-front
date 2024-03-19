@@ -12,8 +12,8 @@
     </div>
 
     <div>
-      <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
-        style="width: 100%; margin: 15px 0px" :row-key="(row) => row.id">
+      <el-table :header-cell-style="{ textAlign: 'center',background: '#eef1f6', color: '#606266' }" :data="tableData"
+        style="width: 100%; margin: 15px 0px" :row-key="(row) => row.id" :cell-style="{ textAlign: 'center' }">
         <el-table-column prop="img" label="课程封面">
           <template #default="{ row }">
             <el-image preview-teleported="true" style="width: 75px; height: 75px;border-radius: 50% "

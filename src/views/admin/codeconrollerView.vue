@@ -3,7 +3,7 @@
 
         <div>
             <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
-            <el-input v-model="params.userid" style="width: 200px; margin-left: 5px" placeholder="请输入提交者id"></el-input>
+            <el-input v-model="params.name" style="width: 200px; margin-left: 5px" placeholder="请输入提交者"></el-input>
 
             <el-select v-model="params.runresult" clearable placeholder="请输入代码结果"
                 style="margin-left: 5px; width: 200px;">
@@ -21,13 +21,14 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
-                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
+            <el-table :header-cell-style="{textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="tableData"
+                style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }" 
+                :row-key="getRowKeys" >
 
                 <el-table-column prop="questionid" label="题号" width="55px">
                     <template #default="{ row }">
-                        <el-button style="width: 60%;" type="primary" @click="gotoquestion(row.questionid)" text>{{ row.questionid }}
+                        <el-button style="width: 60%;" type="primary" @click="gotoquestion(row.questionid)" text>{{
+                row.questionid }}
                         </el-button>
                     </template>
                 </el-table-column>
@@ -43,7 +44,7 @@
                     <template #default="{ row }">
                         <span>{{ row.judgeInfo.memory }}KB/{{ row.judgeInfo.time }}ms</span>
                     </template>
-                </el-table-column>                <el-table-column prop="status" label="判题状态" width="80px"></el-table-column>
+                </el-table-column> <el-table-column prop="status" label="判题状态" width="80px"></el-table-column>
                 <el-table-column prop="userid" label="提交者" width="80px"></el-table-column>
                 <el-table-column prop="createTime" label="提交时间" width="165px"></el-table-column>
                 <el-table-column label="操作">
@@ -96,12 +97,12 @@
 <script setup>
 import { ref } from 'vue';
 import {
-    searchcode, deletequestionsubmit, addevaluate, findevaluate,findByid
+    searchcode, deletequestionsubmit, addevaluate, findevaluate, findByid
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import MdEditor from "@/components/MdEditor.vue";
 import { Search, Delete, EditPen } from '@element-plus/icons-vue'
-import { useRouter } from "vue-router"; 
+import { useRouter } from "vue-router";
 const router = useRouter()
 
 const mdValue = ref('');
@@ -226,7 +227,19 @@ function submit() {
     )
 
 }
+findBySearch();
 function findBySearch() {
+    const queryString = window.location.search;
+    // 创建 URLSearchParams 对象并获取参数值
+    const urlParams = new URLSearchParams(queryString);
+    const questionId = urlParams.get('param');
+    const runresult = urlParams.get('param2');
+    if (questionId != null) {
+        params.value.questionid = questionId;
+    }
+    if (runresult != null) {
+        params.value.runresult = runresult;
+    }
     searchcode(params.value).then(res => {
         if (res) {
             console.log(res.data.list);
@@ -244,7 +257,7 @@ function findBySearch() {
 function getname(id, i) {
     findByid(id).then(res => {
         if (res) {
-            tableData.value[i].userid = res.data.name;
+            tableData.value[i].userid = res.data.name + "\n" + "(id:" + id + ")";
         }
     })
 
@@ -257,7 +270,7 @@ function del(id) {
     })
 
 }
-findBySearch();
+
 function handleSizeChange(pageSize) {
     params.value.pageSize = pageSize;
     findBySearch();
@@ -270,9 +283,18 @@ function reset() {
     params.value = {
         pageNum: 1,
         pageSize: 5,
+        questionid: '',
+        runresult: '',
         name: '',
         phone: ''
     }
+    // 获取当前页面的 URL
+    const currentUrl = window.location.href;
+
+    // 去掉 ? 后面的内容
+    const updatedUrl = currentUrl.split('?')[0];
+    history.pushState({}, '', updatedUrl);
+
     findBySearch();
 }
 </script>

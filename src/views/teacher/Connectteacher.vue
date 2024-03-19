@@ -9,15 +9,15 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
-                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
-                <el-table-column prop="classid" label="课程号" width="80px"></el-table-column>
-                <el-table-column prop="teacherid" label="教师号" width="80px"></el-table-column>
+            <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="tableData" stripe :cell-style="{ textAlign: 'center' }" style="width: 100%; margin: 15px 0px"
+                ref="table" @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                <el-table-column prop="classid" label="课程号"></el-table-column>
+                <el-table-column prop="teacherid" label="教师号"></el-table-column>
                 <el-table-column prop="teachername" label="教师名"></el-table-column>
-                <el-table-column prop="studentid" label="学生号" width="80px"></el-table-column>
-                <el-table-column prop="studentname" label="学生名" width="80px"></el-table-column>
-                <el-table-column label="操作">
+                <el-table-column prop="studentid" label="学生号"></el-table-column>
+                <el-table-column prop="studentname" label="学生名"></el-table-column>
+                <el-table-column label="操作" width="300px">
                     <template #default="{ row }">
                         <el-button type="primary" @click="show(row.studentid)" :icon="Search">查看代码和做题情况</el-button>
 

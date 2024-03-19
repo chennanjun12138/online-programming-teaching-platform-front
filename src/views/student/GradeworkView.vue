@@ -17,8 +17,9 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" v-if="tableVisible"
-                style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="tableData" v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
+                :cell-style="{ textAlign: 'center' }"
                 :default-sort="[{ prop: 'column1', order: 'descending' }, { prop: 'column2', order: 'ascending' }]"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
@@ -30,15 +31,16 @@
                     <template #default="{ row }">
                         <el-button type="primary" @click="searchbyhomework(row.homeworkid, row.content, row.illustrate)"
                             :icon="Search">查看</el-button>
-                        <el-button type="primary" @click="add(row.homeworkid)" :icon="Promotion">提交</el-button>
-                        <el-button type="primary" @click="searchbystudent(row.homeworkid)"
+                        <el-button type="success" @click="add(row.homeworkid)" :icon="Promotion">提交</el-button>
+                        <el-button type="warning" @click="searchbystudent(row.homeworkid)"
                             :icon="Notebook">提交记录</el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+            <el-table v-if="tableVisible2"
+                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
                 :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                :cell-style="{ textAlign: 'center' }" @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
                 <el-table-column prop="name" label="题目名称"></el-table-column>
@@ -54,8 +56,9 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible3" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-                :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table">
+            <el-table v-if="tableVisible3"
+                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="submitdata"
+                style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }">
                 <el-table-column width="80px" prop="id" label="提交序号"></el-table-column>
 
                 <el-table-column prop="submittime" label="提交时间"></el-table-column>

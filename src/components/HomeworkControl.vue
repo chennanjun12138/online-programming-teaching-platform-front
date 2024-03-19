@@ -21,7 +21,7 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266',textAlign: 'center' }" :data="tableData" :cell-style="{textAlign: 'center'}"	
                 v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
                 :default-sort="[{ prop: 'column1', order: 'descending' }, { prop: 'column2', order: 'ascending' }]"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">

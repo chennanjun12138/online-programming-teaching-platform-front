@@ -11,14 +11,14 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
+            <el-table :header-cell-style="{ textAlign: 'center',background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
                 style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
-                <el-table-column prop="classid" label="课程号" width="80px"></el-table-column>
-                <el-table-column prop="teacherid" label="教师号" width="80px"></el-table-column>
-                <el-table-column prop="teachername" label="教师名"></el-table-column>
-                <el-table-column prop="studentid" label="学生号" width="80px"></el-table-column>
-                <el-table-column prop="studentname" label="学生名" width="80px"></el-table-column>
+                :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
+                <el-table-column prop="classid" label="课程号"  width="100px"></el-table-column>
+                <el-table-column prop="teacherid" label="教师号"  width="100px"></el-table-column>
+                <el-table-column prop="teachername" label="教师名"  width="100px"></el-table-column>
+                <el-table-column prop="studentid" label="学生号"  width="100px"></el-table-column>
+                <el-table-column prop="studentname" label="学生名"  width="100px"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
                         <el-button type="primary" @click="show(row.studentid)" :icon="Search">查看学生代码和做题情况</el-button>

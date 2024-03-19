@@ -9,9 +9,9 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
+            <el-table :header-cell-style="{textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
                 style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
+                :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
                 <el-table-column prop="classid" label="课程id"></el-table-column>
                 <el-table-column prop="teacherid" label="教师id"></el-table-column>
                 <el-table-column prop="teachername" label="教师名"></el-table-column>

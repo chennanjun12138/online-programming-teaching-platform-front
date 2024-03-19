@@ -12,8 +12,8 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
-                v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table :header-cell-style="{ textAlign: 'center',background: '#eef1f6', color: '#606266' }" :data="tableData"
+                v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
                 <el-table-column prop="name" label="作业名"></el-table-column>
@@ -31,8 +31,8 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-                :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table v-if="tableVisible2" :header-cell-style="{textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table":cell-style="{ textAlign: 'center' }"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="80px" prop="id" label="提交序号"></el-table-column>
 

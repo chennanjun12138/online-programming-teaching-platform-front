@@ -3,7 +3,7 @@
 
         <div>
             <el-input v-model="params.questionid" style="width: 200px" placeholder="请输入题号"></el-input>
-            <el-input v-model="params.userid" style="width: 200px; margin-left: 5px" placeholder="请输入提交者id"></el-input>
+            <el-input v-model="params.name" style="width: 200px; margin-left: 5px" placeholder="请输入提交者"></el-input>
             <el-select v-model="params.runresult" clearable placeholder="请输入代码结果"
                 style="margin-left: 5px; width: 200px;">
                 <el-option v-for="item in resultoptions" :key="item.value" :label="item.label" :value="item.value">
@@ -20,9 +20,9 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
-                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
+            <el-table :cell-style="{ textAlign: 'center' }"
+                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="tableData"
+                style="width: 100%; margin: 15px 0px" ref="table" :row-key="getRowKeys">
 
                 <el-table-column prop="questionid" label="题号" width="60px">
                     <template #default="{ row }">
@@ -74,14 +74,15 @@
                 </div>
             </el-dialog>
             <el-dialog title="查看信息" v-model="contentVisible" width="60%">
-                <div class='monaco-editor'>
+                <div class='monaco-editor'  style="border: 1px solid #ccc; padding: 10px;">
                     <pre style="white-space: pre-wrap;">
                 {{ codecontent }}
             </pre>
                 </div>
-                <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="evaluateData"
-                    style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                    :row-key="getRowKeys">
+                <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                    :data="evaluateData" style="width: 100%; margin: 15px 0px" ref="table"
+                    @selection-change="handleSelectionChange" :row-key="getRowKeys"
+                    :cell-style="{ textAlign: 'center' }">
                     <el-table-column prop="content" label="评价内容"></el-table-column>
                     <el-table-column prop="teachername" label="评价者" width="80px"></el-table-column>
                 </el-table>
@@ -231,8 +232,20 @@ function submit() {
     )
 
 }
+findBySearch();
 function findBySearch() {
     params.value.teacherid = user.value.id;
+    const queryString = window.location.search;
+    // 创建 URLSearchParams 对象并获取参数值
+    const urlParams = new URLSearchParams(queryString);
+    const questionId = urlParams.get('param');
+    const runresult = urlParams.get('param2');
+    if (questionId != null) {
+        params.value.questionid = questionId;
+    }
+    if (runresult != null) {
+        params.value.runresult = runresult;
+    }
     getsubmitbyteachers(params.value).then(res => {
         if (res) {
             tableData.value = res.data.list;
@@ -250,7 +263,7 @@ function findBySearch() {
         }
     })
 }
-findBySearch();
+
 function handleSizeChange(pageSize) {
     params.value.pageSize = pageSize;
     findBySearch();
@@ -266,15 +279,25 @@ function reset() {
         name: '',
         phone: ''
     }
+    // 获取当前页面的 URL
+    const currentUrl = window.location.href;
+
+    // 去掉 ? 后面的内容
+    const updatedUrl = currentUrl.split('?')[0];
+    history.pushState({}, '', updatedUrl);
     findBySearch();
+}
+function getRowKeys(row) {
+    return row.id;
 }
 </script>
 
-<style>
+<style scoped>
 .monaco-editor {
     width: 100%;
     height: 50%;
     margin-top: 5px;
-    background-color: black;
+    background-color: rgb(250, 248, 248);
+
 }
 </style>

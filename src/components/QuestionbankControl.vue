@@ -17,10 +17,10 @@
       </el-popconfirm>
     </div>
     <div>
-      <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+      <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="tableData"
         style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-        :row-key="getRowKeys">
-        <el-table-column v-if="props.msg !== 'A'" ref="table" type="selection" width="55"
+        :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
+        <el-table-column v-if="props.msg !== 'A'" ref="table" type="selection" width="25px"
           :reserve-selection="true"></el-table-column>
         <el-table-column prop="questionid" label="题号" width="55px"></el-table-column>
 
@@ -29,15 +29,19 @@
 
         <el-table-column prop="description" label="题目描述" width="145px"></el-table-column>
         <el-table-column prop="creator" label="创建者" width="75px"></el-table-column>
-        <el-table-column label="通过率" width="80px">
+        <el-table-column label="通过率(解决/提交)" width="140px">
 
           <template #default="{ row }">
-            <span v-if="row.submitnum != 0">{{ (row.solvenum / row.submitnum * 100).toFixed(1) }} %</span>
+            <span v-if="row.submitnum != 0">{{ (row.solvenum / row.submitnum * 100).toFixed(1) }}%(<a
+                :href="jumpurl + row.questionid + '&param2=Accepted'">{{ row.solvenum }}</a>/<a
+                :href="jumpurl + row.questionid">{{ row.submitnum }}
+              </a>)
+            </span>
             <span v-else>未提交</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createtime" label="创建时间" width="165px"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column prop="createtime" label="创建时间"></el-table-column>
+        <el-table-column label="操作" width="300px">
 
           <template #default="{ row }">
             <span class="button-group">
@@ -228,6 +232,7 @@ let form = ref({
 })
 let list = ref({})
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+let jumpurl = ref('')
 function ShowAnswer() {
   innerVisible.value = true;
 }
@@ -248,6 +253,12 @@ function delshow(creator) {
 
 }
 function findBySearch() {
+  if (props.msg !== 'A') {
+    jumpurl.value = 'http://localhost:7100/codeconroller?param=';
+  }
+  else {
+    jumpurl.value = 'http://localhost:7100/codeteacher?param=';
+  }
   findquestionbanks(params.value).then(res => {
 
     tableData.value = res.data.list;
@@ -351,7 +362,7 @@ function submit() {
   list.value.judgeConfig = JSON.stringify(judgeConfig.value);
   list.value.judgeCase = JSON.stringify([{ "input": "", "output": "" }]);
   if (form.value.id === undefined) {
-      addquestion(list.value)
+    addquestion(list.value)
   }
 }
 function savecontent() {

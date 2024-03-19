@@ -18,10 +18,11 @@
             </el-popconfirm>
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
+            <el-table :header-cell-style="{textAlign: 'center',background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
                 style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
+                :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
+                <el-table-column prop="id" label="ID" width="80"></el-table-column>
                 <el-table-column prop="name" label="姓名" width="100"></el-table-column>
                 <el-table-column prop="sex" label="性别" width="80"></el-table-column>
                 <el-table-column prop="age" label="年龄" width="80"></el-table-column>

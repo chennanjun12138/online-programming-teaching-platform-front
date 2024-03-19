@@ -13,20 +13,23 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266' }" :data="tableData"
+            <el-table :header-cell-style="{textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="tableData"
                 style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
-                <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
+                :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
+                <el-table-column  prop="questionid" label="题号" width="60px"></el-table-column>
 
                 <el-table-column prop="name" label="题目名称"></el-table-column>
                 <el-table-column prop="type" label="题目类型"></el-table-column>
 
                 <el-table-column prop="description" label="题目描述"></el-table-column>
                 <el-table-column prop="creator" label="创建者" width="80px"></el-table-column>
-                <el-table-column label="通过率" width="80px">
+                <el-table-column label="通过率(解决/提交)">
 
                     <template #default="{ row }">
-                        <span v-if="row.submitnum != 0">{{ (row.solvenum / row.submitnum * 100).toFixed(1) }}%</span>
+                        <span v-if="row.submitnum != 0">{{ (row.solvenum / row.submitnum * 100).toFixed(1) }}%(<a
+                                :href="'http://localhost:7100/code?param=' + row.questionid+'&param2=Accepted'">{{ row.solvenum }}</a>/<a
+                                :href="'http://localhost:7100/code?param=' + row.questionid">{{ row.submitnum
+                                }}</a>)</span>
                         <span v-else>0.0%</span>
                     </template>
                 </el-table-column>
