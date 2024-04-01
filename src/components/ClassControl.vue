@@ -30,8 +30,9 @@
 
         </div>
         <div>
-            <el-table v-if="tableVisible" :header-cell-style="{ textAlign: 'center',background: '#eef1f6', color: '#606266' }"
-                :data="tableData" style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
+            <el-table v-if="tableVisible"
+                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="tableData"
+                style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column prop="img" label="课程封面">
@@ -51,8 +52,8 @@
                     <template #default="{ row }">
                         <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
                         <el-button type="primary" @click="searchcourse(row.id)" :icon="Search">查看</el-button>
-                        <el-button type="primary" @click="down(row.content)" :icon="Download">下载</el-button>
-                        <el-button type="primary" @click="findquestions(row.id)" :icon="Plus">添加</el-button>
+                        <el-button type="warning" @click="down(row.content)" :icon="Download">下载</el-button>
+                        <el-button type="success" @click="findquestions(row.id)" :icon="Plus">添加</el-button>
                         <el-popconfirm title="确定删除吗？" @confirm="del(row.id)">
                             <template #reference>
                                 <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
@@ -61,9 +62,10 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :header-cell-style="{textAlign: 'center' , background: '#eef1f6', color: '#606266' }"
-                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
+            <el-table v-if="tableVisible2"
+                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
+                :cell-style="{ textAlign: 'center' }" @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
@@ -94,7 +96,8 @@
             <el-dialog title="请填写信息" v-model="dialogFormVisible" width="30%">
                 <el-form :model="form">
                     <el-form-item label="课程封面" label-width="25%">
-                        <el-upload action="http://localhost:8080/api/files/upload" :on-success="successUpload">
+                        <el-upload action="http://localhost:8080/api/files/upload" :on-success="successUpload"
+                            :on-change="changeUpload">
                             <el-button size="small" type="primary" :icon="Upload">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
@@ -115,7 +118,8 @@
                     </el-form-item>
 
                     <el-form-item label="课程文件" label-width="25%">
-                        <el-upload action="http://localhost:8080/api/files/upload" :on-success="successUploadpdf">
+                        <el-upload action="http://localhost:8080/api/files/upload" :on-success="successUploadpdf"
+                            :on-change="changeUpload">
                             <el-button size="small" type="primary" :icon="Upload">点击上传</el-button>
                         </el-upload>
                     </el-form-item>
@@ -158,6 +162,15 @@ import {
     findcourse, findquestionbanks, submitcourse, addcontract, findbyquestionid, addBatchcontract, judgecontract, findteachers
 } from "@/api/index.js";
 import { Edit, Search, Delete, Plus, Back, Upload, Download } from '@element-plus/icons-vue'
+const fileList = ref([]);
+
+const handleFileRemove = (file, fileList) => {
+    // 获取最后一个文件（即最新上传的文件）
+    const newFile = fileList[fileList.length - 1];
+
+    // 将新文件替换到原有文件位置
+    fileList.splice(fileList.indexOf(file), 1, newFile);
+};
 
 let params = ref({
     name: '',
@@ -225,6 +238,7 @@ const options = ref([{
 },
 ],);
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+
 function findBySearch() {
     // console.log(props.msg);
     if (props.msg === 'A') {
@@ -294,10 +308,6 @@ function isNumberInArray(number) {
     }
 
 }
-
-
-
-
 
 function findquestions(id) {
     classid.value = id;
@@ -440,7 +450,16 @@ function addBatch() {
     form.value.img = res.data;
 }
 function successUploadpdf(res) {
-    form.content = res.data;
+
+    form.value.content = res.data;
+}
+function changeUpload(file, list) {
+    if (list.length > 1 && file.status !== "fail") {
+        list.splice(0, 1);
+    } else if (file.status === "fail") {
+        errorMsg("上传失败，请重新上传！");
+        list.splice(0, 1);
+    }
 }
 function down(flag) {
     location.href = 'http://localhost:8080/api/files/' + flag

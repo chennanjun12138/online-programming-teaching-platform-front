@@ -32,10 +32,10 @@
 </template>
 
 <script setup>
-import { Setting, User, Lock, View } from "@element-plus/icons-vue"
-import { ref, reactive, computed } from "vue"
-import { login, register } from "@/api/index.js";
-import { useRouter, RouterLink } from "vue-router";
+import { User, Lock } from "@element-plus/icons-vue"
+import { ref } from "vue"
+import { register } from "@/api/index.js";
+import { useRouter } from "vue-router";
 import { validate } from '@/utils/validate'
 
 const rules = ref({
@@ -91,17 +91,18 @@ function navlogin() {
 
 .login-card {
     width: 400px;
-    height: 400px;
     background: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 20px;
-    flex-direction: column;
     padding: 40px 20px;
+    flex-direction: column;
     border-radius: 10px;
-    height: 400px;
+    height: 360px;
     margin: 100px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* 添加阴影效果 */
+
 }
 
 .login-card .el-form {
@@ -116,7 +117,7 @@ function navlogin() {
 
     font-size: 30px;
     font-weight: 500;
-    line-height: 100px;
+    line-height: 75px;
     color: #4a5ed0;
     flex-direction: row;
 }
@@ -132,4 +133,3 @@ function navlogin() {
     width: 320px;
 }
 </style>
-

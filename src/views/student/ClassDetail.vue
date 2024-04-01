@@ -7,11 +7,14 @@
             </div>
             <iframe ref="pdfIframe" @load="handleIframeLoad" id="pdf-iframe" class="ppt" :src="url"></iframe>
             <div style="display: flex; align-items: center;">
-                <ul>
-                    <li v-for="link in linklist">
-                        <a :href="link">{{ displaylink(link) }}</a>
-                    </li>
-                </ul>
+                <span >
+                    <ul style="cursor: pointer;">
+                        <li v-for="link in linklist">
+                            <a   @click="gotolink(link)">{{ displaylink(link) }}</a>
+                        </li>
+                    </ul>
+                </span>
+
                 <div style="margin-left: auto;">
                     <el-button type="warning" @click="gotoquestion" :icon="QuestionFilled">课后习题</el-button>
                 </div>
@@ -120,7 +123,13 @@ onMounted(async () => {
     await setupMonacoEditror()
 
 });
+function gotolink(url)
+{
+    let id = url.substring(url.lastIndexOf('/') + 1);
+    router.push(`/questioncontent/${id}`)
+}
 function displaylink(url) {
+   
     let id = url.substring(url.lastIndexOf('/') + 1);
 
     const foundQuestion = questionsum.value.find(question => question.id === id);

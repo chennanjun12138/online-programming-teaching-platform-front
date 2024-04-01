@@ -1,6 +1,9 @@
 <template>
   <div :xl="6" :lg="7" class="bg-login">
+
+
     <div class="login-card">
+
       <div class="title">
         <img src="@/assets/logo2.png" class="image">
         <span>在线编程教学平台</span>
@@ -62,6 +65,7 @@ function onLogin() {
   })
 
 }
+
 </script>
 
 <style scoped>
@@ -85,7 +89,6 @@ function onLogin() {
 
 .login-card {
   width: 400px;
-  height: 400px;
   background: #fff;
   display: flex;
   align-items: center;
@@ -93,13 +96,15 @@ function onLogin() {
   flex-direction: column;
   padding: 40px 20px;
   border-radius: 10px;
-  height: 400px;
+  height: 360px;
   margin: 100px auto;
-  border-top: 35px solid;
+  /* border: 5px solid;
+  border-image: url('@/assets/image/b2.jpg') 30 round; */
   /* 设置顶部边框样式 */
-  border-image: url('@/assets/image/b2.jpg') 30 round;
-  /* 使用图片作为边框样式 */
-  
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  /* 添加阴影效果 */
+
+
 }
 
 .login-card .el-form {

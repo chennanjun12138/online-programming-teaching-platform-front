@@ -29,7 +29,7 @@
           <template #default="{ row }">
             <el-button type="primary" @click="joinlearn(row.id, row.author, row.content)" :icon="Reading">学习</el-button>
             <el-button type="primary" @click="searchcourse(row.id)" :icon="Search">查看</el-button>
-            <el-button type="primary" @click="down(row.content)" :icon="Download">下载</el-button>
+            <el-button type="warning" @click="down(row.content)" :icon="Download">下载</el-button>
           </template>
         </el-table-column>
       </el-table>

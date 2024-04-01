@@ -24,8 +24,10 @@
     "element-plus": "^2.5.3",
     "jsdom": "^24.0.0",
     "monaco-editor": "^0.45.0",
+    "particles.vue3": "^2.9.3",
     "pinia": "^2.1.7",
     "sass": "^1.71.1",
+    "tsparticles": "^2.9.3",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5"
   },
