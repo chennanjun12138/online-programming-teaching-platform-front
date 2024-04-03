@@ -39,8 +39,9 @@
             </el-table>
             <el-table v-if="tableVisible2"
                 :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
-                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
-                :cell-style="{ textAlign: 'center' }" @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                :data="questiondata.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)"
+                style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
+                @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
                 <el-table-column prop="name" label="题目名称"></el-table-column>
@@ -57,12 +58,21 @@
                 </el-table-column>
             </el-table>
             <el-table v-if="tableVisible3"
-                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="submitdata"
+                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="submitdata.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)"
                 style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }">
                 <el-table-column width="80px" prop="id" label="提交序号"></el-table-column>
 
                 <el-table-column prop="submittime" label="提交时间"></el-table-column>
                 <el-table-column prop="content" label="提交内容"></el-table-column>
+                <el-table-column prop="file_submit" label="提交文件">
+                    <template #default="{ row }">
+
+                        <el-button v-if="row.file_submit != ''" type="primary" text
+                            @click="down(row.file_submit)">下载</el-button>
+                        <span v-else> 暂无</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="score" label="评分" width="60px"></el-table-column>
                 <el-table-column prop="teacherevaluate" label="教师评价"></el-table-column>
 
@@ -83,6 +93,12 @@
                         <el-input v-model="form.content" autocomplete="off" style="width: 90%"
                             type="textarea"></el-input>
                     </el-form-item>
+                    <el-form-item label="附加文件" label-width="25%">
+                        <el-upload action="http://localhost:8080/api/files/upload" :on-success="successUploadpdf"
+                            :on-change="changeUpload">
+                            <el-button size="small" type="primary" :icon="Upload">点击上传</el-button>
+                        </el-upload>
+                    </el-form-item>
                 </el-form>
                 <div class="container">
                     <el-button type="info" @click="dialogFormVisible = false">取 消</el-button>
@@ -98,12 +114,11 @@ import { ref } from 'vue';
 import {
     addsubmit,
     findbystudent,
-
     findbyhomework, findbyteacher,
     findteachers,
 } from "@/api/index.js";
 import { useRouter } from "vue-router";
-import { Search, Back, EditPen, Notebook, Promotion } from '@element-plus/icons-vue'
+import { Search, Back, EditPen, Notebook, Promotion, Upload } from '@element-plus/icons-vue'
 
 const router = useRouter()
 let params = ref({
@@ -121,7 +136,6 @@ let params = ref({
 let total = ref(0);
 let tableData = ref([]);
 let questiondata = ref([]);
-let multipleSelection = ref([]);
 let dialogFormVisible = ref(false);
 let tableVisible = ref(true);
 let tableVisible2 = ref(false);
@@ -139,10 +153,8 @@ function findbyteachers() {
     params.value.studentid = user.value.id;
     findteachers(params.value).then(res => {
         if (res) {
-            console.log("检查结果：");
-
             const ans = [...new Set(res.data)];
-            console.log(ans);
+            // console.log(ans);
             params.value.teacher = ans.toString();
             findBySearch();
         }
@@ -157,8 +169,6 @@ function findBySearch() {
     findbyteacher(params.value).then(res => {
         if (res) {
 
-            console.log("变化结果：")
-            console.log(res.data);
             tableData.value = res.data.list;
             total.value = res.data.total;
             tableVisible.value = true;
@@ -179,17 +189,24 @@ function reset() {
 }
 function handleSizeChange(pageSize) {
     params.value.pageSize = pageSize;
-    findbyteachers();
+
+    if (tableVisible.value == true) {
+        findbyteachers();
+    }
 }
 function handleCurrentChange(pageNum) {
     params.value.pageNum = pageNum;
-    findbyteachers();
+    if (tableVisible.value == true) {
+        findbyteachers();
+    }
+
 }
 function searchbystudent(id) {
     params.value.userid = user.value.id;
     params.value.homeworkid = id;
     findbystudent(params.value).then(res => {
         if (res) {
+
             submitdata.value = res.data.list;
             total.value = res.data.total;
             tableVisible.value = false;
@@ -202,18 +219,29 @@ function searchbystudent(id) {
 function searchbyhomework(id, content, illustrate) {
     workid.value = id;
     notice.value = illustrate;
-    console.log(id);
-
     params.value.content = content.substring(1, content.length - 1);
     findbyhomework(params.value).then(res => {
         if (res) {
+
             questiondata.value = res.data.list;
             total.value = res.data.total;
-
             tableVisible.value = false;
             tableVisible2.value = true;
+            tableVisible3.value = false;
         }
     })
+}
+function successUploadpdf(res) {
+
+    form.value.file_submit = res.data;
+}
+function changeUpload(file, list) {
+    if (list.length > 1 && file.status !== "fail") {
+        list.splice(0, 1);
+    } else if (file.status === "fail") {
+        errorMsg("上传失败，请重新上传！");
+        list.splice(0, 1);
+    }
 }
 function add(id) {
     form.value = {};
@@ -236,10 +264,11 @@ function submit() {
             }
         })
 }
+function down(flag) {
+    location.href = 'http://localhost:8080/api/files/' + flag
+}
 
-function handleSelectionChange(val) {
-    multipleSelection.value = val;
-} 
+
 </script>
 
 <style></style>

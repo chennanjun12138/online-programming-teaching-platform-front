@@ -46,7 +46,7 @@
                 </el-table-column>
             </el-table>
             <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-                :data="questiondata" style="width: 100%; margin: 15px 0px" ref="table"
+                :data="questiondata.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)" style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
@@ -201,11 +201,19 @@ function reset() {
 }
 function handleSizeChange(pageSize) {
     params.value.pageSize = pageSize;
-    findBySearch();
+    if(tableVisible.value==true)
+    {
+        findBySearch();
+    }
+    
 }
 function handleCurrentChange(pageNum) {
     params.value.pageNum = pageNum;
-    findBySearch();
+    if(tableVisible.value==true)
+    {
+        findBySearch();
+    }
+    
 }
 function searchbyhomework(id, content, illustrate, homeworkid) {
     // console.log(id);

@@ -12,9 +12,9 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ textAlign: 'center',background: '#eef1f6', color: '#606266' }" :data="tableData"
-                v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
+            <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="tableData" v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
+                :cell-style="{ textAlign: 'center' }" @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="70px" prop="homeworkid" label="作业号"></el-table-column>
                 <el-table-column prop="name" label="作业名"></el-table-column>
                 <el-table-column prop="teacher" label="作业教师" width="80px"></el-table-column>
@@ -31,17 +31,27 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :header-cell-style="{textAlign: 'center', background: '#eef1f6', color: '#606266' }"
-                :data="submitdata" style="width: 100%; margin: 15px 0px" ref="table":cell-style="{ textAlign: 'center' }"
+            <el-table v-if="tableVisible2"
+                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="submitdata.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)"
+                style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column width="80px" prop="id" label="提交序号"></el-table-column>
 
                 <el-table-column prop="studentname" label="提交人"></el-table-column>
                 <el-table-column prop="submittime" label="提交时间"></el-table-column>
                 <el-table-column prop="content" label="提交内容"></el-table-column>
+                <el-table-column prop="file_submit" label="提交文件">
+                    <template #default="{ row }">
+
+                        <el-button v-if="row.file_submit != ''" type="primary" text
+                            @click="down(row.file_submit)">下载</el-button>
+                        <span v-else> 暂无</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="add($index, row.id)">批改</el-button>
+                        <el-button type="primary" @click="add($index, row.id)" :icon="EditPen" text>批改</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -75,15 +85,13 @@
 
 <script setup>
 import { ref } from 'vue';
-import { Search, Delete, Back } from '@element-plus/icons-vue'
+import { Search, Delete, Back, Download, EditPen } from '@element-plus/icons-vue'
 
 import {
     changesubmit,
-    delBatchhomework,
     deletehomework,
     findsubmit,
     findhomeworks,
-    updatehomework,
 } from "@/api/index.js";
 let params = ref({
     name: '',
@@ -119,6 +127,10 @@ function findBySearch() {
     })
 }
 findBySearch();
+function down(flag) {
+    location.href = 'http://localhost:8080/api/files/' + flag
+}
+
 function reset() {
     params.value = {
         pageNum: 1,
@@ -130,11 +142,17 @@ function reset() {
 }
 function handleSizeChange(pageSize) {
     params.value.pageSize = pageSize;
-    findBySearch();
+    if (tableVisible.value == true) {
+        findBySearch();
+    }
+
 }
 function handleCurrentChange(pageNum) {
     params.value.pageNum = pageNum;
-    findBySearch();
+    if (tableVisible.value == true) {
+        findBySearch();
+    }
+
 }
 function searchsubmit(id) {
 

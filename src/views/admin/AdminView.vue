@@ -18,16 +18,26 @@
             </el-popconfirm>
         </div>
         <div>
-            <el-table :header-cell-style="{textAlign: 'center',background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
-                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
-                <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
-                <el-table-column prop="id" label="ID" width="80"></el-table-column>
-                <el-table-column prop="name" label="姓名" width="100"></el-table-column>
-                <el-table-column prop="sex" label="性别" width="80"></el-table-column>
-                <el-table-column prop="age" label="年龄" width="80"></el-table-column>
-                <el-table-column prop="phone" label="电话"></el-table-column>
-                <el-table-column prop="role" label="角色">
+            <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table"
+                @selection-change="handleSelectionChange" :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
+                <el-table-column ref="table" type="selection" width="45px" :reserve-selection="true"></el-table-column>
+                <el-table-column prop="id" label="ID" width="70px"></el-table-column>
+                <el-table-column prop="name" label="姓名" width="120px"></el-table-column>
+                <el-table-column prop="sex" label="性别" width="75px"></el-table-column>
+                <el-table-column prop="age" label="年龄" width="80px"></el-table-column>
+                <el-table-column label="通过率(AC/提交)" >
+                    <template #default="{ row }">
+                        <span>
+                            {{ getnum(row.id, 0) }}/{{ getnum(row.id, 1) }}
+
+                        </span>
+
+                    </template>
+                </el-table-column>
+                <el-table-column prop="phone" label="电话"  ></el-table-column>
+
+                <el-table-column prop="role" label="角色" width="60px">
                     <template #default="{ row }">
                         {{ maprol[row.role] }}
                     </template>
@@ -85,7 +95,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { changeuser, findusers, deleteuser, delBatchuser } from "@/api/index.js";
+import { changeuser, findusers, deleteuser, delBatchuser, getallsubmit } from "@/api/index.js";
 import { Edit, Search, Delete, Plus } from '@element-plus/icons-vue'
 
 let params = ref({
@@ -111,12 +121,52 @@ const maprol = {
     ROLE_STUDENT: '学生',
     ROLE_TEACHER: '教师'
 }
+const submitdata = ref([]);
+const people_submitdata = ref([]);
+
+function getnum(id, flag) {
+    const userIndex = people_submitdata.value.findIndex(item => item.id === id);
+    if (flag == 0) {
+        return people_submitdata.value[userIndex].solvenum;
+    }
+    else {
+        return people_submitdata.value[userIndex].submitnum;
+    }
+}
 function findBySearch() {
     findusers(params.value).then(res => {
         if (res) {
             tableData.value = res.data.list;
-            console.log(tableData);
             total.value = res.data.total;
+            people_submitdata.value = [];
+            for (let i = 0; i < tableData.value.length; i++) {
+                people_submitdata.value.push({
+                    id: tableData.value[i].id,
+                    submitnum: 0,
+                    solvenum: 0
+                })
+            }
+            console.log("看这里"+people_submitdata.value);
+            definesubmit()
+        }
+    })
+}
+function definesubmit() {
+
+    getallsubmit(params.value).then(res => {
+        if (res) {
+            submitdata.value = res.data;
+            for (let i = 0; i < submitdata.value.length; i++) {
+                submitdata.value[i].judgeInfo = JSON.parse(submitdata.value[i].judgeInfo);
+                const userIndex = people_submitdata.value.findIndex(item => item.id === submitdata.value[i].userid);
+                if (userIndex !== -1) {
+                    // 修改找到的元素
+                    people_submitdata.value[userIndex].submitnum += 1;
+                    if (submitdata.value[i].judgeInfo.message === "Accepted") {
+                        people_submitdata.value[userIndex].solvenum += 1;
+                    }
+                }
+            }
         }
     })
 }
