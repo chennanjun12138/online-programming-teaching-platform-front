@@ -16,9 +16,6 @@
                 <el-form-item label="用户名" style="margin-top: 10px; margin-left: 200px; ">
                     <el-input v-model="user.name" autocomplete="off" style="width: 400px"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" style="margin-left: 200px">
-                    <el-input v-model="user.password" autocomplete="off" style="width: 400px" show-password></el-input>
-                </el-form-item>
                 <el-form-item label="性别" style="margin-left: 200px">
                     <el-select v-model="user.sex" placeholder="请选择" autocomplete="off" style="width: 400px">
                         <el-option label="男" value="男"></el-option>
@@ -38,17 +35,38 @@
                 </el-form-item>
 
                 <div class="container">
+                    <el-button type="primary" @click="changepassword()">修改密码</el-button>
                     <el-button type="primary" @click="submit">保存</el-button>
                 </div>
             </el-form>
         </el-card>
+        <el-dialog title="请填写信息" v-model="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="原密码" label-width="15%">
+                    <el-input v-model="form.passwordOld" autocomplete="off" style="width: 90%" show-password></el-input>
+                </el-form-item>
+
+                <el-form-item label="新密码" label-width="15%">
+                    <el-input v-model="form.passwordNew" autocomplete="off" style="width: 90%" show-password></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" label-width="15%">
+                    <el-input v-model="form.passwordSure" autocomplete="off" style="width: 90%"
+                        show-password></el-input>
+                </el-form-item>
+            </el-form>
+            <div class="container">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitpassword()">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { changeuser, getallsubmit } from "@/api/index.js";
+import { changeuser, getallsubmit, updatepassword } from "@/api/index.js";
 import { CirclePlus } from "@element-plus/icons-vue"
+import { useRouter } from "vue-router";
 
 let params = ref({
     name: '',
@@ -60,7 +78,30 @@ let params = ref({
 let tableData = ref([])
 let submitnum = ref(0)
 let solvenum = ref(0)
+let dialogFormVisible = ref(false);
+let form = ref({})
+const router = useRouter()
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
+function changepassword() {
+    dialogFormVisible.value = true;
+}
+function submitpassword() {
+    form.value.name = user.value.name;
+    updatepassword(form.value).then(res => {
+        if (res) {
+            window.$message({
+                message: '密码修改成功',
+                type: 'success'
+            });
+            dialogFormVisible.value = false;
+            localStorage.removeItem("user");
+            router.push("/login");
+        }
+    }
+
+    )
+
+}
 function findBySearch() {
     params.value.userid = user.value.id;
     getallsubmit(params.value).then(res => {

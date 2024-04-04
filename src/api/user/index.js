@@ -42,7 +42,13 @@ export const changeuser = (data)=> {
         data:data
     })
 }
-
+export const updatepassword = (data)=> {
+    return request({
+        url: '/user/update',
+        method: 'post',
+        data:data
+    })
+}
 export const deleteuser = (id) => {
     return request({
         url: '/user/' + id,
