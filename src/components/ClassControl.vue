@@ -79,7 +79,8 @@
                     <template #default="{ row }">
                         <el-button v-if="isNumberInArray(row.questionid) === 1" type="primary"
                             @click="insertcontract(row.questionid)" :icon="Plus">添加</el-button>
-                        <el-button v-else type="primary" disabled>已添加</el-button>
+                        <el-button v-else type="danger" :icon="CircleClose"
+                            @click="throwcontract(row.questionid)">取消</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -158,19 +159,11 @@ const props = defineProps({
 })
 
 import {
-    changeclass, delBatchclass, deleteclass, findclasss,
+    changeclass, delBatchclass, deleteclass, findclasss, deletecontract,
     findcourse, findquestionbanks, submitcourse, addcontract, findbyquestionid, addBatchcontract, judgecontract, findteachers
 } from "@/api/index.js";
-import { Edit, Search, Delete, Plus, Back, Upload, Download } from '@element-plus/icons-vue'
-const fileList = ref([]);
+import { Edit, Search, Delete, Plus, Back, Upload, Download, CircleClose } from '@element-plus/icons-vue'
 
-const handleFileRemove = (file, fileList) => {
-    // 获取最后一个文件（即最新上传的文件）
-    const newFile = fileList[fileList.length - 1];
-
-    // 将新文件替换到原有文件位置
-    fileList.splice(fileList.indexOf(file), 1, newFile);
-};
 
 let params = ref({
     name: '',
@@ -282,6 +275,19 @@ function insertcontract(id) {
 
     })
 }
+function throwcontract(id) {
+    form.value = {}
+    form.value.classid = classid;
+    form.value.questionid = id;
+    deletecontract(form.value).then(res => {
+        if (res) {
+            window.$message({
+                message: '取消成功',
+                type: 'success'
+            });
+        }
+    })
+}
 function searchcourse(id) {
     params.value.classid = id;
     findcourse(params.value).then(res => {
@@ -297,6 +303,7 @@ function searchcourse(id) {
 
     })
 }
+
 function isNumberInArray(number) {
 
     if (status.value.includes(number)) {

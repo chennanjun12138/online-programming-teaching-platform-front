@@ -21,21 +21,19 @@
             <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
                 :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
-                <el-table-column ref="table" type="selection" width="45px" :reserve-selection="true"></el-table-column>
+                <el-table-column ref="table" type="selection" width="40px" :reserve-selection="true"></el-table-column>
                 <el-table-column prop="id" label="ID" width="70px"></el-table-column>
-                <el-table-column prop="name" label="姓名" width="120px"></el-table-column>
-                <el-table-column prop="sex" label="性别" width="75px"></el-table-column>
-                <el-table-column prop="age" label="年龄" width="80px"></el-table-column>
-                <el-table-column label="通过率(AC/提交)" >
+                <el-table-column prop="name" label="姓名" width="100px"></el-table-column>
+                <el-table-column prop="sex" label="性别" width="70px"></el-table-column>
+                <el-table-column prop="age" label="年龄" width="70px"></el-table-column>
+                <el-table-column label="通过率(AC/提交)" width="140px" >
                     <template #default="{ row }">
                         <span>
                             {{ getnum(row.id, 0) }}/{{ getnum(row.id, 1) }}
-
                         </span>
-
                     </template>
                 </el-table-column>
-                <el-table-column prop="phone" label="电话"  ></el-table-column>
+                <el-table-column prop="phone" label="电话"  width="130px" ></el-table-column>
 
                 <el-table-column prop="role" label="角色" width="60px">
                     <template #default="{ row }">
@@ -44,6 +42,8 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
+                        <el-button v-if="getnum(row.id, 1)!=0" type="primary" @click="show(row.id)" :icon="Search">查看</el-button>
+                        <el-button v-else type="primary"    disabled>未做题</el-button>
                         <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
 
                         <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
@@ -89,14 +89,18 @@
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
+            <el-dialog class="chartflex" style="width: 90%;" v-model="contentVisible">
+                <Chart ref="pieRef" :QuestionData="questiondata" :SubmitData="submitData" />
+            </el-dialog>
         </div>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { changeuser, findusers, deleteuser, delBatchuser, getallsubmit } from "@/api/index.js";
+import { changeuser, findusers, deleteuser, delBatchuser, getallsubmit,findbyquestionid } from "@/api/index.js";
 import { Edit, Search, Delete, Plus } from '@element-plus/icons-vue'
+import Chart from '@/components/Chart.vue';
 
 let params = ref({
     name: '',
@@ -123,7 +127,116 @@ const maprol = {
 }
 const submitdata = ref([]);
 const people_submitdata = ref([]);
+let contentVisible = ref(false);
+let questiondata = ref([
+    { value: 0, name: '算法设计与分析' },
+    { value: 0, name: '数据结构' },
+    { value: 0, name: '字符串处理' },
+    { value: 0, name: '数学问题' },
+    { value: 0, name: '模拟题' },
+    { value: 0, name: '计算几何' },
+    { value: 0, name: '动态规划' },
+    { value: 0, name: '图论' },
+])
+let submitData = ref([
+    {
+        name: 'Accepted',
+        value: 0
+    },
+    {
+        name: 'Wrong Answer',
+        value: 0
+    },
 
+    {
+        name: '内存溢出',
+        value: 0
+    },
+    {
+        name: '超时',
+        value: 0
+    },
+    {
+        name: '编译错误',
+        value: 0
+    },
+])
+function down(id) {
+    questiondata.value = [
+        { value: 0, name: '算法设计与分析' },
+        { value: 0, name: '数据结构' },
+        { value: 0, name: '字符串处理' },
+        { value: 0, name: '数学问题' },
+        { value: 0, name: '模拟题' },
+        { value: 0, name: '计算几何' },
+        { value: 0, name: '动态规划' },
+        { value: 0, name: '图论' },
+    ]
+    submitData.value = [
+        {
+            name: 'Accepted',
+            value: 0
+        },
+        {
+            name: 'Wrong Answer',
+            value: 0
+        },
+
+        {
+            name: '内存溢出',
+            value: 0
+        },
+        {
+            name: '超时',
+            value: 0
+        },
+        {
+            name: '编译错误',
+            value: 0
+        },
+    ]
+    params.value.userid = id;
+    getallsubmit(params.value).then(res => {
+        if (res) {
+            let questions = ref([]);
+            for (let i = 0; i < res.data.length; i++) {
+                const jsonData = JSON.parse(res.data[i].judgeInfo);
+                submitData.value.forEach(item => {
+                    if (item.name === jsonData.message) {
+                        item.value++;
+                    }
+                });
+                params.value.questionid = res.data[i].questionid;
+
+                if (!questions.value.includes(res.data[i].questionid)) {
+                    findbyquestionid(params.value).then(
+                        res => {
+                            if (res) {
+
+                                questiondata.value.forEach(item => {
+                                    if (item.name === res.data[0].type) {
+                                        item.value++;
+                                    }
+                                });
+                            }
+                        }
+                    )
+                    questions.value.push(res.data[i].questionid)
+                }
+
+
+            }
+            params.value.questionid = ''
+        }
+    })
+
+
+}
+function show(id) {
+    down(id);
+    contentVisible.value = true;
+
+}
 function getnum(id, flag) {
     const userIndex = people_submitdata.value.findIndex(item => item.id === id);
     if (flag == 0) {

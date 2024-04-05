@@ -52,6 +52,13 @@ export const addBatchcontract = (data) => {
         data:data
     })
 }
+export const deletecontract = (data) => {
+    return request({
+        url: '/class/deleteContract',
+        method: 'delete',
+        data:data
+    })
+}
 export const changeclass = (data)=> {
     return request({
         url: '/class',

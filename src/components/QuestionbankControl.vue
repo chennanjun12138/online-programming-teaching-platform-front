@@ -40,18 +40,21 @@
             <span v-else>未提交</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createtime" label="创建时间"></el-table-column>
-        <el-table-column label="操作" width="300px">
+        <el-table-column prop="createtime" label="创建时间" width="180px"></el-table-column>
+        <el-table-column label="操作">
 
           <template #default="{ row }">
             <span class="button-group">
+              <el-button type="primary" @click="gotoquestion(row.questionid)" :icon="EditPen">练习</el-button>
               <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
-              <el-button slot="reference" type="primary" @click="show(row.questionid)" :icon="Search">查看</el-button>
+              <el-button  style="margin-left: 0" type="primary" @click="show(row.questionid)" :icon="Search">查看</el-button>
               <el-popconfirm v-if="delshow(row.creator)" title="确定删除吗？" @confirm="del(row.id, row.questionid)">
                 <template #reference>
-                  <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
+                  <el-button type="danger" :icon="Delete">删除</el-button>
                 </template>
               </el-popconfirm>
+              <el-button v-else type="danger" :icon="Delete" disabled>删除</el-button>
+
             </span>
           </template>
         </el-table-column>
@@ -159,8 +162,9 @@ import { ref } from 'vue';
 const props = defineProps({
   msg: String,
 })
-import { Edit, Search, Delete, Plus } from '@element-plus/icons-vue'
-
+import { Edit, Search, Delete, Plus,EditPen } from '@element-plus/icons-vue'
+import { useRouter } from "vue-router";
+const router = useRouter()
 import {
   addquestion,
   changequestion,
@@ -235,6 +239,9 @@ const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem(
 let jumpurl = ref('')
 function ShowAnswer() {
   innerVisible.value = true;
+}
+function gotoquestion(questionid) {
+    router.push(`/questioncontent/${questionid}`)
 }
 function delshow(creator) {
   if (props.msg !== 'A') {
@@ -445,9 +452,14 @@ function getRowKeys(row) {
 
 .button-group {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .button-group>* {
   margin-right: 5px;
+  margin-bottom: 5px;
+  
+  align-self: flex-start; /* 控制按钮垂直对齐方式为顶部对齐 */
 }
+ 
 </style>
