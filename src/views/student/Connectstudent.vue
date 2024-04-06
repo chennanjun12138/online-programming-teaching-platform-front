@@ -6,12 +6,13 @@
             <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
             <el-button type="success" style="margin-left: 10px" @click="add()" :icon="Plus">新增</el-button>
-
+            <el-button type="success" style="margin-left: 10px" @click="send()" :icon="Promotion">发送消息</el-button>
         </div>
         <div>
-            <el-table :header-cell-style="{textAlign: 'center', background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
-                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
+            <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table"
+                @selection-change="handleSelectionChange" :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
+                <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column prop="classid" label="课程id"></el-table-column>
                 <el-table-column prop="teacherid" label="教师id"></el-table-column>
                 <el-table-column prop="teachername" label="教师名"></el-table-column>
@@ -50,14 +51,26 @@
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
+            <el-dialog title="请填写发送内容" style="width: 40%;" v-model="sendVisible">
+                <el-form :model="form">
+                    <el-form-item label-width="15%">
+                        <el-input v-model="form.content" autocomplete="off" autosize style="width: 90% "
+                            type="textarea"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div class="container">
+                    <el-button @click="sendVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="addBatch()">确 定</el-button>
+                </div>
+            </el-dialog>
         </div>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { findconnects, deleteconnect, addconnect, findclassall, findByname } from "@/api/index.js";
-import { Search, Delete, Plus } from '@element-plus/icons-vue'
+import { findconnects, deleteconnect, addconnect, findclassall, findByname,sendmessage  } from "@/api/index.js";
+import { Search, Delete, Plus,Promotion } from '@element-plus/icons-vue'
 
 let params = ref({
     name: '',
@@ -69,11 +82,58 @@ let params = ref({
 let total = ref(0);
 let tableData = ref([]);
 let dialogFormVisible = ref(false);
+let sendVisible = ref(false);
 let form = ref({})
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let options = ref([])
 let ans = ref({})
 let classes = ref([])
+let multipleSelection = ref([]);
+let multipleMessage = ref([]);
+let Message = ref({})
+
+function handleSelectionChange(val) {
+    multipleSelection.value = val;
+    multipleMessage.value = [];
+    for (let i = 0; i < val.length; i++) {
+        Message.value = {}
+        Message.value.sendid = user.value.id;
+        Message.value.sendname = user.value.name;
+        Message.value.acceptid = val[i].teacherid;
+        Message.value.acceptname = val[i].teachername;
+        Message.value.isread = 0;
+        multipleMessage.value.push(Message.value);
+    }
+}
+function send() {
+    sendVisible.value = true;
+}
+function addBatch() {
+    if (multipleSelection.value.length === 0) {
+        $message.warning("请勾选您要发送的对象")
+        return
+    }
+    if(form.value.content==='')
+    {
+        $message.warning("请填写内容")
+        return
+    }
+    for (let i = 0; i < multipleMessage.value.length; i++) {
+        multipleMessage.value[i].content = form.value.content;
+    }
+    sendmessage(multipleMessage.value).then(
+        res => {
+            if (res) {
+                window.$message({
+                    message: '发送成功',
+                    type: 'success'
+                });
+                sendVisible.value = false;
+            }
+
+        }
+    )
+}
 findBySearch();
 function findBySearch() {
     params.value.studentid = user.value.id;

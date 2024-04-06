@@ -442,7 +442,8 @@ function addBatch() {
 
 
     })
-} function delBatch() {
+} 
+function delBatch() {
     if (multipleSelection.value.length === 0) {
         window.$message.warning("请勾选您要删除的项")
         return

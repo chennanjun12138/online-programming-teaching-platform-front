@@ -25,6 +25,7 @@ import ConnectteacherVue from '@/views/teacher/Connectteacher.vue';
 import ConnectstudentVue from '@/views/student/Connectstudent.vue';
 import codeconrollerViewVue from '@/views/admin/CodeconrollerView.vue';
 import LeaderboardView from '@/views/LeaderboardView.vue';
+import MessageView from '@/views/admin/MessageView.vue';
  
 const router = createRouter({
 
@@ -61,6 +62,11 @@ const router = createRouter({
           path: 'user',
           meta: { name: "用户管理" },
           name: 'user', component: AdminView
+        },
+        {
+          path: 'message',
+          meta: { name: "用户管理" },
+          name: 'message', component: MessageView
         },
         {
           path: 'class',

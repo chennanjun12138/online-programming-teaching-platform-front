@@ -1,4 +1,33 @@
 <template>
+  <el-drawer v-model="ismessage" :direction="direction" :with-header="false"
+    style="background-image:url('src/assets/image/b2.jpg');">
+    <div>
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="接受的消息" name="first">
+          <el-card v-for="(item, index) in acceptlist" :key="index" class="card-item">
+            <div slot="header" class="clearfix">
+              <span style="float: inline-start;">{{ item.sendname }} </span>
+              <span style="float: inline-end;"> {{ item.sendtime }}</span>
+            </div>
+            <div>
+              <p>{{ item.content }}</p>
+            </div>
+          </el-card>
+        </el-tab-pane>
+        <el-tab-pane label="发送的消息" name="second">
+          <el-card v-for="(item, index) in sendlist " :key="index" class="card-item">
+            <div slot="header" class="clearfix">
+              <span style="float: inline-start;">{{ item.sendname }} </span>
+              <span style="float: inline-end;"> {{ item.sendtime }}</span>
+            </div>
+            <div>
+              <p>{{ item.content }}</p>
+            </div>
+          </el-card>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+  </el-drawer>
   <div>
     <el-container>
       <!-- 侧边栏   -->
@@ -76,6 +105,12 @@
             </el-icon>
             <span slot="title">用户管理</span>
           </el-menu-item>
+          <el-menu-item index="/message" v-if="user.role === 'ROLE_ADMIN'">
+            <el-icon>
+              <Message />
+            </el-icon>
+            <span slot="title">信息管理</span>
+          </el-menu-item>
           <el-sub-menu index="5" v-if="user.role === 'ROLE_TEACHER'">
             <template #title> <el-icon>
                 <Setting />
@@ -90,7 +125,7 @@
               <el-icon>
                 <Setting />
               </el-icon>
-              <span slot="title">课程关系管理</span>
+              <span slot="title">学生管理</span>
             </el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="6" v-if="user.role === 'ROLE_TEACHER'">
@@ -184,6 +219,11 @@
             <el-breadcrumb-item>{{ display }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="headcotent">
+            <el-badge :is-dot="isolt" class="item" style="font-size: 26px" >
+              <el-icon  @click="handlemessage">
+                <Message />
+              </el-icon>
+            </el-badge>
             <el-icon style="font-size: 26px" @click="handlefull">
               <FullScreen />
             </el-icon>
@@ -214,17 +254,25 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue"
-import { UserFilled, Operation, Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Trophy, Document, Reading, Search, Medal, Management } from "@element-plus/icons-vue"
+import { ref, computed, onMounted } from "vue"
+import { Message, UserFilled, Operation, Connection, Setting, User, ArrowRight, Menu, FullScreen, House, Folder, Collection, Trophy, Document, Reading, Search, Medal, Management } from "@element-plus/icons-vue"
 import { useRouter, useRoute } from "vue-router";
+import { findallmessage, changemessage } from "@/api/index.js";
+
 
 const router = useRouter()
 const route = useRoute()
-// console.log(router.getRoutes(), route);
-
 let aSidewidth = ref("200px");
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let isCollapse = ref(false);
+let ismessage = ref(false);
+let isolt = ref(false);
+const direction = ref('rtl')
+let messageList = ref([]);
+let sendlist = ref([]);
+let acceptlist = ref([]);
+const MAX_LIST_LENGTH = 20;
+
 const display = computed(
   () => {
     const current = router.getRoutes().find(r => {
@@ -243,6 +291,50 @@ const display = computed(
     }
   }
 )
+onMounted(async () => {
+  try {
+    sendlist.value = [];
+    acceptlist.value = [];
+    findallmessage().then(
+      res => {
+        if (res) {
+          messageList.value = res.data;
+          for (let i = 0; i < messageList.value.length; i++) {
+            if (messageList.value[i].sendid == user.value.id) {
+              if (acceptlist.value.length < MAX_LIST_LENGTH) {
+                sendlist.value.push(messageList.value[i]);
+              }
+            }
+            if (messageList.value[i].acceptid == user.value.id) {
+              if (messageList.value[i].isread == 0) {
+                isolt.value = true;
+                messageList.value[i].isread = 1;
+              }
+              if (acceptlist.value.length < MAX_LIST_LENGTH) {
+                acceptlist.value.push(messageList.value[i]);
+              }
+
+            }
+
+          }
+
+        }
+      }
+    )
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+});
+function handlemessage() {
+  ismessage.value = true;
+  changemessage(acceptlist.value).then(res => {
+    if (res) {
+      isolt.value = false;
+    }
+  })
+
+
+}
 function handleCollapse() {
   isCollapse.value = !isCollapse.value
   aSidewidth.value = isCollapse.value ? '64px' : '200px'
@@ -266,6 +358,8 @@ function logout() {
   background-repeat: no-repeat;
   /* 不重复显示背景图片 */
 }
+
+
 
 .elside {
   overflow: hidden;
@@ -359,5 +453,22 @@ function logout() {
   display: flex;
   align-items: center;
   justify-content: flex-end
+}
+
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.card-item {
+  margin-bottom: 10px; /* 设置卡片之间的下边距 */
+}
+
+.card-item-space {
+  height: 10px; /* 设置间隔高度 */
+}
+.item {
+  margin-top: 10px;
+  margin-right: 30px;
 }
 </style>

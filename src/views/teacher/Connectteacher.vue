@@ -6,12 +6,14 @@
             <el-button type="primary" style="margin-left: 10px" @click="findBySearch()" :icon="Search">查询</el-button>
             <el-button type="warning" @click="reset()">清空</el-button>
             <el-button type="success" style="margin-left: 10px" @click="add()" :icon="Plus">新增</el-button>
+            <el-button type="success" style="margin-left: 10px" @click="send()" :icon="Promotion">发送消息</el-button>
 
         </div>
         <div>
             <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
                 :data="tableData" stripe :cell-style="{ textAlign: 'center' }" style="width: 100%; margin: 15px 0px"
                 ref="table" @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column prop="classid" label="课程号"></el-table-column>
                 <el-table-column prop="teacherid" label="教师号"></el-table-column>
                 <el-table-column prop="teachername" label="教师名"></el-table-column>
@@ -60,15 +62,28 @@
             <el-dialog class="chartflex" style="width: 90%;" v-model="contentVisible">
                 <Chart ref="pieRef" :QuestionData="questiondata" :SubmitData="submitdata" />
             </el-dialog>
+            <el-dialog title="请填写发送内容" style="width: 40%;" v-model="sendVisible">
+                <el-form :model="form">
+                    <el-form-item label-width="15%">
+                        <el-input v-model="form.content" autocomplete="off" autosize style="width: 90% "
+                            type="textarea"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div class="container">
+                    <el-button @click="sendVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="addBatch()">确 定</el-button>
+                </div>
+            </el-dialog>
         </div>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { findconnects, deleteconnect, addconnect, findclasss, findByname, getallsubmit, findbyquestionid } from "@/api/index.js";
+import { findconnects, deleteconnect, addconnect, findclasss, findByname, getallsubmit, findbyquestionid, sendmessage } from "@/api/index.js";
 import Chart from '@/components/Chart.vue';
-import { Search, Delete, Plus } from '@element-plus/icons-vue'
+import { Search, Delete, Plus, Promotion } from '@element-plus/icons-vue'
+
 
 let params = ref({
     name: '',
@@ -83,6 +98,7 @@ let tableData = ref([]);
 let options = ref([])
 let dialogFormVisible = ref(false);
 let contentVisible = ref(false);
+let sendVisible = ref(false);
 let questiondata = ref([
     { value: 0, name: '算法设计与分析' },
     { value: 0, name: '数据结构' },
@@ -116,7 +132,9 @@ let submitdata = ref([
         value: 0
     },
 ])
-
+let multipleSelection = ref([]);
+let multipleMessage = ref([]);
+let Message = ref({})
 let form = ref({})
 let ans = ref({})
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
@@ -190,6 +208,43 @@ function down(id) {
     })
 
 
+}
+function handleSelectionChange(val) {
+    multipleSelection.value = val;
+    multipleMessage.value = [];
+    for (let i = 0; i < val.length; i++) {
+        Message.value = {}
+        Message.value.sendid = user.value.id;
+        Message.value.sendname = user.value.name;
+        Message.value.acceptid = val[i].studentid;
+        Message.value.acceptname = val[i].studentname;
+        Message.value.isread = 0;
+        multipleMessage.value.push(Message.value);
+    }
+}
+function send() {
+    sendVisible.value = true;
+}
+function addBatch() {
+    if (multipleSelection.value.length === 0) {
+        $message.warning("请勾选您要发送的对象")
+        return
+    }
+    for (let i = 0; i < multipleMessage.value.length; i++) {
+        multipleMessage.value[i].content = form.value.content;
+    }
+    sendmessage(multipleMessage.value).then(
+        res => {
+            if (res) {
+                window.$message({
+                    message: '发送成功',
+                    type: 'success'
+                });
+                sendVisible.value = false;
+            }
+
+        }
+    )
 }
 function show(id) {
     down(id);
