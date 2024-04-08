@@ -45,12 +45,13 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="status" label="判题状态" width="80px"></el-table-column>
-                <el-table-column prop="username" label="提交者" width="80px"></el-table-column>
+                <el-table-column prop="userid" label="提交者" width="80px"></el-table-column>
 
                 <el-table-column prop="createTime" label="提交时间"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button type="primary" @click="show(tableData.indexOf(row))" :icon="Search">查看评价</el-button>
+                        <el-button v-if="row.userid==user.name" type="primary" @click="show(tableData.indexOf(row))" :icon="Search">查看评价</el-button>
+                        <el-button v-else type="primary" disabled :icon="Search">不可查看</el-button>
 
                     </template>
                 </el-table-column>
@@ -88,7 +89,7 @@
 <script setup>
 import { ref } from 'vue';
 import {
-    searchcode, findevaluate, getallsubmit, findbyquestionid
+    searchcode, findevaluate, getallsubmit, findbyquestionid,findByid
 } from "@/api/index.js";
 import dayjs from 'dayjs';
 import { Search } from '@element-plus/icons-vue'
@@ -250,7 +251,7 @@ function findBySearch() {
             tableData.value = res.data.list;
             total.value = res.data.total;
             for (let i = 0; i < total.value; i++) {
-                tableData.value[i].username = user.value.name;
+                getname(tableData.value[i].userid, i)
                 tableData.value[i].judgeInfo = JSON.parse(tableData.value[i].judgeInfo);
                 tableData.value[i].status = display(tableData.value[i].status);
                 tableData.value[i].createTime = dayjs(tableData.value[i].createTime).format('YYYY-MM-DD HH:mm:ss');
@@ -258,14 +259,19 @@ function findBySearch() {
             }
         }
     })
-
-
-
     // 执行 getcodestatus() 函数，并在执行后将标志变量设置为 true
     if (!hasExecuted) {
         getcodestatus();
         hasExecuted = true;
     }
+}
+function getname(id, i) {
+    findByid(id).then(res => {
+        if (res) {
+            tableData.value[i].userid = res.data.name;
+        }
+    })
+
 }
 function getcodestatus() {
     params2.value = params.value;

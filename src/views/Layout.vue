@@ -70,7 +70,7 @@
               <el-icon>
                 <Connection />
               </el-icon>
-              <span slot="title">课程关系管理</span>
+              <span slot="title">师生关系管理</span>
             </el-menu-item>
           </el-sub-menu>
 
@@ -109,7 +109,7 @@
             <el-icon>
               <Message />
             </el-icon>
-            <span slot="title">信息管理</span>
+            <span slot="title">消息管理</span>
           </el-menu-item>
           <el-sub-menu index="5" v-if="user.role === 'ROLE_TEACHER'">
             <template #title> <el-icon>

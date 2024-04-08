@@ -65,7 +65,7 @@ const router = createRouter({
         },
         {
           path: 'message',
-          meta: { name: "用户管理" },
+          meta: { name: "消息管理" },
           name: 'message', component: MessageView
         },
         {
@@ -147,12 +147,12 @@ const router = createRouter({
         },
         {
           path: 'connectcontroller',
-          meta: { name: "课程关系管理" },
+          meta: { name: "师生关系管理" },
           name: 'connectcontroller', component: ConnectcontrollerVue
         },
         {
           path: 'connectteacher',
-          meta: { name: "课程关系管理" },
+          meta: { name: "学生管理" },
           name: 'connectteacher', component: ConnectteacherVue
         },
         {
