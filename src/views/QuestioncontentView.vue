@@ -18,7 +18,7 @@
             <p class="uppercase-text">输入输出样例</p>
 
             <ul class="lowercase-text">
-                <li v-for="(item, index) in JudgeCase" :key="index">
+                <li v-for="(item, index) in JudgeCase" :key="index" >
 
                     <div style="display: flex; align-items: center;">
                         <el-col>
@@ -52,12 +52,13 @@
                 <div style="display: flex; align-items: center;">
                     <el-button type="primary" @click="goback" text :icon="ArrowLeft">返回</el-button>
 
-                    <span>编程语言：</span>
+                    <span style="width: 70px;">编程语言:</span>
                     <el-select @change="onChangeEditorLang()" v-model="language" placeholder="请选择"
-                        style="width: 200px;">
+                        style="width: 180px;">
                         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
+                    <el-button  key="查看题解" type="primary" text @click="ShowAnswer"> 查看题解 </el-button>
 
                 </div>
 
@@ -65,10 +66,23 @@
 
             <div class='monaco-editor'>
             </div>
+            
+
+            <el-button style="margin-top: 10px;background-color: transparent;"  @click="showresult()"   >运行结果</el-button>
+            <el-button style="margin-top: 10px;background-color: transparent; width: 60px;"  @click="addinupt()"   >自测输入</el-button>
+
+            <el-button class="custom_button" style="margin-top: 10px" @click="runCodebyme()":icon="VideoPlay">自测运行</el-button>
 
             <el-button style="margin-top: 10px" type="primary" @click="runCode" :icon="Promotion">提交代码</el-button>
-            <el-button style="margin-top: 10px" key="查看题解" type="primary" text @click="ShowAnswer"> 查看题解 </el-button>
-
+            <el-card v-show="cardVisble" style="margin-top: 10px">
+                <el-input v-if="inputvisble" v-model="submitcontent.inputcontent" autocomplete="off" style="width: 90%"
+                            type="textarea"></el-input>
+                 <span v-if="!inputvisble">
+                     {{ runResult }}
+                </span>
+               
+               
+            </el-card>
         </div>
         <el-dialog v-model="innerVisible" width="40%" title="题解" append-to-body>
 
@@ -81,13 +95,18 @@
 <script setup>
 
 import { ref, onMounted, toRaw } from 'vue';
-import { findbyid, findquestion, submitcode } from "@/api/index.js";
-import { ArrowLeft,Promotion } from "@element-plus/icons-vue" 
+import { findbyid, findquestion, submitcode,runcode } from "@/api/index.js";
+import { ArrowLeft,Promotion,VideoPlay} from "@element-plus/icons-vue" 
 import * as monaco from "monaco-editor";
 import { useRouter } from "vue-router";
 
 import Clipboard from 'clipboard'
 
+
+let cardVisble=ref(false);
+let runResult = ref('');
+let inputvisble=ref(false)
+let inputcontent=ref('')
 let router = useRouter()
 let params = ref({
     name: '',
@@ -176,6 +195,33 @@ function goback() {
 }
 function ShowAnswer() {
     innerVisible.value = true;
+}
+function addinupt()
+{
+    inputvisble.value=true;
+    cardVisble.value=true;
+}
+ 
+function showresult()
+{
+    cardVisble.value=true;
+    inputvisble.value=false;
+}
+function runCodebyme() {
+    submitcontent.value.userid = user.value.id;
+    submitcontent.value.language = language.value;
+    submitcontent.value.code = toRaw(codemonaco.value).getValue();
+    runcode(submitcontent.value).then(
+        res => {
+            if (res) {
+                window.$message({
+                    message: "提交成功",
+                    type: 'success'
+                });
+                runResult.value = res.data;
+            }
+        }
+    )
 }
 function runCode() {
     submitcontent.value.userid = user.value.id;
@@ -288,4 +334,16 @@ function onChangeEditorLang() {
     width: 90%;
     white-space: pre-line;
 }
+.custom_button{
+    background-color: #fff; /* 设置背景颜色为白色 */
+    border: 1px solid #409EFF; /* 设置边框为蓝色 */
+    color: #409EFF; /* 设置文字颜色为蓝色 */
+}
+ 
+.custom_button:hover {
+  color: #fff;
+  background-color: #0FB3B3 !important;  
+}
+ 
+
 </style>

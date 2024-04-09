@@ -7,7 +7,7 @@
 
     </div>
 </template>
-    
+
 <script setup>
 import * as echarts from 'echarts/core';
 import {
@@ -18,13 +18,7 @@ import {
 import { PieChart } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-import {  watch, nextTick } from 'vue';
-
-// import { useCounterStore } from '@/stores/counter' ;
-// import {storeToRefs, } from "pinia"
-// const {count}=storeToRefs(useCounterStore());
-// console.log(count.value)
-
+import { watch, nextTick } from 'vue';
 
 echarts.use([
     TitleComponent,
@@ -38,21 +32,16 @@ const props = defineProps({
     QuestionData: [],
     SubmitData: []
 })
-
-
-
 defineExpose({
     initPieChart
 })
- 
+
 function initPieChart() {
 
     var chartDom = document.getElementById('chart');
     var myChart = echarts.init(chartDom);
     var chartDom2 = document.getElementById('chart2');
     var myChart2 = echarts.init(chartDom2);
-    // console.log(props.QuestionData)
-    // console.log(props.SubmitData)
     myChart.setOption(
         {
             title: {
@@ -127,7 +116,7 @@ watch(() => [props.QuestionData, props.SubmitData], () => {
 
 
 </script>
-    
+
 <style scoped>
 .chartclass {
     display: flex;
