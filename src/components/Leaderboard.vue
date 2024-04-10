@@ -110,6 +110,8 @@ function findBySearch() {
                 tableData.value = res.data;
                 total.value = res.data.length;
                 sortTableData();
+            }).catch((error) => {
+                console.log(error);
             });
 
         }
