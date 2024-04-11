@@ -41,7 +41,16 @@
                 <el-table-column prop="acceptid" label="接收者id"></el-table-column>
                 <el-table-column prop="acceptname" label="接收者"></el-table-column>
                 <el-table-column prop="sendtime" label="发送时间"></el-table-column>
-               
+                <el-table-column label="操作">
+                    <template #default="{ row }">
+                        
+                        <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
+                            <template #reference>
+                                <el-button type="danger" style="margin-left: 5px" :icon="Delete">删除</el-button>
+                            </template>
+                        </el-popconfirm>
+                    </template>
+                </el-table-column>
             </el-table>
             <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
                 :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table" v-if="tableVisible2"
@@ -65,7 +74,6 @@
                         {{ maprol[row.role] }}
                     </template>
                 </el-table-column>
-
             </el-table>
         </div>
         <div style="margin-top: 10px">
@@ -94,8 +102,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { findusers, getallsubmit, findmessage, sendmessage } from "@/api/index.js";
-import { Search, Promotion, Back } from '@element-plus/icons-vue'
+import { findusers, getallsubmit, findmessage, sendmessage,deletemessage } from "@/api/index.js";
+import { Search, Promotion, Back,Delete } from '@element-plus/icons-vue'
 
 
 let params = ref({
@@ -271,6 +279,17 @@ function handleSelectionChange(val) {
 }
 function getRowKeys(row) {
     return row.id;
+}
+function del(id) {
+    deletemessage(id).then(res => {
+        if (res) {
+            window.$message({
+                message: '删除成功',
+                type: 'success'
+            });
+            findBySearch();
+        }
+    })
 }
 </script>
 

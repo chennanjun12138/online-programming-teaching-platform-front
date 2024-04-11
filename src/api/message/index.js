@@ -30,3 +30,10 @@ export const changemessage = (data)=> {
         data:data
     })
 }
+
+export const deletemessage= (id) => {
+    return request({
+        url: '/message/' + id,
+        method: 'delete',
+    })
+}
