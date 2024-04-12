@@ -259,7 +259,6 @@ function findBySearch() {
                     solvenum: 0
                 })
             }
-            console.log("看这里"+people_submitdata.value);
             definesubmit()
         }
     })

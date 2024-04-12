@@ -45,7 +45,7 @@
 
           <template #default="{ row }">
             <span class="button-group">
-              <el-button type="primary" @click="gotoquestion(row.questionid)" :icon="EditPen">练习</el-button>
+              <el-button type="success" @click="gotoquestion(row.questionid)" :icon="EditPen">练习</el-button>
               <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
               <el-button  style="margin-left: 0" type="primary" @click="show(row.questionid)" :icon="Search">查看</el-button>
               <el-popconfirm v-if="delshow(row.creator)" title="确定删除吗？" @confirm="del(row.id, row.questionid)">

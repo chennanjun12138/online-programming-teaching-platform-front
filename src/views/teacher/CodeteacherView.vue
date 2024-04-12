@@ -51,7 +51,7 @@
                     <template #default="{ row }">
                         <el-button slot="reference" type="primary" @click="show(tableData.indexOf(row))"
                             :icon="Search">查看</el-button>
-                        <el-button type="primary" @click="evaluate(row.id)" :icon="EditPen">评价</el-button>
+                        <el-button type="success" @click="evaluate(row.id)" :icon="EditPen">评价</el-button>
 
 
                     </template>

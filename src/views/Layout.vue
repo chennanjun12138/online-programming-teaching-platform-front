@@ -468,7 +468,7 @@ function logout() {
   height: 10px; /* 设置间隔高度 */
 }
 .item {
-  margin-top: 10px;
-  margin-right: 30px;
+  margin-top: 5px;
+  margin-right: 20px;
 }
 </style>
