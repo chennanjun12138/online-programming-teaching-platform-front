@@ -137,8 +137,8 @@
                 <el-input type="textarea" v-model="judgeCaseItem.output" placeholder="请输入测试输出用例"></el-input>
               </el-form-item>
               <el-row>
-                <el-button @click="ShowAnswer" type="primary" :icon="Search">查看题解</el-button>
-                <el-button @click="handleAdd" type="primary" :icon="Plus">新增测试用例</el-button>
+                
+                <el-button @click="handleAdd" type="success" :icon="Plus">新增测试用例</el-button>
                 <el-button type="danger" @click="handleDelete(index)" :icon="Delete">删除</el-button>
 
               </el-row>
@@ -149,8 +149,9 @@
         </el-form>
 
         <div class="container">
-          <el-button type="info" @click="contentVisible = false">取 消</el-button>
+          <el-button @click="ShowAnswer" type="primary" :icon="Edit">题 解</el-button>
           <el-button type="primary" @click="savecontent()">确 定</el-button>
+          <el-button @click="contentVisible = false">取 消</el-button>
         </div>
       </el-dialog>
     </div>

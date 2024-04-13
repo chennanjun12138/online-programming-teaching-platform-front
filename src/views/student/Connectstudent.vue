@@ -106,14 +106,14 @@ function handleSelectionChange(val) {
     }
 }
 function send() {
-    sendVisible.value = true;
-}
-function addBatch() {
     if (multipleSelection.value.length === 0) {
         $message.warning("请勾选您要发送的对象")
         return
     }
-    if(form.value.content==='')
+    sendVisible.value = true;
+}
+function addBatch() {
+    if(!form.value.content || form.value.content.trim() === ''||typeof form.value.content === 'undefined')
     {
         $message.warning("请填写内容")
         return

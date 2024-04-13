@@ -48,7 +48,7 @@ request.interceptors.response.use(
                 message: res.msg,
                 type: 'error'
             });
-            if(res.msg=='token验证失败,请重新登录')
+            if(res.msg=='token验证失败，请重新登录')
             {
                 localStorage.removeItem("user");
                 router.push("/login");
