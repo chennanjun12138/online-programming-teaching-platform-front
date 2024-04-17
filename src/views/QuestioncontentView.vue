@@ -21,24 +21,21 @@
                 <li v-for="(item, index) in JudgeCase" :key="index">
 
                     <div style="display: flex; align-items: center;">
-                        <el-col>
-                            <h3>输入样例 #{{ index + 1 }}
-                                <el-button size="small" class="copy" @click="handleCopy(item.input)">复制</el-button>
-                            </h3>
+                        <el-row :gutter="24">
+                            <el-col :span="12" >
+                                <h3>输入样例 #{{ index + 1 }}
+                                    <el-button size="small" class="copy" @click="handleCopy(item.input)">复制</el-button>
+                                </h3>
+                                <code>{{ item.input }}</code>
+                            </el-col>
 
-                            <code>
-                                    {{ item.input }}
-                                    </code>
-                        </el-col>
-
-                        <el-col>
-                            <h3>输出样例 #{{ index + 1 }}
-                                <el-button size="small" class="copy" @click="handleCopy(item.output)">复制</el-button>
-                            </h3>
-                            <code>
-                                    {{ item.output }}
-                                </code>
-                        </el-col>
+                            <el-col :span="12" >
+                                <h3>输出样例 #{{ index + 1 }}
+                                    <el-button size="small" class="copy" @click="handleCopy(item.output)">复制</el-button>
+                                </h3>
+                                <code>{{ item.output }}</code>
+                            </el-col>
+                        </el-row>
                     </div>
 
                 </li>
@@ -87,9 +84,11 @@
                     自测用例:
                 </span>
                 <el-input v-if="inputvisble" v-model="submitcontent.inputcontent" autocomplete="off"
-                    style="width: 100%;margin-top: 10px;" type="textarea" :autosize="{ minRows: 2, maxRows: 15 }"></el-input>
+                    style="width: 100%;margin-top: 10px;" type="textarea"
+                    :autosize="{ minRows: 2, maxRows: 15 }"></el-input>
                 <span v-if="!inputvisble">
-                    运行结果:{{ runResult }}
+                    运行结果:
+                    <p v-for="(item, index) in resultarr" :key="index">{{ item }}</p>
                 </span>
 
 
@@ -116,6 +115,7 @@ import Clipboard from 'clipboard'
 
 let cardVisble = ref(false);
 let runResult = ref('');
+let resultarr = ref([])
 let inputvisble = ref(false)
 const radio = ref('')
 let router = useRouter()
@@ -224,10 +224,13 @@ function runCodebyme() {
         res => {
             if (res) {
                 window.$message({
-                    message: "提交成功",
+                    message: "自测运行成功",
                     type: 'success'
                 });
-                runResult.value = res.data;
+
+                runResult.value = res.data[0];
+                resultarr.value = runResult.value.split(" ");
+
             }
         }
     )

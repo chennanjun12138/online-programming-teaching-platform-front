@@ -50,7 +50,11 @@
             </el-tabs>
 
             <el-dialog title="运行结果" v-model="runVisble">
-                {{ runResult }}
+                <span  >
+                     {{ runResult }}
+                     
+                </span>
+               
             </el-dialog>
         </div>
 
@@ -109,6 +113,7 @@ let submitcontent = ref({});
 const codemonaco = ref();
 let runVisble = ref(false);
 let runResult = ref('');
+let resultarr = ref([])
 let questionsum = ref([
     {
         id: '',
@@ -230,7 +235,8 @@ function runCode() {
                     type: 'success'
                 });
                 // console.log(res.data);
-                runResult.value = res.data;
+                runResult.value = res.data[0];
+                resultarr.value = runResult.value.split(" ");
                 runVisble.value = true;
             }
         }
