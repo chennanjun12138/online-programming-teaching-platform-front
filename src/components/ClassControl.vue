@@ -190,6 +190,7 @@ let dialogFormVisible = ref(false);
 let courseVisible = ref(false);
 let courescontent = ref({})
 let form = ref({})
+let allquestiondata = ref([])
 const options = ref([{
     value: '前端开发',
     label: '前端开发'
@@ -254,7 +255,7 @@ function reback() {
 }
 function insertcontract(id) {
     form.value = {}
-    form.value.classid = classid;
+    form.value.classid = classid.value;
     form.value.questionid = id;
     addcontract(form.value).then(res => {
 
@@ -264,6 +265,7 @@ function insertcontract(id) {
                 message: '添加成功',
                 type: 'success'
             });
+            findquestions(classid.value);
         }
         else {
             window.$message({
@@ -277,7 +279,7 @@ function insertcontract(id) {
 }
 function throwcontract(id) {
     form.value = {}
-    form.value.classid = classid;
+    form.value.classid = classid.value;
     form.value.questionid = id;
     deletecontract(form.value).then(res => {
         if (res) {
@@ -285,6 +287,7 @@ function throwcontract(id) {
                 message: '取消成功',
                 type: 'success'
             });
+            findquestions(classid.value);
         }
     })
 }
@@ -317,13 +320,16 @@ function isNumberInArray(number) {
 }
 
 function findquestions(id) {
+    if (tableVisible.value == true) {
+        params.value.pageNum = 1
+        params.value.pageSize = 5
+        findbyquestionid(params.value).then(
+            res => {
+                allquestiondata.value = res.data;
+            }
+        )
+    }
     classid.value = id;
-    const allquestiondata = ref([])
-    findbyquestionid(params.value).then(
-        res => {
-            allquestiondata.value = res.data;
-        }
-    )
 
     findquestionbanks(params.value).then(res => {
 
@@ -343,11 +349,8 @@ function findquestions(id) {
         }
         tableVisible2.value = true;
         tableVisible.value = false;
-
     })
     // console.log(status.value)
-
-
 }
 function reset() {
     params.value = {
@@ -388,24 +391,26 @@ function edit(obj) {
 }
 function savecourse() {
     submitcourse(courescontent.value).then(res => {
-
-        window.$message({
-            message: '操作成功',
-            type: 'success'
-        });
-        courseVisible.value = false;
-
+        if (res) {
+            window.$message({
+                message: '操作成功',
+                type: 'success'
+            });
+            courseVisible.value = false;
+        }
     })
 }
 function submit() {
     changeclass(form.value).then(res => {
+        if (res) {
+            window.$message({
+                message: '操作成功',
+                type: 'success'
+            });
+            dialogFormVisible.value = false;
+            findBySearch();
+        }
 
-        window.$message({
-            message: '操作成功',
-            type: 'success'
-        });
-        dialogFormVisible.value = false;
-        findBySearch();
 
     })
 }
@@ -442,7 +447,7 @@ function addBatch() {
 
 
     })
-} 
+}
 function delBatch() {
     if (multipleSelection.value.length === 0) {
         window.$message.warning("请勾选您要删除的项")

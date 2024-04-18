@@ -11,14 +11,14 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ textAlign: 'center',background: '#eef1f6', color: '#606266' }" :data="tableData" stripe
-                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
-                <el-table-column prop="classid" label="课程号"  width="100px"></el-table-column>
-                <el-table-column prop="teacherid" label="教师号"  width="100px"></el-table-column>
-                <el-table-column prop="teachername" label="教师名"  width="100px"></el-table-column>
-                <el-table-column prop="studentid" label="学生号"  width="100px"></el-table-column>
-                <el-table-column prop="studentname" label="学生名"  width="100px"></el-table-column>
+            <el-table :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
+                :data="tableData" stripe style="width: 100%; margin: 15px 0px" ref="table"
+                @selection-change="handleSelectionChange" :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
+                <el-table-column prop="classid" label="课程号" width="100px"></el-table-column>
+                <el-table-column prop="teacherid" label="教师号" width="100px"></el-table-column>
+                <el-table-column prop="teachername" label="教师名" width="100px"></el-table-column>
+                <el-table-column prop="studentid" label="学生号" width="100px"></el-table-column>
+                <el-table-column prop="studentname" label="学生名" width="100px"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
                         <el-button type="primary" @click="show(row.studentid)" :icon="Search">查看学生代码和做题情况</el-button>
@@ -260,18 +260,29 @@ function submit() {
     findByname(form.value.studentname).then(
         res => {
             if (res) {
-                form.value.studentid = res.data.id.toString();
-                console.log(form.value.studentid);
-                addconnect(form.value).then(res => {
-                    if (res) {
-                        window.$message({
-                            message: '操作成功',
-                            type: 'success'
-                        });
-                        dialogFormVisible.value = false;
-                        findBySearch();
-                    }
-                })
+                console.log(res.data)
+                if (res.data==null||res.data.role!=="ROLE_STUDENT") {
+                    window.$message({
+                        message: '没有该学生',
+                        type: 'error'
+                    });
+                }
+                else {
+                    form.value.studentid = res.data.id.toString();
+
+                    addconnect(form.value).then(res => {
+                        if (res) {
+                            window.$message({
+                                message: '添加关系成功',
+                                type: 'success'
+                            });
+                            dialogFormVisible.value = false;
+                            findBySearch();
+                            console.log(res);
+                        }
+                    })
+                }
+
             }
         }
     )

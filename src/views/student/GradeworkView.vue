@@ -252,7 +252,6 @@ function add(id) {
 function submit() {
     form.value.userid = user.value.id;
     form.value.studentname = user.value.name;
-    form.value.homeworkid =
         addsubmit(form.value).then(res => {
             if (res) {
                 window.$message({
