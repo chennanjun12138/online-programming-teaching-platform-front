@@ -38,7 +38,7 @@
         <div>
             <el-dialog title="请填写信息" v-model="dialogFormVisible" width="40%">
                 <el-form :model="form">
-                    <el-form-item label="课程id" label-width="15%">
+                    <el-form-item label="课程" label-width="15%">
                         <el-select v-model="form.classid" clearable placeholder="请选择课程" style="width: 90%">
                             <el-option v-for="item in options" :key="item.value" :label="item.label"
                                 :value="item.value">
@@ -69,8 +69,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { findconnects, deleteconnect, addconnect, findclassall, findByname,sendmessage  } from "@/api/index.js";
-import { Search, Delete, Plus,Promotion } from '@element-plus/icons-vue'
+import { findconnects, deleteconnect, addconnect, findclassall, findByname, sendmessage } from "@/api/index.js";
+import { Search, Delete, Plus, Promotion } from '@element-plus/icons-vue'
 
 let params = ref({
     name: '',
@@ -113,8 +113,7 @@ function send() {
     sendVisible.value = true;
 }
 function addBatch() {
-    if(!form.value.content || form.value.content.trim() === ''||typeof form.value.content === 'undefined')
-    {
+    if (!form.value.content || form.value.content.trim() === '' || typeof form.value.content === 'undefined') {
         $message.warning("请填写内容")
         return
     }
@@ -204,13 +203,11 @@ function submit() {
     addconnect(form.value).then(res => {
         if (res) {
 
-            if (res.data === 0) {
-
+            if (res.data == 2) {
                 window.$message({
-                    message: '该课程早已添加',
-                    type: 'success'
+                    message: '该关系已存在',
+                    type: 'error'
                 });
-
             }
             else {
 

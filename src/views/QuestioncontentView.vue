@@ -95,9 +95,11 @@
             </el-card>
         </div>
         <el-dialog v-model="innerVisible" width="40%" title="题解" append-to-body>
-
-            <el-input v-model="questiondata.answer" :autosize="{ minRows: 16, maxRows: 16 }" type="textarea" />
-
+            <div class='monaco-editor' style="border: 1px solid #ccc; padding: 10px;">
+                    <pre style="white-space: pre-wrap;">
+                {{ questiondata.answer }}
+            </pre>
+        </div>
         </el-dialog>
     </div>
 </template>

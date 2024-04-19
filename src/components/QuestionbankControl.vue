@@ -94,7 +94,7 @@
           <span class="centered-text">请输入作业号，形式如[1,2],若无所属作业输入[]</span>
         </el-form>
         <div class="container">
-          <el-button type="info" @click="dialogFormVisible = false">取 消</el-button>
+          <el-button   @click="dialogFormVisible = false">取 消</el-button>
           <el-button type="primary" @click="submit()">确 定</el-button>
         </div>
       </el-dialog>
@@ -426,12 +426,11 @@ function delBatch() {
     window.$message.warning("请勾选您要删除的项")
     return
   }
-  console.log(multipleSelection.value);
-  console.log('questionid');
-  console.log(selectedquestionid.value);
+  // console.log(multipleSelection.value);
+  // console.log('questionid');
+  // console.log(selectedquestionid.value);
   delBatchquestionbank(multipleSelection.value).then(res => {
     if (res) {
-      window.$message.success("批量删除成功")
       findBySearch()
     }
   })

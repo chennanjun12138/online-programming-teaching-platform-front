@@ -41,7 +41,7 @@
         <div>
             <el-dialog title="请填写信息" v-model="dialogFormVisible" width="40%">
                 <el-form :model="form">
-                    <el-form-item label="课程id" label-width="15%">
+                    <el-form-item label="课程" label-width="15%">
                         <el-select v-model="form.classid" clearable placeholder="请选择课程" style="width: 90%">
                             <el-option v-for="item in options" :key="item.value" :label="item.label"
                                 :value="item.value">
@@ -210,7 +210,7 @@ function findBySearch() {
             for (let i = 0; i < res.data.length; i++) {
                 ans.value = {
                     value: res.data[i].id,
-                    label: "课程号" + res.data[i].id
+                    label: "课程号" + res.data[i].id+ " : " + res.data[i].name
                 }
                 options.value.push(ans.value);
 
@@ -261,7 +261,7 @@ function submit() {
         res => {
             if (res) {
                 console.log(res.data)
-                if (res.data==null||res.data.role!=="ROLE_STUDENT") {
+                if (res.data == null || res.data.role !== "ROLE_STUDENT") {
                     window.$message({
                         message: '没有该学生',
                         type: 'error'
@@ -272,13 +272,22 @@ function submit() {
 
                     addconnect(form.value).then(res => {
                         if (res) {
-                            window.$message({
-                                message: '添加关系成功',
-                                type: 'success'
-                            });
-                            dialogFormVisible.value = false;
-                            findBySearch();
-                            console.log(res);
+                            if (res.data == 2) {
+                                window.$message({
+                                    message: '该关系已存在',
+                                    type: 'error'
+                                });
+                            }
+                            else {
+                                window.$message({
+                                    message: '添加关系成功',
+                                    type: 'success'
+                                });
+                                dialogFormVisible.value = false;
+                                findBySearch();
+                                console.log(res);
+                            }
+
                         }
                     })
                 }

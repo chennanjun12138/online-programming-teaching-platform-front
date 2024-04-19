@@ -213,6 +213,7 @@ function joinlearn(id, author, fileId) {
   link.value.studentname = user.value.name;
 
   addconnect(link.value).then(res => {
+   
     if (res) {
       window.$message({
         message: '操作成功',
@@ -220,7 +221,6 @@ function joinlearn(id, author, fileId) {
       });
     }
   })
-
   router.push({
     path: '/ClassDetail/' + fileId,
     query: { classId: id },

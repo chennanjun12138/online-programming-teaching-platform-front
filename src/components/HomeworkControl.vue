@@ -21,8 +21,9 @@
 
         </div>
         <div>
-            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266',textAlign: 'center' }" :data="tableData" :cell-style="{textAlign: 'center'}"	
-                v-if="tableVisible" style="width: 100%; margin: 15px 0px" ref="table"
+            <el-table :header-cell-style="{ background: '#eef1f6', color: '#606266', textAlign: 'center' }"
+                :data="tableData" :cell-style="{ textAlign: 'center' }" v-if="tableVisible"
+                style="width: 100%; margin: 15px 0px" ref="table"
                 :default-sort="[{ prop: 'column1', order: 'descending' }, { prop: 'column2', order: 'ascending' }]"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
@@ -46,8 +47,9 @@
                 </el-table-column>
             </el-table>
             <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-                :data="questiondata.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)" style="width: 100%; margin: 15px 0px" ref="table"
-                @selection-change="handleSelectionChange" :row-key="getRowKeys">
+                :data="questiondata.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)"
+                style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
+                :row-key="getRowKeys">
                 <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
                 <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
 
@@ -105,7 +107,7 @@
                     <span class="centered-text">请输入题号，形式如[1,2]</span>
                 </el-form>
                 <div class="container">
-                    <el-button type="info" @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button  @click="dialogFormVisible = false">取 消</el-button>
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
@@ -201,19 +203,17 @@ function reset() {
 }
 function handleSizeChange(pageSize) {
     params.value.pageSize = pageSize;
-    if(tableVisible.value==true)
-    {
+    if (tableVisible.value == true) {
         findBySearch();
     }
-    
+
 }
 function handleCurrentChange(pageNum) {
     params.value.pageNum = pageNum;
-    if(tableVisible.value==true)
-    {
+    if (tableVisible.value == true) {
         findBySearch();
     }
-    
+
 }
 function searchbyhomework(id, content, illustrate, homeworkid) {
     // console.log(id);
@@ -249,13 +249,15 @@ function edit(obj) {
 function submit() {
 
     changehomework(form.value).then(res => {
+        if (res) {
+            window.$message({
+                message: '操作成功',
+                type: 'success'
+            });
+            dialogFormVisible.value = false;
+            findBySearch();
+        }
 
-        window.$message({
-            message: '操作成功',
-            type: 'success'
-        });
-        dialogFormVisible.value = false;
-        findBySearch();
 
     })
 }

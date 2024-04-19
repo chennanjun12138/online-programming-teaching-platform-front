@@ -65,7 +65,7 @@
 
         </div>
         <div>
-            <el-dialog title="请查看评价" v-model="dialogFormVisible" width="70%">
+            <el-dialog title="请查看评价" v-model="dialogFormVisible" width="50%">
                 <div class='monaco-editor' style="border: 1px solid #ccc; padding: 10px;">
                     <pre style="white-space: pre-wrap;">
                 {{ codecontent }}
@@ -374,6 +374,7 @@ a:visited {
     width: 100%;
     height: 50%;
     margin-top: 5px;
+    color: white;
     background-color: rgb(250, 248, 248);
 }
 </style>

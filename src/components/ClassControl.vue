@@ -126,7 +126,7 @@
                     </el-form-item>
                 </el-form>
                 <div class="container">
-                    <el-button type="info" @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button  @click="dialogFormVisible = false">取 消</el-button>
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>

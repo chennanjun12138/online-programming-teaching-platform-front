@@ -150,7 +150,7 @@ function savenote() {
         res => {
             if (res) {
                 window.$message({
-                    message: "提交成功",
+                    message: "保存成功",
                     type: 'success'
                 });
             }

@@ -41,7 +41,7 @@
         <div>
             <el-dialog title="请填写信息" v-model="dialogFormVisible" width="40%">
                 <el-form :model="form">
-                    <el-form-item label="课程id" label-width="15%">
+                    <el-form-item label="课程" label-width="15%">
                         <el-select v-model="form.classid" clearable placeholder="请选择课程" style="width: 90%">
                             <el-option v-for="item in options" :key="item.value" :label="item.label"
                                 :value="item.value">
@@ -230,9 +230,8 @@ function send() {
     sendVisible.value = true;
 }
 function addBatch() {
- 
-    if(!form.value.content || form.value.content.trim() === ''||typeof form.value.content === 'undefined')
-    {
+
+    if (!form.value.content || form.value.content.trim() === '' || typeof form.value.content === 'undefined') {
         $message.warning("请填写内容")
         return
     }
@@ -274,7 +273,7 @@ function findBySearch() {
             for (let i = 0; i < res.data.list.length; i++) {
                 ans.value = {
                     value: res.data.list[i].id,
-                    label: "课程号" + res.data.list[i].id
+                    label: "课程号" + res.data.list[i].id+ " : " + res.data[i].name
                 }
                 options.value.push(ans.value);
             }
@@ -312,18 +311,35 @@ function submit() {
     findByname(form.value.studentname).then(
         res => {
             if (res) {
-                form.value.studentid = res.data.id.toString();
-                // console.log(form.value.studentid);
-                addconnect(form.value).then(res => {
-                    if (res) {
-                        window.$message({
-                            message: '操作成功',
-                            type: 'success'
-                        });
-                        dialogFormVisible.value = false;
-                        findBySearch();
-                    }
-                })
+                if (res.data == null || res.data.role !== "ROLE_STUDENT") {
+                    window.$message({
+                        message: '没有该学生',
+                        type: 'error'
+                    });
+                }
+                else {
+                    form.value.studentid = res.data.id.toString();
+                    // console.log(form.value.studentid);
+                    addconnect(form.value).then(res => {
+                        if (res) {
+                            if (res.data == 2) {
+                                window.$message({
+                                    message: '该关系已存在',
+                                    type: 'error'
+                                });
+                            }
+                            else {
+                                window.$message({
+                                    message: '添加学生成功',
+                                    type: 'success'
+                                });
+                                dialogFormVisible.value = false;
+                                findBySearch();
+                            }
+
+                        }
+                    })
+                }
             }
         }
     )
