@@ -66,7 +66,7 @@
         </div>
         <div>
             <el-dialog title="请查看评价" v-model="dialogFormVisible" width="50%">
-                <div class='monaco-editor' style="border: 1px solid #ccc; padding: 10px;">
+                <div class='monaco-editor' style="border: 1px solid #ccc; padding: 10px;overflow: auto;">
                     <pre style="white-space: pre-wrap;">
                 {{ codecontent }}
             </pre>

@@ -88,14 +88,16 @@
                     :autosize="{ minRows: 2, maxRows: 15 }"></el-input>
                 <span v-if="!inputvisble">
                     运行结果:
-                    <p v-for="(item, index) in resultarr" :key="index">{{ item }}</p>
+                    <p>{{runResult}}</p>
+                    
+                    <!-- <p v-for="(item, index) in resultarr" :key="index">{{ item }}</p> -->
                 </span>
 
 
             </el-card>
         </div>
         <el-dialog v-model="innerVisible" width="40%" title="题解" append-to-body>
-            <div class='monaco-editor' style="border: 1px solid #ccc; padding: 10px;">
+            <div class='monaco-editor' style="border: 1px solid #ccc; padding: 10px;overflow: auto;">
                     <pre style="white-space: pre-wrap;">
                 {{ questiondata.answer }}
             </pre>

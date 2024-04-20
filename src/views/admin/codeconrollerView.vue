@@ -78,7 +78,7 @@
                 </div>
             </el-dialog>
             <el-dialog title="查看信息" v-model="contentVisible" width="60%">
-                <div class='monaco-editor'>
+                <div class='monaco-editor' style=" overflow: auto;">
                     <pre style="white-space: pre-wrap;">
                 {{ codecontent }}
             </pre>
