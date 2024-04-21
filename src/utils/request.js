@@ -19,6 +19,7 @@ request.interceptors.request.use(config => {
     // config.headers['token'] = user.token;  // 设置请求头
     return config
 }, error => {
+    console.log('err' + error) // for debug
     return Promise.reject(error)
 });
 
@@ -57,7 +58,11 @@ request.interceptors.response.use(
 
     },
     error => {
-        // console.log('err' + error) // for debug
+        window.$message({
+            message: "超时",
+            type: 'error'
+        });
+        console.log('err' + error) // for debug
         return Promise.reject(error)
     }
 )

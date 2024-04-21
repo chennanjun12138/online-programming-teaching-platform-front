@@ -90,7 +90,6 @@
                     运行结果:
                     <p style="white-space: pre-wrap;">{{runResult}}</p>
                     
-                    <!-- <p v-for="(item, index) in resultarr" :key="index">{{ item }}</p> -->
                 </span>
 
 
@@ -118,8 +117,7 @@ import Clipboard from 'clipboard'
 
 
 let cardVisble = ref(false);
-let runResult = ref('');
-let resultarr = ref([])
+let runResult = ref(''); 
 let inputvisble = ref(false)
 const radio = ref('')
 let router = useRouter()
@@ -224,6 +222,7 @@ function runCodebyme() {
     submitcontent.value.userid = user.value.id;
     submitcontent.value.language = language.value;
     submitcontent.value.code = toRaw(codemonaco.value).getValue();
+    runResult.value='';
     runcode(submitcontent.value).then(
         res => {
             if (res) {
@@ -233,7 +232,7 @@ function runCodebyme() {
                 });
                 console.log(res.data[0]);
                 runResult.value = res.data[0];
-                resultarr.value = runResult.value.split(" ");
+                
 
             }
         }
