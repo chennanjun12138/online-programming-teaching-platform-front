@@ -344,8 +344,8 @@ function show(id) {
 
   })
   params.value = {
-    pageNum: 1,
-    pageSize: 5,
+    pageNum: params.value.pageNum,
+    pageSize: params.value.pageSize,
     name: '',
     phone: ''
   }

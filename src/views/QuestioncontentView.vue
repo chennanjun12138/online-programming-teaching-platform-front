@@ -88,7 +88,7 @@
                     :autosize="{ minRows: 2, maxRows: 15 }"></el-input>
                 <span v-if="!inputvisble">
                     运行结果:
-                    <p>{{runResult}}</p>
+                    <p style="white-space: pre-wrap;">{{runResult}}</p>
                     
                     <!-- <p v-for="(item, index) in resultarr" :key="index">{{ item }}</p> -->
                 </span>
@@ -142,18 +142,18 @@ let judgeConfig = ref({
 let JudgeCase = ref([])
 
 let Qdata = ref([]);
-let language = ref("java");
+let language = ref("c");
 const codemonaco = ref();
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
 let submitcontent = ref({});
 let options = ref([
     {
-        value: 'java',
-        label: 'Java'
-    },
-    {
         value: 'c',
         label: 'C'
+    },
+    {
+        value: 'java',
+        label: 'Java'
     },
     {
         value: 'javascript',
@@ -231,7 +231,7 @@ function runCodebyme() {
                     message: "自测运行成功",
                     type: 'success'
                 });
-
+                console.log(res.data[0]);
                 runResult.value = res.data[0];
                 resultarr.value = runResult.value.split(" ");
 
