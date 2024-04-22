@@ -7,10 +7,10 @@
             </div>
             <iframe ref="pdfIframe" @load="handleIframeLoad" id="pdf-iframe" class="ppt" :src="url"></iframe>
             <div style="display: flex; align-items: center;">
-                <span >
+                <span>
                     <ul style="cursor: pointer;">
                         <li v-for="link in linklist">
-                            <a   @click="gotolink(link)">{{ displaylink(link) }}</a>
+                            <a @click="gotolink(link)">{{ displaylink(link) }}</a>
                         </li>
                     </ul>
                 </span>
@@ -51,9 +51,9 @@
 
             <el-dialog title="运行结果" v-model="runVisble">
                 <span>
-                     <p style="white-space: pre-wrap;">{{runResult}}</p>
+                    <p style="white-space: pre-wrap;">{{ runResult }}</p>
                 </span>
-               
+
             </el-dialog>
         </div>
 
@@ -127,13 +127,12 @@ onMounted(async () => {
     await setupMonacoEditror()
 
 });
-function gotolink(url)
-{
+function gotolink(url) {
     let id = url.substring(url.lastIndexOf('/') + 1);
     router.push(`/questioncontent/${id}`)
 }
 function displaylink(url) {
-   
+
     let id = url.substring(url.lastIndexOf('/') + 1);
 
     const foundQuestion = questionsum.value.find(question => question.id === id);
@@ -204,15 +203,16 @@ function showquestion(pagenumber) {
             page.getTextContent().then(content => {
                 // console.log(pagenumber);
                 const textItems = content.items.map(item => item.str);
-                const pageText = textItems.join(' ');
-
-                // 使用正则表达式查找包含 "http://localhost:7100/questioncontent/{数字}" 的字符串
+                const pageText = textItems.join("");
+                // console.log(pageText)
+                // 使用正则表达式查找包含 "questioncontent/{数字}" 的字符串
                 const regex = /questioncontent\/\d+/g;
                 const matches = pageText.match(regex);
 
                 // 如果找到匹配的子串
                 if (matches) {
-                    // console.log(matches);
+                    console.log(matches);
+                    console.log
                     const baseUrl = currentUrl.split('/').slice(0, 3).join('/');
 
                     linklist.value = matches.map(match => `${baseUrl}/${match}`);
