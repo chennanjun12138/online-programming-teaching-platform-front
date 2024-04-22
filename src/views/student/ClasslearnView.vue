@@ -42,14 +42,14 @@
 
     </div>
     <div>
-      <el-dialog title="课程简介" v-model="courseVisible" width="30%" center>
+      <el-dialog title="课程简介" v-model="courseVisible" width="60%" center>
         <el-form :model="courescontent">
-          <el-form-item label="课程描述:" label-width="25%">
-            <span style="width: 90%">{{ courescontent.description }}</span>
+          <el-form-item label="课程描述:" label-width="20%">
+            <span style="width: 90%;white-space: pre-wrap;">{{ courescontent.description }}</span>
           </el-form-item>
 
-          <el-form-item label="具体详情:" label-width="25%">
-            <span style="width: 90%">{{ courescontent.details }}</span>
+          <el-form-item label="具体详情:" label-width="20%">
+            <span style="width: 90%;white-space: pre-wrap;">{{ courescontent.details }}</span>
           </el-form-item>
         </el-form>
       </el-dialog>

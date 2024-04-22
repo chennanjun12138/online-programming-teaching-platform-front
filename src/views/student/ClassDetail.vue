@@ -50,9 +50,8 @@
             </el-tabs>
 
             <el-dialog title="运行结果" v-model="runVisble">
-                <span  >
-                     {{ runResult }}
-                     
+                <span>
+                     <p style="white-space: pre-wrap;">{{runResult}}</p>
                 </span>
                
             </el-dialog>
