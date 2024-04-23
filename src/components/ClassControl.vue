@@ -114,8 +114,8 @@
                         </el-select>
                         <!-- <el-input v-model="form.sort" autocomplete="off" style="width: 90%"></el-input> -->
                     </el-form-item>
-                    <el-form-item label="课程教师" label-width="25%">
-                        <el-input v-model="form.author" autocomplete="off" style="width: 90%"></el-input>
+                    <el-form-item v-if="props.msg != 'A'" label="课程教师" label-width="25%">
+                         <el-input  v-model="form.author" autocomplete="off" style="width: 90%"></el-input>
                     </el-form-item>
 
                     <el-form-item label="课程文件" label-width="25%">
@@ -126,14 +126,15 @@
                     </el-form-item>
                 </el-form>
                 <div class="container">
-                    <el-button  @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
             <el-dialog title="课程简介" v-model="courseVisible" width="60%" center>
                 <el-form :model="courescontent">
                     <el-form-item label="课程描述" label-width="25%">
-                        <el-input v-model="courescontent.description" autocomplete="off" style="width: 90%" type="textarea"></el-input>
+                        <el-input v-model="courescontent.description" autocomplete="off" style="width: 90%"
+                            type="textarea"></el-input>
                     </el-form-item>
 
                     <el-form-item label="具体详情" label-width="25%">
@@ -383,6 +384,9 @@ function handleCurrentChange(pageNum) {
 
 function add() {
     form.value = {};
+    if (props.msg === 'A') {
+        form.value.author = user.value.name;
+    }
     dialogFormVisible.value = true;
 }
 function edit(obj) {

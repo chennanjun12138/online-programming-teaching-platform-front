@@ -26,14 +26,14 @@
                 <el-table-column prop="name" label="姓名" width="100px"></el-table-column>
                 <el-table-column prop="sex" label="性别" width="70px"></el-table-column>
                 <el-table-column prop="age" label="年龄" width="70px"></el-table-column>
-                <el-table-column label="通过率(AC/提交)" width="140px" >
+                <el-table-column label="通过率(AC/提交)" width="140px">
                     <template #default="{ row }">
                         <span>
                             {{ getnum(row.id, 0) }}/{{ getnum(row.id, 1) }}
                         </span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="phone" label="电话"  width="130px" ></el-table-column>
+                <el-table-column prop="phone" label="电话" width="130px"></el-table-column>
 
                 <el-table-column prop="role" label="角色" width="60px">
                     <template #default="{ row }">
@@ -42,8 +42,9 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
-                        <el-button v-if="getnum(row.id, 1)!=0" type="primary" @click="show(row.id)" :icon="Search">查看</el-button>
-                        <el-button v-else type="primary"    disabled>未做题</el-button>
+                        <el-button v-if="getnum(row.id, 1) != 0" type="primary" @click="show(row.id)"
+                            :icon="Search">查看</el-button>
+                        <el-button v-else type="primary" disabled>未做题</el-button>
                         <el-button type="primary" @click="edit(row)" :icon="Edit">编辑</el-button>
 
                         <el-popconfirm title="确定删除吗" @confirm="del(row.id)">
@@ -98,7 +99,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { changeuser, findusers, deleteuser, delBatchuser, getallsubmit,findbyquestionid } from "@/api/index.js";
+import { changeuser, findusers, deleteuser, delBatchuser, getallsubmit, findbyquestionid } from "@/api/index.js";
 import { Edit, Search, Delete, Plus } from '@element-plus/icons-vue'
 import Chart from '@/components/Chart.vue';
 
@@ -250,9 +251,8 @@ function findBySearch() {
     findusers(params.value).then(res => {
         if (res) {
             tableData.value = res.data.list;
-            total.value = res.data.total;
             people_submitdata.value = [];
-            for (let i = 0; i < tableData.value.length; i++) {
+            for (let i = 0; i < res.data.list.length; i++) {
                 people_submitdata.value.push({
                     id: tableData.value[i].id,
                     submitnum: 0,
@@ -260,6 +260,8 @@ function findBySearch() {
                 })
             }
             definesubmit()
+            
+            total.value = res.data.total;
         }
     })
 }
