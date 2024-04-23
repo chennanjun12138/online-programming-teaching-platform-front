@@ -100,6 +100,7 @@ function navlogin() {
     border-radius: 10px;
     height: 360px;
     margin: 100px auto;
+    opacity: 0.90;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     /* 添加阴影效果 */
 

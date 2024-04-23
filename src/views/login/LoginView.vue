@@ -98,6 +98,7 @@ function onLogin() {
   border-radius: 10px;
   height: 360px;
   margin: 100px auto;
+  opacity: 0.90;
   /* border: 5px solid;
   border-image: url('@/assets/image/b2.jpg') 30 round; */
   /* 设置顶部边框样式 */
