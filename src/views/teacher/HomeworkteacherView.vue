@@ -41,6 +41,7 @@
                 <el-table-column prop="studentname" label="提交人"></el-table-column>
                 <el-table-column prop="submittime" label="提交时间"></el-table-column>
                 <el-table-column prop="content" label="提交内容"></el-table-column>
+                
                 <el-table-column prop="file_submit" label="提交文件">
                     <template #default="{ row }">
 
@@ -49,6 +50,8 @@
                         <span v-else> 暂无</span>
                     </template>
                 </el-table-column>
+                <el-table-column prop="score" label="评分"></el-table-column>
+                <el-table-column prop="teacherevaluate" label="评价"></el-table-column>
                 <el-table-column label="操作">
                     <template #default="{ row }">
                         <el-button type="primary" @click="add($index, row.id)" :icon="EditPen" text>批改</el-button>
