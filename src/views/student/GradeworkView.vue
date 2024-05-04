@@ -42,7 +42,13 @@
                 :data="questiondata.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)"
                 style="width: 100%; margin: 15px 0px" ref="table" :cell-style="{ textAlign: 'center' }"
                 @selection-change="handleSelectionChange" :row-key="getRowKeys">
-                <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
+                <el-table-column width="60px" prop="questionid" label="题号">
+                    <template #default="{ row }">
+                        <el-button style="width: 60%;" type="primary" @click="gotoquestion(row.questionid)" text>{{
+                            row.questionid }}
+                        </el-button>
+                    </template>
+                </el-table-column>
 
                 <el-table-column prop="name" label="题目名称"></el-table-column>
                 <el-table-column prop="type" label="题目类型"></el-table-column>
@@ -252,16 +258,16 @@ function add(id) {
 function submit() {
     form.value.userid = user.value.id;
     form.value.studentname = user.value.name;
-        addsubmit(form.value).then(res => {
-            if (res) {
-                window.$message({
-                    message: '提交成功',
-                    type: 'success'
-                });
-                dialogFormVisible.value = false;
+    addsubmit(form.value).then(res => {
+        if (res) {
+            window.$message({
+                message: '提交成功',
+                type: 'success'
+            });
+            dialogFormVisible.value = false;
 
-            }
-        })
+        }
+    })
 }
 function down(flag) {
     location.href = 'http://localhost:8080/api/files/' + flag

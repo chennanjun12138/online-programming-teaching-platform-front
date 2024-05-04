@@ -46,12 +46,18 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-table v-if="tableVisible2" :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+            <el-table v-if="tableVisible2"
+                :header-cell-style="{ textAlign: 'center', background: '#eef1f6', color: '#606266' }"
                 :data="questiondata.slice((params.pageNum - 1) * params.pageSize, params.pageNum * params.pageSize)"
                 style="width: 100%; margin: 15px 0px" ref="table" @selection-change="handleSelectionChange"
-                :row-key="getRowKeys">
-                <el-table-column ref="table" type="selection" width="55" :reserve-selection="true"></el-table-column>
-                <el-table-column width="60px" prop="questionid" label="题号"></el-table-column>
+                :row-key="getRowKeys" :cell-style="{ textAlign: 'center' }">
+                <el-table-column width="60px" prop="questionid" label="题号">
+                    <template #default="{ row }">
+                        <el-button style="width: 60%;" type="primary" @click="gotoquestion(row.questionid)" text>{{
+                            row.questionid }}
+                        </el-button>
+                    </template>
+                </el-table-column>
 
                 <el-table-column prop="name" label="题目名称"></el-table-column>
                 <el-table-column prop="type" label="题目类型"></el-table-column>
@@ -107,7 +113,7 @@
                     <span class="centered-text">请输入题号，形式如[1,2]</span>
                 </el-form>
                 <div class="container">
-                    <el-button  @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
                     <el-button type="primary" @click="submit()">确 定</el-button>
                 </div>
             </el-dialog>
@@ -122,6 +128,8 @@ const props = defineProps({
 })
 import { changehomework, delBatchhomework, deletehomework, findbyhomework, findhomeworks, updatehomework, updatequestionbank } from "@/api/index.js";
 import { Edit, Search, Delete, Plus, Back } from '@element-plus/icons-vue'
+import { useRouter } from "vue-router";
+const router = useRouter()
 let params = ref({
     name: '',
     phone: '',
@@ -142,7 +150,9 @@ let workid = ref(0);
 let notice = ref('');
 let zuoyeid = ref('')
 const user = ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {})
-
+function gotoquestion(questionid) {
+    router.push(`/questioncontent/${questionid}`)
+}
 function delcontent(listid, questionid) {
     let str = tableData.value[workid.value].content;
     let arr = JSON.parse(str);
